@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import shutil
 import toml
 import wand
 
@@ -24,14 +25,20 @@ def cl_main() -> None:
     for card in args.path:
         blueprint = toml.load(card)
         buildpath = os.path.join(working_dir, '_build')
+        distpath = os.path.join(working_dir, 'dist')
 
         if not os.path.exists(buildpath):
             os.mkdir(buildpath)
 
+        if not os.path.exists(distpath):
+            os.mkdir(distpath)
+
         # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
-        # 3. Use wand to construct the final card
-        # 4. Use wand to place text onto card
-        # 5. Save image in _build
+        # 3. Use wand to construct the final card (save intermediate files in _build)
+        # 4. Use wand to place text onto card (save intermediate files in _build)
+        # 5. Save image in dist
+        # 6. Remove _build and it's contents
+        shutil.rmtree(buildpath)
 
 
 def dir_path(string):
