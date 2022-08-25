@@ -7,10 +7,10 @@ cardmage setup module
 from setuptools import setup, find_packages
 from os import path
 
-here = path.abspath(path.dirname(__file__))
+# here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-# with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+# with open(path.join(here, 'Readme.rst'), encoding='utf-8') as f:
 # long_description = f.read()
 
 setup(
@@ -18,9 +18,9 @@ setup(
     version='0.0.1',
     description='FOSS build tool for playing cards',
     long_description='FOSS build tool for printable playing cards',
-    url='https://github.com/condla/pokepy',
+    url='https://github.com/xenomorphis/cardmage',
     author='Marco R. Wachter',
-    author_email='stefan.dun@gmail.com',
+    author_email='wachter.ma@web.de',
     license='Apache 2.0',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -30,7 +30,7 @@ setup(
         'Programming Language :: Python :: 3.10',
     ],
 
-    keywords='Pokeapi REST client wrapper command line interface',
+    keywords='build tool image playing card command line interface',
     packages=find_packages(),
     install_requires=['toml', 'wand'],
     extras_require={ },
