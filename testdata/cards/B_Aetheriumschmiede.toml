@@ -12,11 +12,11 @@ type = 1
 subtype = "Dwemer"
 
 [image]
-source = "demo.png"
-source_hd = "demo_hd.png"
-source_vertical = ""
-source_vertical_hd = ""
-artist = "Max Mustermann"
+source = "AetherSchmiede.png"
+source_hd = "AetherSchmiede.png"
+source_vertical = "AetherSchmiede.png"
+source_vertical_hd = "AetherSchmiede.png"
+artist = "xenomorphis"
 
 [layout]
 type = "bezirk"
