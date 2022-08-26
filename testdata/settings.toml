@@ -1,0 +1,9 @@
+title = "Project Settings"
+
+[paths]
+base = "../testdata/"
+cards = "cards/"
+fonts = "fonts/"
+icons = "icons/"
+images = "images/"
+layouts = "layouts/"

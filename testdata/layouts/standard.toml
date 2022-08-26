@@ -1,0 +1,22 @@
+title = "Standard-Layout"
+
+# zones: Pixel offset (x, y) relative to top left corner
+
+[config]
+attribute_attack = []
+attribute_defense = []
+attribute_health = []
+edition_icon_zone = []
+image_zone = [0, 200]
+image_credits_zone = []
+legendary_zone = []
+meta_id_zone = []
+text_zone = [60, 750]
+text_zone_dimensions = [700, 350]
+title_zone = [60, 60]
+title_zone_dimensions = [600, 32]
+
+[template]
+background = "black"
+file = "standard.png"
+size = [738, 1033]
