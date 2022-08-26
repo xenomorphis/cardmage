@@ -31,6 +31,14 @@ def cl_main() -> None:
         settings = toml.load(dir_path("./settings.toml"))
 
     base_dir = settings['paths']['base']
+    buildpath = os.path.join(base_dir, '_build/')
+    distpath = os.path.join(base_dir, 'dist/')
+
+    if not os.path.exists(buildpath):
+        os.mkdir(buildpath)
+
+    if not os.path.exists(distpath):
+        os.mkdir(distpath)
     # working_dir = os.getcwd()
 
     for card in args.path:
@@ -56,15 +64,6 @@ def cl_main() -> None:
                 card_image = Image(
                     filename=dir_path(base_dir + settings['paths']['images'] + blueprint['image']['source']))
 
-        buildpath = os.path.join(base_dir, '_build/')
-        distpath = os.path.join(base_dir, 'dist/')
-
-        if not os.path.exists(buildpath):
-            os.mkdir(buildpath)
-
-        if not os.path.exists(distpath):
-            os.mkdir(distpath)
-
         # 3. Use wand to construct the final card (save intermediate files in _build)
         with Color(layout['template']['background']) as bg:
             current = Image(width=layout['template']['size'][0], height=layout['template']['size'][1], background=bg)
@@ -80,8 +79,8 @@ def cl_main() -> None:
         # 5. Save image in dist
         current.save(filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png"))
 
-        # 6. Remove _build and it's contents
-        shutil.rmtree(buildpath)
+    # 6. Remove _build and it's contents
+    shutil.rmtree(buildpath)
 
 
 def dir_path(string):
