@@ -17,6 +17,10 @@ title_zone_dimensions = [560, 40]
 type_zone = [60, 613]
 type_zone_dimensions = [340, 32]
 
+[features]
+render_edition_icon = false
+render_image_credits = false
+
 [image]
 use_vertical = true
 
