@@ -1,0 +1,34 @@
+title = "Die Aetheriumschmiede"
+
+# ressources listed as [Gold, Fire, Water, Wind, Light, Shadow, Honor]
+# types: 0 - Charakter, 1 - Bezirk, 2 - Kreatur, 3 - Objekt, 4 - Magie, 5 - Vagabund
+
+[card]
+attributes = [0, 0, 0]
+element = "neutral"
+legendary = false
+ressources = [5, 0, 0, 0, 0, 0, 0]
+type = 3
+subtype = "Permanent"
+
+[image]
+source = "OgInfinium.png"
+source_hd = "OgInfinium.png"
+source_vertical = "OgInfinium.png"
+artist = "Minomi9"
+
+[layout]
+type = "objekt"
+# background = "white"
+
+[meta]
+edition = "TES"
+id = "062"
+year = "2022"
+
+[text]
+preset = "standard"
+
+[text.0]
+condition = "Zu Beginn deines Spielzugs:"
+paragraph = "Du kannst diese Karte aus dem Spiel nehmen. Wenn diese Karte durch diesen Effekt aus dem Spiel genommen wird, ziehe 3 Karten."
