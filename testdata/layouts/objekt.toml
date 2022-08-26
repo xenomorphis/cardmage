@@ -1,13 +1,11 @@
-title = "Standard-Layout"
+title = "Objekt-Layout"
 
 # zones: Pixel offset (x, y) relative to top left corner
 
 [config]
-attribute_attack = []
-attribute_defense = []
-attribute_health = []
+costs_gold = [52, 125]
 edition_icon_zone = []
-image_zone = [0, 200]
+image_zone = [0, 0]
 image_credits_zone = []
 legendary_zone = []
 meta_id_zone = [319, 990]
@@ -21,5 +19,5 @@ type_zone_dimensions = [340, 32]
 
 [template]
 background = "black"
-file = "standard.png"
+file = "objekt.png"
 size = [738, 1033]

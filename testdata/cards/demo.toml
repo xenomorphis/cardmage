@@ -19,7 +19,7 @@ artist = "Max Mustermann"
 
 [layout]
 type = "standard"
-background = "white"
+# background = "white"
 
 [meta]
 edition = "PRE"
