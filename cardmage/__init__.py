@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import os
 import shutil
 import toml
@@ -33,6 +34,9 @@ def cl_main() -> None:
         if not os.path.exists(distpath):
             os.mkdir(distpath)
 
+        print(blueprint)
+        vartest(blueprint, card)
+
         # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
         # 3. Use wand to construct the final card (save intermediate files in _build)
         # 4. Use wand to place text onto card (save intermediate files in _build)
@@ -46,6 +50,13 @@ def dir_path(string):
         return string
     else:
         raise NotADirectoryError(string)
+
+
+def vartest(content, filename):
+    filename_raw = filename.partition('.toml')
+
+    with open(filename_raw[0] + ".output.json", "w") as outfile:
+        json.dump(content, outfile, indent=4)
 
 
 if __name__ == "__main__":

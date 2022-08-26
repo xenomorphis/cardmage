@@ -1,0 +1,58 @@
+{
+    "title": "Die Aetheriumschmiede",
+    "card": {
+        "attributes": [
+            0,
+            6,
+            3
+        ],
+        "element": "neutral",
+        "legendary": false,
+        "ressources": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "type": 1,
+        "subtype": "Dwemer"
+    },
+    "image": {
+        "source": "demo.png",
+        "source_hd": "demo_hd.png",
+        "source_vertical": "",
+        "artist": "Max Mustermann"
+    },
+    "layout": {
+        "type": "standard",
+        "background": "white"
+    },
+    "meta": {
+        "edition": "PRE",
+        "id": "000",
+        "year": "2022"
+    },
+    "text": {
+        "preset": "standard",
+        "ressources": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "0": {
+            "condition": "Solange auf dem Feld:",
+            "list": [
+                "Der Spieler kann Dwemer-Kreaturen in die Schlacht rufen",
+                "Rekrutierungskosten von Dwemer-Kreaturen sind um 1 Gold reduziert"
+            ],
+            "paragraph": []
+        }
+    }
+}
