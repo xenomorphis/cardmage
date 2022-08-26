@@ -15,6 +15,7 @@ subtype = "Permanent"
 source = "OgInfinium.png"
 source_hd = "OgInfinium.png"
 source_vertical = "OgInfinium.png"
+source_vertical_hd = "OgInfinium.png"
 artist = "Minomi9"
 
 [layout]

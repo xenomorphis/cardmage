@@ -15,6 +15,7 @@ subtype = "Dwemer"
 source = "demo.png"
 source_hd = "demo_hd.png"
 source_vertical = ""
+source_vertical_hd = ""
 artist = "Max Mustermann"
 
 [layout]
