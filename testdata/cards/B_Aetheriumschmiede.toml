@@ -19,7 +19,7 @@ source_vertical_hd = ""
 artist = "Max Mustermann"
 
 [layout]
-type = "standard"
+type = "bezirk"
 # background = "white"
 
 [meta]
