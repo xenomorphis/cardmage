@@ -28,5 +28,5 @@ use_vertical = true
 
 [template]
 background = "black"
-file = "standard.png"
+file = "bezirk.png"
 size = [738, 1033]
