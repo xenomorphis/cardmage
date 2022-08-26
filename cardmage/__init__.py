@@ -22,7 +22,6 @@ def cl_main() -> None:
     arg_parser.add_argument("-t", "--test", help="Use test settings", default=False, action="store_true")
 
     args = arg_parser.parse_args()
-    # args.print enthält die Info, ob der print-Switch gesetzt ist oder nicht
 
     blueprint = dict()
 
@@ -65,8 +64,6 @@ def cl_main() -> None:
 
         if not os.path.exists(distpath):
             os.mkdir(distpath)
-
-        # vartest(blueprint, card)
 
         # 3. Use wand to construct the final card (save intermediate files in _build)
         with Color(layout['template']['background']) as bg:
