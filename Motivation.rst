@@ -4,7 +4,7 @@ As a child of the 90s, my childhood fell into the late era of the great and glor
 
 And as a side effect of tinkering with different play styles and strategies, I started designing my own cards based on the Yu-Gi-Oh rulebook (I guess you could call it a kind of 'fan fiction' - not for comics, but for card games). Back then I wrote them on index cards, just as plain text without illustrations.
 
-But at the time I'm writing this, it's 2022 and things have changed. Today I would use Photoshop, GIMP or InDesign - opening up completely new possibilities. A few weeks ago I stumbled about an reddit post about the FOSS card game called `Arcmage <https://www.reddit.com/r/linux_gaming/comments/wu3sgg/arcmage_a_foss_customizable_card_game/>`_.
+But at the time I'm writing this, it's 2022 and things have changed. Today I would use Photoshop, GIMP or InDesign - opening up completely new possibilities. A few weeks ago I stumbled upon an reddit post about the FOSS card game called `Arcmage <https://www.reddit.com/r/linux_gaming/comments/wu3sgg/arcmage_a_foss_customizable_card_game/>`_.
 
 I was fascinated by the idea that someone created a community-driven open-source (trading) card game but at the same time I was quite unsure on how one could solve the technical problems of working together on something like a card game (at least that's what the term 'community-driven' is all about).
 
