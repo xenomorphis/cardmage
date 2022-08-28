@@ -22,6 +22,9 @@ textalign = "center"
 fontsize = 11
 textalign = "center"
 
+[modules.type]
+fontstyle = "bold"
+
 [tags.condition]
 text_decoration = "underline"
 
