@@ -81,7 +81,7 @@ def cl_main() -> None:
                 hero = card_image.clone()
                 layer = template.clone()
                 draw.composite(operator='atop', left=layout['config']['image_zone'][0],
-                               top=layout['config']['image_zone'][0], width=hero.width, height=hero.height, image=hero)
+                               top=layout['config']['image_zone'][1], width=hero.width, height=hero.height, image=hero)
                 draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
                 draw(current)
                 uts = str(int(time.time()))
