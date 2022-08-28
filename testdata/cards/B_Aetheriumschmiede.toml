@@ -1,7 +1,5 @@
 title = "Die Aetheriumschmiede"
 
-# types: 0 - Charakter, 1 - Bezirk, 2 - Kreatur, 3 - Objekt, 4 - Magie, 5 - Vagabund
-
 [card]
 element = "neutral"
 font = "standard"
