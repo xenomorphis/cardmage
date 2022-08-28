@@ -1,15 +1,11 @@
 title = "Die Aetheriumschmiede"
 
-# ressources listed as [Gold, Fire, Water, Wind, Light, Shadow, Honor]
 # types: 0 - Charakter, 1 - Bezirk, 2 - Kreatur, 3 - Objekt, 4 - Magie, 5 - Vagabund
 
 [card]
-attributes = [0, 0, 0]
 element = "neutral"
-legendary = false
-ressources = [5, 0, 0, 0, 0, 0, 0]
-type = 3
-subtype = "Permanent"
+font = "standard"
+# type = 3
 
 [image]
 source = "OgInfinium.png"
@@ -25,11 +21,21 @@ type = "objekt"
 [meta]
 edition = "TES"
 id = "062"
+language = "DE"
 year = "2022"
 
-[text]
-preset = "standard"
+[modules.costs]
+array = [5, 0, 0, 0, 0, 0, 0]
+keys = ["gold", "fire", "water", "wind", "light", "shadow", "honor"]
+keys_as = "icons"
 
-[text.0]
+[modules.meta_id]
+paragraph = "{edition}-{id}"
+fontcolor = "white"
+
+[modules.text]
 condition = "Zu Beginn deines Spielzugs:"
 paragraph = "Du kannst diese Karte aus dem Spiel nehmen. Wenn diese Karte durch diesen Effekt aus dem Spiel genommen wird, ziehe 3 Karten."
+
+[modules.type]
+paragraph = "Bezirk - Permanent"

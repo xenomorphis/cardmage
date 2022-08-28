@@ -47,7 +47,7 @@ def cl_main() -> None:
             print("Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' started.")
 
             # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
-            font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['text']['preset'] + ".toml"))
+            font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
             layout = toml.load(dir_path(base_dir + settings['paths']['layouts'] + blueprint['layout']['type'] + ".toml"))
 
             template = Image(filename=dir_path(base_dir + settings['paths']['layouts'] + layout['template']['file']))

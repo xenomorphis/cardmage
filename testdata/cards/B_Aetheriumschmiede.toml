@@ -4,12 +4,9 @@ title = "Die Aetheriumschmiede"
 # types: 0 - Charakter, 1 - Bezirk, 2 - Kreatur, 3 - Objekt, 4 - Magie, 5 - Vagabund
 
 [card]
-attributes = [0, 6, 3]
 element = "neutral"
-legendary = false
-ressources = [0, 0, 0, 0, 0, 0, 0]
-type = 1
-subtype = "Dwemer"
+font = "standard"
+# type = 1
 
 [image]
 source = "AetherSchmiede.png"
@@ -25,15 +22,30 @@ type = "bezirk"
 [meta]
 edition = "PRE"
 id = "000"
+language = "DE"
 year = "2022"
 
-[text]
-preset = "standard"
-ressources = [0, 1, 0, 0, 0, 0, 0]
+[modules.attributes]
+array = [0, 6, 3]
+keys = ["attack","defense","hp"]
+keys_as = "icons"
 
-[text.0]
+[modules.meta_id]
+paragraph = "{edition}-{id}"
+fontcolor = "white"
+
+[modules.resources]
+array = [0, 1, 0, 0, 0, 0, 0]
+keys = ["Gold", "Feuer", "Wasser", "Wind", "Licht", "Schatten", "Ehre"]
+keys_as = "text"
+prefix = "Ressourcen: "
+
+[modules.text]
 condition = "Solange auf dem Feld:"
 list = [
     "Der Spieler kann Dwemer-Kreaturen in die Schlacht rufen",
     "Rekrutierungskosten von Dwemer-Kreaturen sind um 1 Gold reduziert"
 ]
+
+[modules.type]
+paragraph = "Bezirk - Dwemer"

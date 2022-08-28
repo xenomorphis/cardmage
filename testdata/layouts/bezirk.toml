@@ -1,30 +1,41 @@
-title = "Standard-Layout"
+title = "Bezirk-Layout"
 
 # zones: Pixel offset (x, y) relative to top left corner
 
 [config]
-attribute_attack = []
-attribute_defense = []
-attribute_health = []
-edition_icon_zone = []
+# attribute_attack = []
+# attribute_defense = []
+# attribute_health = []
 image_zone = [0, 200]
 image_credits_zone = []
-legendary_zone = []
-meta_id_zone = [319, 990]
-meta_id_dimensions = [100, 16]
-text_zone = [60, 663]
-text_zone_dimensions = [620, 300]
 title_zone = [60, 50]
 title_zone_dimensions = [560, 40]
-type_zone = [60, 613]
-type_zone_dimensions = [340, 32]
 
 [features]
+render_attribute_icons = true
+render_cost_icons = false
 render_edition_icon = false
 render_image_credits = false
 
+[icons]
+set = "standard"
+
 [image]
 use_vertical = true
+
+[modules]
+attributes_zone = []
+edition_icon_zone = []
+legendary_zone = []
+legendary_dimensions = []
+meta_id_zone = [319, 990]
+meta_id_dimensions = [100, 16]
+resources_zone = [60, 933]
+resources_zone_dimensions = [620, 30]
+text_zone = [60, 663]
+text_zone_dimensions = [620, 270]
+type_zone = [60, 613]
+type_zone_dimensions = [340, 32]
 
 [template]
 background = "black"
