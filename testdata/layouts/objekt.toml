@@ -1,6 +1,7 @@
 title = "Objekt-Layout"
 
 # zones: Pixel offset (x, y) relative to top left corner
+# icon_offset is calculated based on the coordinates given for the corresponding zone
 
 [config]
 image_zone = [0, 0]
@@ -16,6 +17,7 @@ render_image_credits = false
 
 [icons]
 set = "standard"
+use = ["costs"]
 
 [image]
 use_vertical = true
@@ -24,9 +26,12 @@ use_vertical = true
 costs_zone = [
     [52, 125]
 ]
+costs_zone_dimensions = [20, 16]
+costs_zone_icon_offset = []
 edition_icon_zone = []
+edition_icon_zone_dimensions = []
 meta_id_zone = [319, 990]
-meta_id_dimensions = [100, 16]
+meta_id_zone_dimensions = [100, 16]
 text_zone = [60, 663]
 text_zone_dimensions = [620, 300]
 type_zone = [60, 613]

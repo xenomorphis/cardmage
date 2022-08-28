@@ -1,6 +1,7 @@
 title = "Bezirk-Layout"
 
 # zones: Pixel offset (x, y) relative to top left corner
+# icon_offset is calculated based on the coordinates given for the corresponding zone
 
 [config]
 # attribute_attack = []
@@ -19,17 +20,21 @@ render_image_credits = false
 
 [icons]
 set = "standard"
+use = ["attributes"]
 
 [image]
 use_vertical = true
 
 [modules]
 attributes_zone = []
+attributes_zone_dimensions = [20, 16]
+attributes_zone_icon_offset = []
 edition_icon_zone = []
+edition_icon_zone_dimensions = []
 legendary_zone = []
-legendary_dimensions = []
+legendary_zone_dimensions = []
 meta_id_zone = [319, 990]
-meta_id_dimensions = [100, 16]
+meta_id_zone_dimensions = [100, 16]
 resources_zone = [60, 933]
 resources_zone_dimensions = [620, 30]
 text_zone = [60, 663]
