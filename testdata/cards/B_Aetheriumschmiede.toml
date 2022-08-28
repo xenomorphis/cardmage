@@ -1,6 +1,5 @@
 title = "Die Aetheriumschmiede"
 
-# ressources listed as [Gold, Fire, Water, Wind, Light, Shadow, Honor]
 # types: 0 - Charakter, 1 - Bezirk, 2 - Kreatur, 3 - Objekt, 4 - Magie, 5 - Vagabund
 
 [card]
