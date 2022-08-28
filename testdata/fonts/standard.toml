@@ -8,3 +8,9 @@ fontsize_copyright = 10
 fontsize_meta = 11
 fontsize_title = 14
 fontsize_type = 14
+
+[tags.condition]
+text_decoration = "underline"
+
+[tags.prefix]
+fontstyle = "bold"
