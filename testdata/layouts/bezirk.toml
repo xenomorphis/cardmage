@@ -26,9 +26,12 @@ use = ["attributes"]
 use_vertical = true
 
 [modules]
-attributes_zone = []
-attributes_zone_dimensions = [20, 16]
-attributes_zone_icon_offset = []
+attributes_zone = [
+    [656, 125],
+    [656, 185]
+]
+attributes_zone_dimensions = [30, 30]
+attributes_zone_icon_offset = [-42, -5]
 edition_icon_zone = []
 edition_icon_zone_dimensions = []
 legendary_zone = []

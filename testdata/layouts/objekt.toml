@@ -26,8 +26,8 @@ use_vertical = true
 costs_zone = [
     [52, 125]
 ]
-costs_zone_dimensions = [20, 16]
-costs_zone_icon_offset = []
+costs_zone_dimensions = [30, 30]
+costs_zone_icon_offset = [30, -5]
 edition_icon_zone = []
 edition_icon_zone_dimensions = []
 meta_id_zone = [319, 990]
