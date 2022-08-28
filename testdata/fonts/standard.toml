@@ -3,11 +3,19 @@ title = "Standard-Fontset"
 [config]
 font = "Calibri"
 fontsize = 14
-fontsize_attributes = 14
-fontsize_copyright = 10
-fontsize_meta = 11
 fontsize_title = 14
-fontsize_type = 14
+fontstyle = "normal"
+textalign = "left"
+
+[modules.attributes]
+textalign = "center"
+
+[modules.costs]
+textalign = "center"
+
+[modules.meta_id]
+fontsize = 11
+textalign = "center"
 
 [tags.condition]
 text_decoration = "underline"
