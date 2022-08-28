@@ -1,2 +1,6 @@
 title = "Standard-Icons"
 
+[icons]
+fire = "element_fire.png"
+gold = "gold.png"
+shadow = "element_shadow.png"
