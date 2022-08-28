@@ -6,7 +6,6 @@ title = "Die Aetheriumschmiede"
 [card]
 element = "neutral"
 font = "standard"
-# type = 1
 
 [image]
 source = "AetherSchmiede.png"
