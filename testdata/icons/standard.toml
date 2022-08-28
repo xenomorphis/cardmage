@@ -1,6 +1,9 @@
 title = "Standard-Icons"
 
 [icons]
+attack = "attack.png"
+defense = "defense.png"
 fire = "element_fire.png"
 gold = "gold.png"
+hp = "health.png"
 shadow = "element_shadow.png"
