@@ -1,14 +1,14 @@
 title = "Standard-Fontset"
 
 [config]
-font = "Sansation.ttf"
+font_normal = "Sansation.ttf"
 font_bold = "SansationB.ttf"
 font_italic = "SansationI.ttf"
 font_light = "SansationL.ttf"
 
 [default]
 color = "black"
-fontsize = 14
+fontsize = 24
 fontstyle = "normal"
 textalign = "left"
 
@@ -31,5 +31,8 @@ text_decoration = "underline"
 [tags.prefix]
 fontstyle = "bold"
 
-[title]
+[tags.title]
 color = "white"
+fontsize = 36
+fontstyle = "bold"
+outline = {color = "black", width = 1}
