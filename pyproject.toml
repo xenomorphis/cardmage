@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cardmage"
+version = "0.0.1"
+description = "FOSS build tool for playing cards"
+authors = [
+    {name = "Marco R. Wachter", email = "wachter.ma@web.de"}
+]
+readme = "Readme.rst"
+requires-python = ">=3.8"
+keywords = ["build", "tool", "image", "playing", "card", "cli"]
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Artistic Software",
+    "Topic :: Games/Entertainment",
+    "Topic :: Multimedia :: Graphics",
+]
+dependencies = [
+    "toml",
+    "wand",
+]
+dynamic = ["version"]
+
+[project.scripts]
+cardmage = "cardmage:cl_main"
+
+[tool.setuptools_scm]
