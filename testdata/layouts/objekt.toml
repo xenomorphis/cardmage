@@ -6,7 +6,7 @@ title = "Objekt-Layout"
 [config]
 image_zone = [0, 0]
 image_credits_zone = []
-title_zone = [60, 50]
+title_zone = [60, 89]
 title_zone_dimensions = [560, 40]
 
 [features]

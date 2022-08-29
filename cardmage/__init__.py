@@ -83,11 +83,38 @@ def cl_main() -> None:
                 draw.composite(operator='atop', left=layout['config']['image_zone'][0],
                                top=layout['config']['image_zone'][1], width=hero.width, height=hero.height, image=hero)
                 draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
+
+                # 4. Use wand to place text onto card (save intermediate files in _build)
+                if 'fontstyle' in font['tags']['title']:
+                    draw.font = base_dir + settings['paths']['fonts'] + font['config']['font_' + font['tags']['title']['fontstyle']]
+                else:
+                    draw.font = base_dir + settings['paths']['fonts'] + font['config']['font_normal']
+
+                if 'fontsize' in font['tags']['title']:
+                    draw.font_size = font['tags']['title']['fontsize']
+                else:
+                    draw.font_size = font['default']['fontsize']
+
+                if 'color' in font['tags']['title']:
+                    draw.fill_color = Color(font['tags']['title']['color'])
+                else:
+                    draw.fill_color = Color(font['default']['color'])
+
+                if 'textalign' in font['tags']['title']:
+                    draw.text_alignment = font['tags']['title']['textalign']
+                else:
+                    draw.text_alignment = font['default']['textalign']
+
+                if 'outline' in font['tags']['title']:
+                    draw.stroke_color = Color(font['tags']['title']['outline']['color'])
+                    draw.stroke_width = font['tags']['title']['outline']['width']
+
+                draw.text(layout['config']['title_zone'][0], layout['config']['title_zone'][1], blueprint['title'])
+
                 draw(current)
                 uts = str(int(time.time()))
                 current.save(filename=buildpath + uts + "-template.png")
 
-            # 4. Use wand to place text onto card (save intermediate files in _build)
             # 5. Save image in dist
             current.save(filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png"))
             print("- Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' completed.")
