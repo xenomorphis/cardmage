@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
 import os
 import re
 import shutil
@@ -42,7 +41,6 @@ def cl_main() -> None:
 
     if not os.path.exists(distpath):
         os.mkdir(distpath)
-    # working_dir = os.getcwd()
 
     for card in args.path:
         try:
@@ -135,7 +133,7 @@ def cl_main() -> None:
                             offset = [0, 0]
 
                         with Drawing() as render:
-                            priorities = ['prefix', 'condition', 'paragraph', 'list', 'array']
+                            priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'array']
 
                             for ctype in priorities:
                                 # load default font settings
@@ -245,6 +243,8 @@ def cl_main() -> None:
 
                                     elif ctype == 'list':
                                         pass
+                                    elif ctype == 'image':
+                                        pass
                                     else:
                                         # resolve and replace meta_tags
                                         content = blueprint['modules'][module][ctype]
@@ -281,8 +281,6 @@ def cl_main() -> None:
                         continue
 
                 draw(current)
-                uts = str(int(time.time()))
-                current.save(filename=buildpath + uts + "-template.png")
 
             # 5. Save image in dist
             current.save(filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png"))
@@ -297,13 +295,6 @@ def dir_path(string):
         return string
     else:
         raise FileNotFoundError(string)
-
-
-def vartest(content, filename) -> None:
-    filename_raw = filename.partition('.toml')
-
-    with open(filename_raw[0] + ".output.json", "w") as outfile:
-        json.dump(content, outfile, indent=4)
 
 
 if __name__ == "__main__":
