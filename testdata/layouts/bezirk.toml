@@ -27,23 +27,23 @@ use_vertical = true
 
 [modules]
 attributes_zone = [
-    [656, 125],
-    [656, 185]
+    [670, 122],
+    [670, 182]
 ]
-attributes_zone_dimensions = [30, 30]
+attributes_zone_dimensions = [34, 34]
 attributes_zone_icon_offset = [-42, -5]
 edition_icon_zone = [627, 576]
 edition_icon_zone_dimensions = [90, 100]
 legendary_zone = [52, 260]
 legendary_zone_dimensions = [25, 316]
-meta_id_zone = [319, 990]
-meta_id_zone_dimensions = [100, 16]
-resources_zone = [60, 933]
-resources_zone_dimensions = [620, 30]
-text_zone = [60, 663]
-text_zone_dimensions = [620, 270]
-type_zone = [60, 613]
-type_zone_dimensions = [340, 32]
+meta_id_zone = [309, 984]
+meta_id_zone_dimensions = [120, 36]
+resources_zone = [60, 927]
+resources_zone_dimensions = [620, 48]
+text_zone = [60, 656]
+text_zone_dimensions = [620, 264]
+type_zone = [60, 607]
+type_zone_dimensions = [340, 56]
 
 [template]
 background = "black"
