@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 import shutil
 import time
 import toml
@@ -33,6 +34,8 @@ def cl_main() -> None:
     base_dir = settings['paths']['base']
     buildpath = os.path.join(base_dir, '_build/')
     distpath = os.path.join(base_dir, 'dist/')
+
+    meta_tags = ['{', '}']
 
     if not os.path.exists(buildpath):
         os.mkdir(buildpath)
@@ -110,6 +113,172 @@ def cl_main() -> None:
                     draw.stroke_width = font['tags']['title']['outline']['width']
 
                 draw.text(layout['config']['title_zone'][0], layout['config']['title_zone'][1], blueprint['title'])
+                draw(current)
+                uts = str(int(time.time()))
+                current.save(filename=buildpath + uts + "-template.png")
+
+                for module in blueprint['modules']:
+                    if module + '_zone' in layout['modules']:
+                        target_coordinates = layout['modules'][module + '_zone']
+
+                        if isinstance(target_coordinates[0], int):
+                            targets = 1
+                        else:
+                            targets = len(target_coordinates)
+
+                        # print(module)
+                        # print(targets)
+
+                        with Color('transparent') as bg:
+                            textlayer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
+                                              height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
+                            offset = [0, 0]
+
+                        with Drawing() as render:
+                            priorities = ['prefix', 'condition', 'paragraph', 'list', 'array']
+
+                            for ctype in priorities:
+                                # load default font settings
+                                render.font = base_dir + settings['paths']['fonts'] + font['config']['font_normal']
+                                render.font_size = font['default']['fontsize']
+                                render.fill_color = Color(font['default']['color'])
+                                render.text_alignment = font['default']['textalign']
+
+                                # load module-specific font settings over defaults
+                                if module in font['modules']:
+                                    if 'fontstyle' in font['modules'][module]:
+                                        render.font = base_dir + settings['paths']['fonts'] + font['config'][
+                                            'font_' + font['modules'][module]['fontstyle']]
+
+                                    if 'fontsize' in font['modules'][module]:
+                                        render.font_size = font['modules'][module]['fontsize']
+
+                                    if 'color' in font['modules'][module]:
+                                        render.fill_color = Color(font['modules'][module]['color'])
+
+                                    if 'textalign' in font['modules'][module]:
+                                        render.text_alignment = font['modules'][module]['textalign']
+
+                                    if 'textdecoration' in font['modules'][module]:
+                                        render.text_decoration = font['modules'][module]['textdecoration']
+
+                                # load tag-specific font settings over card-specific font settings over
+                                # module-specific font settings
+                                if ctype in blueprint['modules'][module]:
+                                    if ctype in font['tags']:
+                                        tag_override = True
+                                    else:
+                                        tag_override = False
+
+                                    if tag_override and 'fontstyle' in font['tags'][ctype]:
+                                        render.font = base_dir + settings['paths']['fonts'] + font['config'][
+                                            'font_' + font['tags'][ctype]['fontstyle']]
+                                    elif 'fontstyle' in blueprint['modules'][module]:
+                                        render.font = base_dir + settings['paths']['fonts'] + font['config'][
+                                            'font_' + blueprint['modules'][module]['fontstyle']]
+
+                                    if tag_override and 'fontsize' in font['tags'][ctype]:
+                                        render.font_size = font['tags'][ctype]['fontsize']
+                                    elif 'fontsize' in blueprint['modules'][module]:
+                                        render.font_size = blueprint['modules'][module]['fontsize']
+
+                                    if tag_override and 'color' in font['tags'][ctype]:
+                                        render.fill_color = font['tags'][ctype]['color']
+                                    elif 'color' in blueprint['modules'][module]:
+                                        render.fill_color = Color(blueprint['modules'][module]['color'])
+
+                                    if tag_override and 'textalign' in font['tags'][ctype]:
+                                        render.text_alignment = font['tags'][ctype]['textalign']
+                                    elif 'textalign' in blueprint['modules'][module]:
+                                        render.text_alignment = blueprint['modules'][module]['textalign']
+
+                                    if tag_override and 'textdecoration' in font['tags'][ctype]:
+                                        render.text_decoration = font['tags'][ctype]['textdecoration']
+                                    elif 'textdecoration' in blueprint['modules'][module]:
+                                        render.text_decoration = blueprint['modules'][module]['textdecoration']
+
+                                    if 'outline' in blueprint['modules'][module]:
+                                        render.stroke_color = Color(blueprint['modules'][module]['outline']['color'])
+                                        render.stroke_width = blueprint['modules'][module]['outline']['width']
+
+                                    if ctype == 'array':
+                                        iteration = 0
+
+                                        for number in blueprint['modules'][module][ctype]:
+                                            if targets > 1:
+                                                if number > 0:
+                                                    with Color('transparent') as bg:
+                                                        textlayer = Image(
+                                                            width=layout['modules'][module + '_zone_dimensions'][0],
+                                                            height=layout['modules'][module + '_zone_dimensions'][1],
+                                                            background=bg)
+
+                                                    with Drawing() as gfx:
+                                                        gfx.font = render.font
+                                                        gfx.font_size = render.font_size
+                                                        gfx.fill_color = render.fill_color
+                                                        gfx.text_alignment = render.text_alignment
+
+                                                        if render.stroke_color:
+                                                            gfx.stroke_color = render.stroke_color
+
+                                                        if render.stroke_width:
+                                                            gfx.stroke_width = render.stroke_width
+
+                                                        if render.text_alignment == 'center':
+                                                            offset[0] = int(
+                                                                layout['modules'][module + '_zone_dimensions'][0] / 2)
+
+                                                        gfx.text(int(0 + offset[0]), int(render.font_size + offset[1]),
+                                                                 str(number))
+                                                        gfx.draw(textlayer)
+                                                        uts = str(int(time.time()))
+                                                        fname = buildpath + uts + "-" + module + str(iteration) + ".png"
+                                                        textlayer.save(filename=fname)
+
+                                                    draw.composite(operator='atop', left=target_coordinates[iteration][0],
+                                                                   top=target_coordinates[iteration][1],
+                                                                   width=textlayer.width, height=textlayer.height,
+                                                                   image=textlayer)
+
+                                                    iteration += 1
+
+                                    elif ctype == 'list':
+                                        pass
+                                    else:
+                                        # resolve and replace meta_tags
+                                        content = blueprint['modules'][module][ctype]
+                                        has_meta_tags = all([char in content for char in meta_tags])
+
+                                        if has_meta_tags:
+                                            content_parts = re.findall(r'\{.*?\}', content)
+
+                                            for tag in content_parts:
+                                                meta_key = tag.replace('{', '').replace('}', '')
+
+                                                if meta_key in blueprint['meta']:
+                                                    content = content.replace(tag, blueprint['meta'][meta_key])
+                                                elif meta_key == 'title':
+                                                    content = content.replace(tag, blueprint['title'])
+
+                                        if render.text_alignment == 'center':
+                                            offset[0] += int(layout['modules'][module + '_zone_dimensions'][0] / 2)
+
+                                        render.text(int(0 + offset[0]), int(render.font_size + offset[1]), content)
+                                        # print(render.get_font_metrics(textlayer, blueprint['modules'][module][ctype], True))
+
+                                        render.draw(textlayer)
+                                        uts = str(int(time.time()))
+                                        fname = buildpath + uts + "-" + module + ".png"
+                                        textlayer.save(filename=fname)
+                                        draw.composite(operator='atop', left=target_coordinates[0],
+                                                       top=target_coordinates[1],
+                                                       width=textlayer.width, height=textlayer.height, image=textlayer)
+                                else:
+                                    continue
+
+                    else:
+                        continue
 
                 draw(current)
                 uts = str(int(time.time()))
