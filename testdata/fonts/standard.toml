@@ -1,10 +1,10 @@
 title = "Standard-Fontset"
 
 [config]
-font_normal = "Sansation.ttf"
-font_bold = "SansationB.ttf"
-font_italic = "SansationI.ttf"
-font_light = "SansationL.ttf"
+font_normal = "Sansation/Sansation.ttf"
+font_bold = "Sansation/SansationB.ttf"
+font_italic = "Sansation/SansationI.ttf"
+font_light = "Sansation/SansationL.ttf"
 
 [default]
 color = "black"
@@ -14,7 +14,7 @@ textalign = "left"
 
 [modules.attributes]
 color = "white"
-fontsize = 32
+fontsize = 34
 fontstyle = "bold"
 textalign = "center"
 outline = {color = "black", width = 1}
