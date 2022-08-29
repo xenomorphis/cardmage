@@ -13,20 +13,26 @@ fontstyle = "normal"
 textalign = "left"
 
 [modules.attributes]
+color = "white"
+fontsize = 32
+fontstyle = "bold"
 textalign = "center"
+outline = {color = "black", width = 1}
 
 [modules.costs]
 textalign = "center"
 
 [modules.meta_id]
-fontsize = 11
+color = "white"
+fontsize = 20
 textalign = "center"
 
 [modules.type]
+fontsize = 30
 fontstyle = "bold"
 
 [tags.condition]
-text_decoration = "underline"
+textdecoration = "underline"
 
 [tags.prefix]
 fontstyle = "bold"
