@@ -4,7 +4,7 @@ import argparse
 import os
 import re
 import shutil
-import textwrap
+from textwrap import wrap
 import time
 import toml
 from wand.color import Color
@@ -97,10 +97,10 @@ def cl_main() -> None:
                 else:
                     draw.font_size = font['default']['fontsize']
 
-                if 'color' in font['tags']['title']:
-                    draw.fill_color = Color(font['tags']['title']['color'])
+                if 'fontcolor' in font['tags']['title']:
+                    draw.fill_color = Color(font['tags']['title']['fontcolor'])
                 else:
-                    draw.fill_color = Color(font['default']['color'])
+                    draw.fill_color = Color(font['default']['fontcolor'])
 
                 if 'textalign' in font['tags']['title']:
                     draw.text_alignment = font['tags']['title']['textalign']
@@ -118,6 +118,7 @@ def cl_main() -> None:
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
+                        element = 0
                         target_coordinates = layout['modules'][module + '_zone']
 
                         if isinstance(target_coordinates[0], int):
@@ -129,7 +130,7 @@ def cl_main() -> None:
                         # print(targets)
 
                         with Color('transparent') as bg:
-                            textlayer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
+                            content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
                                               height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
                             offset = [0, 0]
 
@@ -140,8 +141,13 @@ def cl_main() -> None:
                                 # load default font settings
                                 render.font = base_dir + settings['paths']['fonts'] + font['config']['font_normal']
                                 render.font_size = font['default']['fontsize']
-                                render.fill_color = Color(font['default']['color'])
+                                render.fill_color = Color(font['default']['fontcolor'])
                                 render.text_alignment = font['default']['textalign']
+
+                                if 'textdecoration' in font['default']:
+                                    render.text_decoration = font['default']['textdecoration']
+                                else:
+                                    render.text_decoration = 'no'
 
                                 # load module-specific font settings over defaults
                                 if module in font['modules']:
@@ -152,8 +158,12 @@ def cl_main() -> None:
                                     if 'fontsize' in font['modules'][module]:
                                         render.font_size = font['modules'][module]['fontsize']
 
-                                    if 'color' in font['modules'][module]:
-                                        render.fill_color = Color(font['modules'][module]['color'])
+                                    if 'fontcolor' in font['modules'][module]:
+                                        render.fill_color = Color(font['modules'][module]['fontcolor'])
+
+                                    if 'outline' in font['modules'][module]:
+                                        render.stroke_color = Color(font['modules'][module]['outline']['color'])
+                                        render.stroke_width = font['modules'][module]['outline']['width']
 
                                     if 'textalign' in font['modules'][module]:
                                         render.text_alignment = font['modules'][module]['textalign']
@@ -182,9 +192,9 @@ def cl_main() -> None:
                                         render.font_size = blueprint['modules'][module]['fontsize']
 
                                     if tag_override and 'color' in font['tags'][ctype]:
-                                        render.fill_color = font['tags'][ctype]['color']
-                                    elif 'color' in blueprint['modules'][module]:
-                                        render.fill_color = Color(blueprint['modules'][module]['color'])
+                                        render.fill_color = font['tags'][ctype]['fontcolor']
+                                    elif 'fontcolor' in blueprint['modules'][module]:
+                                        render.fill_color = Color(blueprint['modules'][module]['fontcolor'])
 
                                     if tag_override and 'textalign' in font['tags'][ctype]:
                                         render.text_alignment = font['tags'][ctype]['textalign']
@@ -207,7 +217,7 @@ def cl_main() -> None:
                                             if targets > 1:
                                                 if number > 0:
                                                     with Color('transparent') as bg:
-                                                        textlayer = Image(
+                                                        content_layer = Image(
                                                             width=layout['modules'][module + '_zone_dimensions'][0],
                                                             height=layout['modules'][module + '_zone_dimensions'][1],
                                                             background=bg)
@@ -230,22 +240,27 @@ def cl_main() -> None:
 
                                                         gfx.text(int(0 + offset[0]), int(render.font_size + offset[1]),
                                                                  str(number))
-                                                        gfx.draw(textlayer)
+                                                        gfx.draw(content_layer)
                                                         uts = str(int(time.time()))
                                                         fname = buildpath + uts + "-" + module + str(iteration) + ".png"
-                                                        textlayer.save(filename=fname)
+                                                        content_layer.save(filename=fname)
 
                                                     draw.composite(operator='atop', left=target_coordinates[iteration][0],
                                                                    top=target_coordinates[iteration][1],
-                                                                   width=textlayer.width, height=textlayer.height,
-                                                                   image=textlayer)
+                                                                   width=content_layer.width, height=content_layer.height,
+                                                                   image=content_layer)
 
                                                     iteration += 1
 
                                     elif ctype == 'list':
                                         pass
                                     elif ctype == 'image':
-                                        pass
+                                        image = Image(filename=dir_path(base_dir + settings['paths']['images'] +
+                                                                        blueprint['modules'][module][ctype]))
+                                        render.composite(operator='atop', left=0, top=0, width=image.width,
+                                                         height=image.height, image=image)
+                                        render.draw(content_layer)
+                                        content_layer.save(filename=get_temp_name(buildpath, module))
                                     else:
                                         # resolve and replace meta_tags
                                         content = blueprint['modules'][module][ctype]
@@ -265,16 +280,22 @@ def cl_main() -> None:
                                         if render.text_alignment == 'center':
                                             offset[0] += int(layout['modules'][module + '_zone_dimensions'][0] / 2)
 
-                                        render.text(int(0 + offset[0]), int(render.font_size + offset[1]), content)
-                                        # print(render.get_font_metrics(textlayer, blueprint['modules'][module][ctype], True))
+                                        content = word_wrap(content_layer, render, content, content_layer.width,
+                                                            content_layer.height - offset[1])
 
-                                        render.draw(textlayer)
-                                        uts = str(int(time.time()))
-                                        fname = buildpath + uts + "-" + module + ".png"
-                                        textlayer.save(filename=fname)
+                                        render.text(int(0 + offset[0]), int(render.font_size + offset[1]), content)
+                                        metrics = render.get_font_metrics(content_layer, content, True)
+                                        offset[1] += metrics.text_height + 4
+
+                                        render.draw(content_layer)
+                                        content_layer.save(filename=get_temp_name(buildpath, module))
+
+                                    if ctype != 'array':
                                         draw.composite(operator='atop', left=target_coordinates[0],
-                                                       top=target_coordinates[1],
-                                                       width=textlayer.width, height=textlayer.height, image=textlayer)
+                                                       top=target_coordinates[1], width=content_layer.width,
+                                                       height=content_layer.height, image=content_layer)
+
+                                    element += 1
                                 else:
                                     continue
 
@@ -296,6 +317,48 @@ def dir_path(string):
         return string
     else:
         raise FileNotFoundError(string)
+
+
+def get_temp_name(path, module) -> str:
+    uts = str(int(time.time()))
+    fname = path + uts + "-" + module + ".png"
+
+    return fname
+
+
+def word_wrap(image, ctx, text, roi_width, roi_height):
+    """Break long text to multiple lines, and reduce point size
+    until all text fits within a bounding box."""
+    mutable_message = text
+    iteration_attempts = 30
+
+    def eval_metrics(txt):
+        """Calculates width/height of text."""
+        metrics = ctx.get_font_metrics(image, txt, True)
+        return (metrics.text_width, metrics.text_height)
+
+    while ctx.font_size > 0 and iteration_attempts:
+        iteration_attempts -= 1
+        width, height = eval_metrics(mutable_message)
+        if height > roi_height:
+            ctx.font_size -= 0.5  # Reduce pointsize
+            mutable_message = text  # Restore original text
+        elif width > roi_width:
+            columns = len(mutable_message)
+            while columns > 0:
+                columns -= 1
+                mutable_message = '\n'.join(wrap(mutable_message, columns))
+                wrapped_width, _ = eval_metrics(mutable_message)
+                if wrapped_width <= roi_width:
+                    break
+            if columns < 1:
+                ctx.font_size -= 0.5  # Reduce pointsize
+                mutable_message = text  # Restore original text
+        else:
+            break
+    if iteration_attempts < 1:
+        raise RuntimeError("Unable to calculate word_wrap for " + text)
+    return mutable_message
 
 
 if __name__ == "__main__":
