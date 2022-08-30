@@ -18,7 +18,8 @@ def cl_main() -> None:
     """
 
     arg_parser = argparse.ArgumentParser(description='Cardmage open-source card builder')
-    arg_parser.add_argument("path", nargs="+", help="Path to the card's root TOML file")
+    arg_parser.add_argument("path", nargs="*", help="Path to one or more card's root TOML file. Leave empty to build all "
+                                                    "root files found in the card directory")
     arg_parser.add_argument("-p", "--print", help="Render card in print quality", default=False, action="store_true")
     arg_parser.add_argument("-t", "--test", help="Use test settings", default=False, action="store_true")
 
@@ -42,6 +43,9 @@ def cl_main() -> None:
 
     if not os.path.exists(distpath):
         os.mkdir(distpath)
+
+    if len(args.path) == 0:
+        args.path = os.listdir(base_dir + settings['paths']['cards'])
 
     for card in args.path:
         try:
@@ -72,6 +76,10 @@ def cl_main() -> None:
         except FileNotFoundError as error:
             print(error)
             print("- Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' failed.")
+            continue
+
+        except toml.TomlDecodeError:
+            print(card + ": Wrong file format...")
             continue
 
         else:
