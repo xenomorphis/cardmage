@@ -134,7 +134,10 @@ def cl_main() -> None:
                             offset = [0, 0]
 
                         with Drawing() as render:
-                            priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'array']
+                            if 'content' in blueprint['modules'][module]:
+                                priorities = blueprint['modules'][module]['content']
+                            else:
+                                priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'array']
 
                             for ctype in priorities:
                                 # load default font settings
