@@ -14,13 +14,17 @@ textalign = "left"
 
 [modules.attributes]
 fontcolor = "white"
-fontsize = 34
+fontsize = 35
 fontstyle = "bold"
 textalign = "center"
-outline = {color = "black", width = 1}
+outline = {color = "black", width = 1.5}
 
 [modules.costs]
+fontcolor = "white"
+fontsize = 35
+fontstyle = "bold"
 textalign = "center"
+outline = {color = "black", width = 1.5}
 
 [modules.meta_id]
 fontcolor = "white"
