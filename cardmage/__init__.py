@@ -213,43 +213,52 @@ def cl_main() -> None:
                                         iteration = 0
 
                                         for number in blueprint['modules'][module][ctype]:
-                                            if targets > 1:
-                                                if number > 0:
-                                                    with Color('transparent') as bg:
-                                                        content_layer = Image(
-                                                            width=layout['modules'][module + '_zone_dimensions'][0],
-                                                            height=layout['modules'][module + '_zone_dimensions'][1],
-                                                            background=bg)
+                                            if number > 0:
+                                                with Color('transparent') as bg:
+                                                    content_layer = Image(
+                                                        width=layout['modules'][module + '_zone_dimensions'][0],
+                                                        height=layout['modules'][module + '_zone_dimensions'][1],
+                                                        background=bg)
 
-                                                    with Drawing() as gfx:
-                                                        gfx.font = render.font
-                                                        gfx.font_size = render.font_size
-                                                        gfx.fill_color = render.fill_color
-                                                        gfx.text_alignment = render.text_alignment
+                                                with Drawing() as gfx:
+                                                    gfx.font = render.font
+                                                    gfx.font_size = render.font_size
+                                                    gfx.fill_color = render.fill_color
+                                                    gfx.text_alignment = render.text_alignment
 
-                                                        if render.stroke_color:
-                                                            gfx.stroke_color = render.stroke_color
+                                                    if render.stroke_color:
+                                                        gfx.stroke_color = render.stroke_color
 
-                                                        if render.stroke_width:
-                                                            gfx.stroke_width = render.stroke_width
+                                                    if render.stroke_width:
+                                                        gfx.stroke_width = render.stroke_width
 
-                                                        if render.text_alignment == 'center':
-                                                            offset[0] = int(
-                                                                layout['modules'][module + '_zone_dimensions'][0] / 2)
+                                                    if render.text_alignment == 'center':
+                                                        offset[0] = int(
+                                                            layout['modules'][module + '_zone_dimensions'][0] / 2)
 
-                                                        gfx.text(int(0 + offset[0]), int(render.font_size + offset[1]),
-                                                                 str(number))
-                                                        gfx.draw(content_layer)
-                                                        uts = str(int(time.time()))
-                                                        fname = buildpath + uts + "-" + module + str(iteration) + ".png"
-                                                        content_layer.save(filename=fname)
+                                                    gfx.text(int(0 + offset[0]), int(render.font_size + offset[1]),
+                                                             str(number))
+                                                    gfx.draw(content_layer)
+                                                    content_layer.save(filename=get_temp_name(
+                                                        buildpath, module + str(iteration)))
 
-                                                    draw.composite(operator='atop', left=target_coordinates[iteration][0],
-                                                                   top=target_coordinates[iteration][1],
-                                                                   width=content_layer.width, height=content_layer.height,
-                                                                   image=content_layer)
+                                                    if isinstance(target_coordinates[0], int):
+                                                        draw.composite(operator='atop',
+                                                                       left=target_coordinates[0],
+                                                                       top=target_coordinates[1],
+                                                                       width=content_layer.width,
+                                                                       height=content_layer.height,
+                                                                       image=content_layer)
+                                                    else:
+                                                        draw.composite(operator='atop',
+                                                                       left=target_coordinates[iteration][0],
+                                                                       top=target_coordinates[iteration][1],
+                                                                       width=content_layer.width,
+                                                                       height=content_layer.height,
+                                                                       image=content_layer)
 
-                                                    iteration += 1
+                                                        if iteration < targets - 1:
+                                                            iteration += 1
 
                                     elif ctype == 'list':
                                         pass
@@ -284,7 +293,11 @@ def cl_main() -> None:
 
                                         render.text(int(0 + offset[0]), int(render.font_size + offset[1]), content)
                                         metrics = render.get_font_metrics(content_layer, content, True)
-                                        offset[1] += metrics.text_height + int(render.font_size * 0.25)
+
+                                        if ctype == 'prefix':
+                                            offset[0] += metrics.text_width + int(render.font_size * 0.25)
+                                        else:
+                                            offset[1] += metrics.text_height + int(render.font_size * 0.25)
 
                                         render.draw(content_layer)
                                         content_layer.save(filename=get_temp_name(buildpath, module))
