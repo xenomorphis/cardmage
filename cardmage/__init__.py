@@ -324,7 +324,8 @@ def cl_main() -> None:
     shutil.rmtree(buildpath)
 
 
-def dir_path(string):
+def dir_path(string: str):
+    """Checks file paths for existence before using them."""
     if os.path.exists(string):
         return string
     else:
@@ -332,6 +333,7 @@ def dir_path(string):
 
 
 def get_alignment_offset(align: str, layout: dict, module: str) -> int:
+    """Checks current text alignment and returns the corresponding x-axis offset"""
     if align == 'center':
         if module == 'title':
             return int(layout['config']['title_zone_dimensions'][0] / 2)
@@ -346,20 +348,21 @@ def get_alignment_offset(align: str, layout: dict, module: str) -> int:
         return 0
 
 
-def get_temp_name(path, module) -> str:
+def get_temp_name(path: str, module: str) -> str:
+    """Creates and returns a unique file name for saving intermediate build artifacts"""
     uts = str(int(time.time()))
     fname = path + uts + '-' + module + '.png'
 
     return fname
 
 
-def word_wrap(image, ctx, text, roi_width, roi_height):
+def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height: int):
     """Break long text to multiple lines, and reduce point size
     until all text fits within a bounding box."""
     mutable_message = text
     iteration_attempts = 30
 
-    def eval_metrics(txt):
+    def eval_metrics(txt: str):
         """Calculates width/height of text."""
         metrics = ctx.get_font_metrics(image, txt, True)
         return (metrics.text_width, metrics.text_height)
@@ -368,7 +371,7 @@ def word_wrap(image, ctx, text, roi_width, roi_height):
         iteration_attempts -= 1
         width, height = eval_metrics(mutable_message)
         if height > roi_height:
-            ctx.font_size -= 0.5  # Reduce pointsize
+            ctx.font_size -= 0.5  # Reduce font size
             mutable_message = text  # Restore original text
         elif width > roi_width:
             columns = len(mutable_message)
@@ -379,7 +382,7 @@ def word_wrap(image, ctx, text, roi_width, roi_height):
                 if wrapped_width <= roi_width:
                     break
             if columns < 1:
-                ctx.font_size -= 0.5  # Reduce pointsize
+                ctx.font_size -= 0.5  # Reduce font size
                 mutable_message = text  # Restore original text
         else:
             break
