@@ -7,13 +7,13 @@ font_italic = "Sansation/SansationI.ttf"
 font_light = "Sansation/SansationL.ttf"
 
 [default]
-color = "black"
+fontcolor = "black"
 fontsize = 24
 fontstyle = "normal"
 textalign = "left"
 
 [modules.attributes]
-color = "white"
+fontcolor = "white"
 fontsize = 34
 fontstyle = "bold"
 textalign = "center"
@@ -23,8 +23,9 @@ outline = {color = "black", width = 1}
 textalign = "center"
 
 [modules.meta_id]
-color = "white"
+fontcolor = "white"
 fontsize = 20
+fontstyle = "bold"
 textalign = "center"
 
 [modules.type]
@@ -38,7 +39,7 @@ textdecoration = "underline"
 fontstyle = "bold"
 
 [tags.title]
-color = "white"
+fontcolor = "white"
 fontsize = 36
 fontstyle = "bold"
 outline = {color = "black", width = 1}

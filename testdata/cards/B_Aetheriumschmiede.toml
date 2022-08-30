@@ -28,7 +28,6 @@ keys_as = "icons"
 
 [modules.meta_id]
 paragraph = "{edition}-{id}"
-color = "white"
 
 [modules.resources]
 array = [0, 1, 0, 0, 0, 0, 0]
