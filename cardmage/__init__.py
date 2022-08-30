@@ -284,7 +284,7 @@ def cl_main() -> None:
 
                                         render.text(int(0 + offset[0]), int(render.font_size + offset[1]), content)
                                         metrics = render.get_font_metrics(content_layer, content, True)
-                                        offset[1] += metrics.text_height + 4
+                                        offset[1] += metrics.text_height + int(render.font_size * 0.25)
 
                                         render.draw(content_layer)
                                         content_layer.save(filename=get_temp_name(buildpath, module))
