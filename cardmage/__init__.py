@@ -289,6 +289,8 @@ def cl_main() -> None:
 
                                         if render.text_alignment == 'center':
                                             offset[0] += int(layout['modules'][module + '_zone_dimensions'][0] / 2)
+                                        elif render.text_alignment == 'right':
+                                            offset[0] += int(layout['modules'][module + '_zone_dimensions'][0])
 
                                         content = word_wrap(content_layer, render, content, content_layer.width,
                                                             content_layer.height - offset[1])
