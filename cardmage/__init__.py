@@ -111,7 +111,8 @@ def cl_main() -> None:
                     draw.stroke_color = Color(font['tags']['title']['outline']['color'])
                     draw.stroke_width = font['tags']['title']['outline']['width']
 
-                draw.text(layout['config']['title_zone'][0], layout['config']['title_zone'][1], blueprint['title'])
+                offset_x = get_alignment_offset(draw.text_alignment, layout, 'title')
+                draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
                 draw(current)
                 current.save(filename=get_temp_name(buildpath, 'template'))
 
@@ -129,7 +130,7 @@ def cl_main() -> None:
 
                         with Color('transparent') as bg:
                             content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
-                                              height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
+                                                  height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
                             offset = [0, 0]
 
                         with Drawing() as render:
@@ -287,11 +288,7 @@ def cl_main() -> None:
                                                 elif meta_key == 'title':
                                                     content = content.replace(tag, blueprint['title'])
 
-                                        if render.text_alignment == 'center':
-                                            offset[0] += int(layout['modules'][module + '_zone_dimensions'][0] / 2)
-                                        elif render.text_alignment == 'right':
-                                            offset[0] += int(layout['modules'][module + '_zone_dimensions'][0])
-
+                                        offset[0] += get_alignment_offset(render.text_alignment, layout, module)
                                         content = word_wrap(content_layer, render, content, content_layer.width,
                                                             content_layer.height - offset[1])
 
@@ -334,9 +331,24 @@ def dir_path(string):
         raise FileNotFoundError(string)
 
 
+def get_alignment_offset(align: str, layout: dict, module: str) -> int:
+    if align == 'center':
+        if module == 'title':
+            return int(layout['config']['title_zone_dimensions'][0] / 2)
+        else:
+            return int(layout['modules'][module + '_zone_dimensions'][0] / 2)
+    elif align == 'right':
+        if module == 'title':
+            return int(layout['config']['title_zone_dimensions'][0])
+        else:
+            return int(layout['modules'][module + '_zone_dimensions'][0])
+    else:
+        return 0
+
+
 def get_temp_name(path, module) -> str:
     uts = str(int(time.time()))
-    fname = path + uts + "-" + module + ".png"
+    fname = path + uts + '-' + module + '.png'
 
     return fname
 
