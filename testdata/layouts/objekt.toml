@@ -24,9 +24,9 @@ use_vertical = true
 
 [modules]
 costs_zone = [
-    [52, 120]
+    [45, 119]
 ]
-costs_zone_dimensions = [35, 35]
+costs_zone_dimensions = [35, 38]
 costs_zone_icon_offset = [30, -5]
 edition_icon_zone = [627, 576]
 edition_icon_zone_dimensions = [90, 100]

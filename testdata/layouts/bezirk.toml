@@ -27,10 +27,10 @@ use_vertical = true
 
 [modules]
 attributes_zone = [
-    [672, 120],
-    [672, 180]
+    [672, 119],
+    [672, 179]
 ]
-attributes_zone_dimensions = [35, 35]
+attributes_zone_dimensions = [35, 38]
 attributes_zone_icon_offset = [-42, -5]
 edition_icon_zone = [627, 576]
 edition_icon_zone_dimensions = [90, 100]
