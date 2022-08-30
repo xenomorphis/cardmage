@@ -113,8 +113,7 @@ def cl_main() -> None:
 
                 draw.text(layout['config']['title_zone'][0], layout['config']['title_zone'][1], blueprint['title'])
                 draw(current)
-                uts = str(int(time.time()))
-                current.save(filename=buildpath + uts + "-template.png")
+                current.save(filename=get_temp_name(buildpath, 'template'))
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
