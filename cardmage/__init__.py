@@ -118,7 +118,6 @@ def cl_main() -> None:
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
-                        element = 0
                         target_coordinates = layout['modules'][module + '_zone']
 
                         if isinstance(target_coordinates[0], int):
@@ -295,7 +294,6 @@ def cl_main() -> None:
                                                        top=target_coordinates[1], width=content_layer.width,
                                                        height=content_layer.height, image=content_layer)
 
-                                    element += 1
                                 else:
                                     continue
 
