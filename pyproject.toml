@@ -4,7 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cardmage"
-version = "0.0.1"
 description = "FOSS build tool for playing cards"
 authors = [
     {name = "Marco R. Wachter", email = "wachter.ma@web.de"}
