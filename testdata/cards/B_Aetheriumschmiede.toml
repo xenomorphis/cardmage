@@ -38,8 +38,8 @@ prefix = "Ressourcen: "
 [modules.text]
 condition = "Solange auf dem Feld:"
 list = [
-    "Der Spieler kann Dwemer-Kreaturen in die Schlacht rufen",
-    "Rekrutierungskosten von Dwemer-Kreaturen sind um 1 Gold reduziert"
+    "Der Spieler kann Dwemer-Kreaturen in die Schlacht rufen.",
+    "Rekrutierungskosten von Dwemer-Kreaturen sind um 1 Gold reduziert."
 ]
 
 [modules.type]

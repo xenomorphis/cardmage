@@ -268,7 +268,19 @@ def cl_main() -> None:
                                                             iteration += 1
 
                                     elif ctype == 'list':
-                                        pass
+                                        for element in blueprint['modules'][module][ctype]:
+                                            content = resolve_meta_tags(element, blueprint)
+                                            content = word_wrap(content_layer, render, content,
+                                                                content_layer.width - int(1 * render.font_size),
+                                                                content_layer.height - offset[1])
+                                            metrics = render.get_font_metrics(content_layer, content, True)
+                                            render.text(int(0 + offset[0]), int(render.font_size + offset[1]), '-')
+                                            render.text(int(1 * render.font_size + offset[0]),
+                                                        int(render.font_size + offset[1]), content)
+                                            offset[1] += metrics.text_height + int(render.font_size * 0.25)
+
+                                        render.draw(content_layer)
+                                        content_layer.save(filename=get_temp_name(buildpath, module))
                                     elif ctype == 'image':
                                         image = Image(filename=dir_path(base_dir + settings['paths']['images'] +
                                                                         blueprint['modules'][module][ctype]))
