@@ -14,7 +14,7 @@ requires-python = ">=3.8"
 keywords = ["build", "tool", "image", "playing", "card", "cli"]
 license = {file = "LICENSE"}
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
