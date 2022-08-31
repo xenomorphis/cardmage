@@ -274,7 +274,7 @@ def cl_main() -> None:
                                                                 content_layer.width - int(1 * render.font_size),
                                                                 content_layer.height - offset[1])
                                             metrics = render.get_font_metrics(content_layer, content, True)
-                                            render.text(int(0 + offset[0]), int(render.font_size + offset[1]), '-')
+                                            render.text(int(0 + offset[0]), int(render.font_size + offset[1]), '–')
                                             render.text(int(1 * render.font_size + offset[0]),
                                                         int(render.font_size + offset[1]), content)
                                             offset[1] += metrics.text_height + int(render.font_size * 0.25)
