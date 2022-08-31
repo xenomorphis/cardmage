@@ -76,10 +76,12 @@ def cl_main() -> None:
         except FileNotFoundError as error:
             print(error)
             print("  - Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' failed.")
+            build_no += 1
             continue
 
         except toml.TomlDecodeError:
             print("  -" + card + ": Wrong file format...")
+            build_no += 1
             continue
 
         else:
@@ -346,8 +348,8 @@ def cl_main() -> None:
 
             # 5. Save image in dist
             current.save(filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png"))
-            build_no += 1
             print("  - Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' completed.")
+            build_no += 1
 
     # 6. Remove _build and it's contents
     shutil.rmtree(buildpath)
