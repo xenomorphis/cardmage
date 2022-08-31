@@ -4,6 +4,7 @@ import argparse
 import os
 import re
 import shutil
+import sys
 from textwrap import wrap
 import time
 import toml
@@ -27,9 +28,20 @@ def cl_main() -> None:
     build_no = 1
 
     if args.test:
-        settings = toml.load(dir_path("../testdata/settings.toml"))
+        try:
+            settings = toml.load(dir_path("../testdata/settings.toml"))
+        except FileNotFoundError:
+            print("The test settings file could not be loaded (file does not exist).")
+            sys.exit(0)
     else:
-        settings = toml.load(dir_path("./settings.toml"))
+        try:
+            settings = toml.load(dir_path("./settings.toml"))
+        except FileNotFoundError:
+            print("The projects' settings file could not be loaded (file does not exist).")
+            sys.exit(0)
+        except toml.TomlDecodeError:
+            print("The projects' settings file could not be loaded (wrong file format).")
+            sys.exit(0)
 
     base_dir = settings['paths']['base']
     buildpath = os.path.join(base_dir, '_build/')
@@ -43,6 +55,10 @@ def cl_main() -> None:
 
     if len(args.path) == 0:
         args.path = os.listdir(base_dir + settings['paths']['cards'])
+
+        if len(args.path) == 0:
+            print("No definition files found inside the card directory; therefore nothing to do.")
+            sys.exit(0)
 
     builds_total = len(args.path)
 
