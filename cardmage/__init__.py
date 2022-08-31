@@ -240,11 +240,28 @@ def cl_main() -> None:
                                                     if render.stroke_width:
                                                         gfx.stroke_width = render.stroke_width
 
+                                                    text = ""
+
+                                                    if targets == 1 and rendered > 0:
+                                                        text += ", "
+
+                                                    if 'keys_as' and 'keys' in blueprint['modules'][module]:
+                                                        if blueprint['modules'][module]['keys_as'] == 'text':
+                                                            text += str(number) + " " + \
+                                                                    blueprint['modules'][module]['keys'][iteration]
+                                                        elif blueprint['modules'][module]['keys_as'] == 'icons':
+                                                            text += str(number)
+                                                        else:
+                                                            text += str(number)
+                                                    else:
+                                                        text += str(number)
+
                                                     if rendered == 0:
                                                         offset[0] += get_alignment_offset(render.text_alignment,
                                                                                           layout, module)
+
                                                     gfx.text(int(0 + offset[0]), int(render.font_size + offset[1]),
-                                                             str(number))
+                                                             text)
                                                     gfx.draw(content_layer)
                                                     rendered += 1
                                                     content_layer.save(filename=get_temp_name(
