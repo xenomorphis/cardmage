@@ -13,9 +13,7 @@ from wand.image import Image, COMPOSITE_OPERATORS
 
 
 def cl_main() -> None:
-    """
-    Entrypoint of command line interface.
-    """
+    """Entrypoint of command line interface."""
 
     arg_parser = argparse.ArgumentParser(description='Cardmage open-source card builder')
     arg_parser.add_argument("path", nargs="*", help="Path to one or more card's root TOML file. Leave empty to build all "
@@ -35,8 +33,6 @@ def cl_main() -> None:
     base_dir = settings['paths']['base']
     buildpath = os.path.join(base_dir, '_build/')
     distpath = os.path.join(base_dir, 'dist/')
-
-    meta_tags = ['{', '}']
 
     if not os.path.exists(buildpath):
         os.mkdir(buildpath)
