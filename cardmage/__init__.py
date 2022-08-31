@@ -281,21 +281,7 @@ def cl_main() -> None:
                                         render.draw(content_layer)
                                         content_layer.save(filename=get_temp_name(buildpath, module))
                                     else:
-                                        # resolve and replace meta_tags
-                                        content = blueprint['modules'][module][ctype]
-                                        has_meta_tags = all([char in content for char in meta_tags])
-
-                                        if has_meta_tags:
-                                            content_parts = re.findall(r'\{.*?\}', content)
-
-                                            for tag in content_parts:
-                                                meta_key = tag.replace('{', '').replace('}', '')
-
-                                                if meta_key in blueprint['meta']:
-                                                    content = content.replace(tag, blueprint['meta'][meta_key])
-                                                elif meta_key == 'title':
-                                                    content = content.replace(tag, blueprint['title'])
-
+                                        content = resolve_meta_tags(blueprint['modules'][module][ctype], blueprint)
                                         offset[0] += get_alignment_offset(render.text_alignment, layout, module)
                                         content = word_wrap(content_layer, render, content, content_layer.width,
                                                             content_layer.height - offset[1])
@@ -362,6 +348,25 @@ def get_temp_name(path: str, module: str) -> str:
     fname = path + uts + '-' + module + '.png'
 
     return fname
+
+
+def resolve_meta_tags(string: str, data: dict) -> str:
+    """Resolves and replaces meta_tags"""
+    meta_tags = ['{', '}']
+    has_meta_tags = all([char in string for char in meta_tags])
+
+    if has_meta_tags:
+        content_parts = re.findall(r'\{.*?\}', string)
+
+        for tag in content_parts:
+            meta_key = tag.replace('{', '').replace('}', '')
+
+            if meta_key in data['meta']:
+                string = string.replace(tag, data['meta'][meta_key])
+            elif meta_key == 'title':
+                string = string.replace(tag, data['title'])
+
+    return string
 
 
 def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height: int):
