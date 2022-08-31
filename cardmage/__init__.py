@@ -254,13 +254,15 @@ def cl_main() -> None:
                                                         else:
                                                             text += str(number)
                                                     else:
+                                                        print("- NOTICE: No 'keys_as' or 'keys' attribute found; "
+                                                              "using default 'keys_as = none'")
                                                         text += str(number)
 
                                                     if rendered == 0:
                                                         offset[0] += get_alignment_offset(render.text_alignment,
                                                                                           layout, module)
 
-                                                    gfx.text(int(0 + offset[0]), int(render.font_size + offset[1]),
+                                                    gfx.text(int(offset[0]), int(render.font_size + offset[1]),
                                                              text)
                                                     gfx.draw(content_layer)
                                                     rendered += 1
@@ -292,7 +294,7 @@ def cl_main() -> None:
                                                                 content_layer.width - int(1 * render.font_size),
                                                                 content_layer.height - offset[1])
                                             metrics = render.get_font_metrics(content_layer, content, True)
-                                            render.text(int(0 + offset[0]), int(render.font_size + offset[1]), '–')
+                                            render.text(int(offset[0]), int(render.font_size + offset[1]), '–')
                                             render.text(int(1 * render.font_size + offset[0]),
                                                         int(render.font_size + offset[1]), content)
                                             offset[1] += metrics.text_height + int(render.font_size * 0.25)
@@ -312,7 +314,7 @@ def cl_main() -> None:
                                         content = word_wrap(content_layer, render, content, content_layer.width,
                                                             content_layer.height - offset[1])
 
-                                        render.text(int(0 + offset[0]), int(render.font_size + offset[1]), content)
+                                        render.text(int(offset[0]), int(render.font_size + offset[1]), content)
                                         metrics = render.get_font_metrics(content_layer, content, True)
 
                                         if ctype == 'prefix':
@@ -332,6 +334,8 @@ def cl_main() -> None:
                                     continue
 
                     else:
+                        print("- NOTICE: Module '" + module + "' found, but the current layout specifies no rendering "
+                                                              "zone for this module; skipping")
                         continue
 
                 draw(current)
