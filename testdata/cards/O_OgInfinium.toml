@@ -1,6 +1,7 @@
 title = "Oghma Infinium"
 
 [card]
+back = ""
 element = "neutral"
 font = "standard"
 
@@ -9,7 +10,7 @@ source = "OgInfinium.png"
 source_hd = "OgInfinium.png"
 source_vertical = "OgInfinium.png"
 source_vertical_hd = "OgInfinium.png"
-artist = "Minomi9"
+artist = "Belissa Minomi"
 
 [layout]
 type = "objekt"
