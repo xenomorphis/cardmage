@@ -240,8 +240,9 @@ def cl_main() -> None:
                                                     if render.stroke_width:
                                                         gfx.stroke_width = render.stroke_width
 
-                                                    offset[0] = get_alignment_offset(render.text_alignment,
-                                                                                     layout, module)
+                                                    if rendered == 0:
+                                                        offset[0] += get_alignment_offset(render.text_alignment,
+                                                                                          layout, module)
                                                     gfx.text(int(0 + offset[0]), int(render.font_size + offset[1]),
                                                              str(number))
                                                     gfx.draw(content_layer)
