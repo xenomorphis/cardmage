@@ -16,14 +16,15 @@ def cl_main() -> None:
     """Entrypoint of command line interface."""
 
     arg_parser = argparse.ArgumentParser(description='Cardmage open-source card builder')
-    arg_parser.add_argument("path", nargs="*", help="Path to one or more card's root TOML file. Leave empty to build all "
-                                                    "root files found in the card directory")
+    arg_parser.add_argument("path", nargs="*", help="Path to one or more card's root TOML file. Leave empty to build "
+                                                    "all root files found in the card directory")
     arg_parser.add_argument("-p", "--print", help="Render card in print quality", default=False, action="store_true")
     arg_parser.add_argument("-t", "--test", help="Use test settings", default=False, action="store_true")
 
     args = arg_parser.parse_args()
 
     blueprint = dict()
+    build_no = 1
 
     if args.test:
         settings = toml.load(dir_path("../testdata/settings.toml"))
@@ -43,10 +44,13 @@ def cl_main() -> None:
     if len(args.path) == 0:
         args.path = os.listdir(base_dir + settings['paths']['cards'])
 
+    builds_total = len(args.path)
+
     for card in args.path:
         try:
             blueprint = toml.load(dir_path(base_dir + settings['paths']['cards'] + card))
-            print("Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' started.")
+            print("[" + str(build_no) + "/" + str(builds_total) + "] " + "Build '" +
+                  blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' started.")
 
             # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
             font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
@@ -71,11 +75,11 @@ def cl_main() -> None:
 
         except FileNotFoundError as error:
             print(error)
-            print("- Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' failed.")
+            print("  - Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' failed.")
             continue
 
         except toml.TomlDecodeError:
-            print(card + ": Wrong file format...")
+            print("  -" + card + ": Wrong file format...")
             continue
 
         else:
@@ -254,7 +258,7 @@ def cl_main() -> None:
                                                         else:
                                                             text += str(number)
                                                     else:
-                                                        print("- NOTICE: No 'keys_as' or 'keys' attribute found; "
+                                                        print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
                                                               "using default 'keys_as = none'")
                                                         text += str(number)
 
@@ -334,15 +338,16 @@ def cl_main() -> None:
                                     continue
 
                     else:
-                        print("- NOTICE: Module '" + module + "' found, but the current layout specifies no rendering "
-                                                              "zone for this module; skipping")
+                        print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no rendering"
+                                                                " zone for this module; skipping")
                         continue
 
                 draw(current)
 
             # 5. Save image in dist
             current.save(filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png"))
-            print("- Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' completed.")
+            build_no += 1
+            print("  - Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' completed.")
 
     # 6. Remove _build and it's contents
     shutil.rmtree(buildpath)
