@@ -14,10 +14,10 @@ The TOML format
 The entire configuration of the project itself and everything inside it is done in
 **TOML files** (Toms Obvious, Minimal Language). Why this format? Because...
 
-- of it's simple and clean overall structure
-- it requires only a minimal syntactical overhead (especially compared to XML)
-- it is easy to read
-- it is easy to learn
+- of it's simple and clean overall structure.
+- it requires only a minimal syntactical overhead (especially compared to XML).
+- it is easy to read.
+- it is easy to learn.
 
 A TOML file basically consists of three different types of lines.
 
@@ -42,6 +42,8 @@ A TOML file basically consists of three different types of lines.
     title = "Example"
     # this is the most common type of line found in TOML files. It assigns the value "Example"
     # to the key 'title'. Later we can use this key to get back it's value, if needed.
+
+    # IMPORTANT: Two keys cannot have the same name unless they belong to different blocks.
 
 A valid line can only have one evaluated statement (either a block or a definition). It may
 also contain an appended comment (since it will be ignored it doesn't count as a statement).
