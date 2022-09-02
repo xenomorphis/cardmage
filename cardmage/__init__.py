@@ -128,6 +128,9 @@ def cl_main() -> None:
                 current.save(filename=get_temp_name(buildpath, 'template'))
 
                 for module in blueprint['modules']:
+                    # copy module data into shorthand property
+                    data = blueprint['modules'][module]
+
                     if module + '_zone' in layout['modules']:
                         target_coordinates = layout['modules'][module + '_zone']
 
@@ -140,8 +143,8 @@ def cl_main() -> None:
                             offset = [0, 0]
 
                         with Drawing() as render:
-                            if 'content' in blueprint['modules'][module]:
-                                priorities = blueprint['modules'][module]['content']
+                            if 'content' in data:
+                                priorities = data['content']
                             else:
                                 priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'array']
 
@@ -181,7 +184,7 @@ def cl_main() -> None:
 
                                 # load tag-specific font settings over card-specific font settings over
                                 # module-specific font settings
-                                if ctype in blueprint['modules'][module]:
+                                if ctype in data:
                                     if ctype in font['tags']:
                                         tag_override = True
                                     else:
@@ -190,40 +193,40 @@ def cl_main() -> None:
                                     if tag_override and 'fontstyle' in font['tags'][ctype]:
                                         render.font = base_dir + settings['paths']['fonts'] + font['config'][
                                             'font_' + font['tags'][ctype]['fontstyle']]
-                                    elif 'fontstyle' in blueprint['modules'][module]:
+                                    elif 'fontstyle' in data:
                                         render.font = base_dir + settings['paths']['fonts'] + font['config'][
-                                            'font_' + blueprint['modules'][module]['fontstyle']]
+                                            'font_' + data['fontstyle']]
 
                                     if tag_override and 'fontsize' in font['tags'][ctype]:
                                         render.font_size = font['tags'][ctype]['fontsize']
-                                    elif 'fontsize' in blueprint['modules'][module]:
-                                        render.font_size = blueprint['modules'][module]['fontsize']
+                                    elif 'fontsize' in data:
+                                        render.font_size = data['fontsize']
 
                                     if tag_override and 'color' in font['tags'][ctype]:
                                         render.fill_color = font['tags'][ctype]['fontcolor']
-                                    elif 'fontcolor' in blueprint['modules'][module]:
-                                        render.fill_color = Color(blueprint['modules'][module]['fontcolor'])
+                                    elif 'fontcolor' in data:
+                                        render.fill_color = Color(data['fontcolor'])
 
                                     if tag_override and 'textalign' in font['tags'][ctype]:
                                         render.text_alignment = font['tags'][ctype]['textalign']
-                                    elif 'textalign' in blueprint['modules'][module]:
-                                        render.text_alignment = blueprint['modules'][module]['textalign']
+                                    elif 'textalign' in data:
+                                        render.text_alignment = data['textalign']
 
                                     if tag_override and 'textdecoration' in font['tags'][ctype]:
                                         render.text_decoration = font['tags'][ctype]['textdecoration']
-                                    elif 'textdecoration' in blueprint['modules'][module]:
-                                        render.text_decoration = blueprint['modules'][module]['textdecoration']
+                                    elif 'textdecoration' in data:
+                                        render.text_decoration = data['textdecoration']
 
-                                    if 'outline' in blueprint['modules'][module]:
-                                        render.stroke_color = Color(blueprint['modules'][module]['outline']['color'])
-                                        render.stroke_width = blueprint['modules'][module]['outline']['width']
+                                    if 'outline' in data:
+                                        render.stroke_color = Color(data['outline']['color'])
+                                        render.stroke_width = data['outline']['width']
 
                                     if ctype == 'array':
                                         iteration = 0
                                         rendered = 0
 
-                                        if 'keys_as' in blueprint['modules'][module]:
-                                            keys_mode = blueprint['modules'][module]['keys_as']
+                                        if 'keys_as' in data:
+                                            keys_mode = data['keys_as']
                                         else:
                                             keys_mode = 'none'
 
@@ -250,14 +253,13 @@ def cl_main() -> None:
 
                                                 text = ""
 
-                                                for number in blueprint['modules'][module][ctype]:
+                                                for number in data[ctype]:
                                                     if number > 0:
                                                         if rendered > 0:
                                                             text += ", "
 
                                                         if keys_mode == 'text':
-                                                            text += str(number) + " " + \
-                                                                blueprint['modules'][module]['keys'][iteration]
+                                                            text += str(number) + " " + data['keys'][iteration]
                                                         elif keys_mode == 'icons':
                                                             text += str(number)
                                                         else:
@@ -280,7 +282,7 @@ def cl_main() -> None:
                                         else:
                                             offset[0] += get_alignment_offset(render.text_alignment, layout, module)
 
-                                            for number in blueprint['modules'][module][ctype]:
+                                            for number in data[ctype]:
                                                 targets = get_zone_coordinates(target_coordinates, rendered)
 
                                                 if number > 0:
@@ -305,8 +307,7 @@ def cl_main() -> None:
                                                         text = ""
 
                                                         if keys_mode == 'text':
-                                                            text += str(number) + " " + \
-                                                                    blueprint['modules'][module]['keys'][iteration]
+                                                            text += str(number) + " " + data['keys'][iteration]
                                                         elif keys_mode == 'icons':
                                                             text += str(number)
                                                         else:
@@ -331,7 +332,7 @@ def cl_main() -> None:
                                                 iteration += 1
 
                                     elif ctype == 'list':
-                                        for element in blueprint['modules'][module][ctype]:
+                                        for element in data[ctype]:
                                             content = resolve_meta_tags(element, blueprint)
                                             content = word_wrap(content_layer, render, content,
                                                                 content_layer.width - int(1 * render.font_size),
@@ -346,13 +347,13 @@ def cl_main() -> None:
                                         content_layer.save(filename=get_temp_name(buildpath, module))
                                     elif ctype == 'image':
                                         image = Image(filename=dir_path(base_dir + settings['paths']['images'] +
-                                                                        blueprint['modules'][module][ctype]))
+                                                                        data[ctype]))
                                         render.composite(operator='atop', left=0, top=0, width=image.width,
                                                          height=image.height, image=image)
                                         render.draw(content_layer)
                                         content_layer.save(filename=get_temp_name(buildpath, module))
                                     else:
-                                        content = resolve_meta_tags(blueprint['modules'][module][ctype], blueprint)
+                                        content = resolve_meta_tags(data[ctype], blueprint)
                                         offset[0] += get_alignment_offset(render.text_alignment, layout, module)
                                         content = word_wrap(content_layer, render, content, content_layer.width,
                                                             content_layer.height - offset[1])
