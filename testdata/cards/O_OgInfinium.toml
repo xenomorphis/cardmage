@@ -20,6 +20,7 @@ type = "objekt"
 edition = "TES"
 id = "062"
 language = "DE"
+version = "2201"
 year = "2022"
 
 [modules.costs]

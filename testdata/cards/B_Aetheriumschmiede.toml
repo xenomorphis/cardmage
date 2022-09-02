@@ -20,6 +20,7 @@ type = "bezirk"
 edition = "PRE"
 id = "000"
 language = "DE"
+version = "2201"
 year = "2022"
 
 [modules.attributes]
