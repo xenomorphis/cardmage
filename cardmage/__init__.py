@@ -146,13 +146,8 @@ def cl_main() -> None:
                     if module + '_zone' in layout['modules']:
                         target_coordinates = layout['modules'][module + '_zone']
 
-                        if isinstance(target_coordinates[0], int):
-                            targets = 1
-                        else:
-                            targets = len(target_coordinates)
-
                         # print(module)
-                        # print(targets)
+                        # print(target_coordinates)
 
                         with Color('transparent') as bg:
                             content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
@@ -247,71 +242,108 @@ def cl_main() -> None:
                                         else:
                                             keys_mode = 'none'
 
-                                        for number in blueprint['modules'][module][ctype]:
-                                            if number > 0:
-                                                with Color('transparent') as bg:
-                                                    content_layer = Image(
-                                                        width=layout['modules'][module + '_zone_dimensions'][0],
-                                                        height=layout['modules'][module + '_zone_dimensions'][1],
-                                                        background=bg)
+                                        if isinstance(target_coordinates[0], int) or len(target_coordinates) == 1:
+                                            targets = get_zone_coordinates(target_coordinates, iteration)
 
-                                                with Drawing() as gfx:
-                                                    gfx.font = render.font
-                                                    gfx.font_size = render.font_size
-                                                    gfx.fill_color = render.fill_color
-                                                    gfx.text_alignment = render.text_alignment
+                                            with Color('transparent') as bg:
+                                                content_layer = Image(
+                                                    width=layout['modules'][module + '_zone_dimensions'][0],
+                                                    height=layout['modules'][module + '_zone_dimensions'][1],
+                                                    background=bg)
 
-                                                    if render.stroke_color:
-                                                        gfx.stroke_color = render.stroke_color
+                                            with Drawing() as gfx:
+                                                gfx.font = render.font
+                                                gfx.font_size = render.font_size
+                                                gfx.fill_color = render.fill_color
+                                                gfx.text_alignment = render.text_alignment
 
-                                                    if render.stroke_width:
-                                                        gfx.stroke_width = render.stroke_width
+                                                if render.stroke_color:
+                                                    gfx.stroke_color = render.stroke_color
 
-                                                    text = ""
+                                                if render.stroke_width:
+                                                    gfx.stroke_width = render.stroke_width
 
-                                                    if targets == 1 and rendered > 0:
-                                                        text += ", "
+                                                text = ""
 
-                                                    if keys_mode == 'text':
-                                                        text += str(number) + " " + \
+                                                for number in blueprint['modules'][module][ctype]:
+                                                    if number > 0:
+                                                        if rendered > 0:
+                                                            text += ", "
+
+                                                        if keys_mode == 'text':
+                                                            text += str(number) + " " + \
                                                                 blueprint['modules'][module]['keys'][iteration]
-                                                    elif keys_mode == 'icons':
-                                                        text += str(number)
-                                                    else:
-                                                        print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
-                                                              "using default 'keys_as = none'")
-                                                        text += str(number)
+                                                        elif keys_mode == 'icons':
+                                                            text += str(number)
+                                                        else:
+                                                            print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
+                                                                  "using default 'keys_as = none'")
+                                                            text += str(number)
 
-                                                    if rendered == 0:
-                                                        offset[0] += get_alignment_offset(render.text_alignment,
-                                                                                          layout, module)
+                                                    iteration += 1
 
-                                                    gfx.text(int(offset[0]), int(render.font_size + offset[1]),
-                                                             text)
-                                                    gfx.draw(content_layer)
-                                                    rendered += 1
-                                                    content_layer.save(filename=get_temp_name(
+                                                offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+                                                gfx.text(int(offset[0]), int(render.font_size + offset[1]), text)
+                                                gfx.draw(content_layer)
+                                                content_layer.save(filename=get_temp_name(
                                                         buildpath, module + str(iteration)))
 
-                                                    if isinstance(target_coordinates[0], int):
-                                                        draw.composite(operator='atop', left=target_coordinates[0],
-                                                                       top=target_coordinates[1],
-                                                                       width=content_layer.width,
-                                                                       height=content_layer.height,
-                                                                       image=content_layer)
-                                                    else:
-                                                        draw.composite(operator='atop',
-                                                                       left=target_coordinates[iteration][0],
-                                                                       top=target_coordinates[iteration][1],
-                                                                       width=content_layer.width,
-                                                                       height=content_layer.height,
-                                                                       image=content_layer)
+                                            draw.composite(operator='atop', left=targets[0], top=targets[1],
+                                                           width=content_layer.width, height=content_layer.height,
+                                                           image=content_layer)
 
-                                                        if iteration < targets - 1:
-                                                            iteration += 1
+                                        else:
+                                            offset[0] += get_alignment_offset(render.text_alignment, layout, module)
 
-                                            else:
-                                                continue
+                                            for number in blueprint['modules'][module][ctype]:
+                                                targets = get_zone_coordinates(target_coordinates, rendered)
+
+                                                if number > 0:
+                                                    with Color('transparent') as bg:
+                                                        content_layer = Image(
+                                                            width=layout['modules'][module + '_zone_dimensions'][0],
+                                                            height=layout['modules'][module + '_zone_dimensions'][1],
+                                                            background=bg)
+
+                                                    with Drawing() as gfx:
+                                                        gfx.font = render.font
+                                                        gfx.font_size = render.font_size
+                                                        gfx.fill_color = render.fill_color
+                                                        gfx.text_alignment = render.text_alignment
+
+                                                        if render.stroke_color:
+                                                            gfx.stroke_color = render.stroke_color
+
+                                                        if render.stroke_width:
+                                                            gfx.stroke_width = render.stroke_width
+
+                                                        text = ""
+
+                                                        if keys_mode == 'text':
+                                                            text += str(number) + " " + \
+                                                                    blueprint['modules'][module]['keys'][iteration]
+                                                        elif keys_mode == 'icons':
+                                                            text += str(number)
+                                                        else:
+                                                            print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
+                                                                  "using default 'keys_as = none'")
+                                                            text += str(number)
+
+                                                        gfx.text(int(offset[0]), int(render.font_size + offset[1]),
+                                                                 text)
+                                                        gfx.draw(content_layer)
+
+                                                    if rendered < len(target_coordinates) - 1:
+                                                        rendered += 1
+
+                                                    content_layer.save(filename=get_temp_name(buildpath,
+                                                                                              module + str(iteration)))
+
+                                                    draw.composite(operator='atop', left=targets[0], top=targets[1],
+                                                                   width=content_layer.width,
+                                                                   height=content_layer.height, image=content_layer)
+
+                                                iteration += 1
 
                                     elif ctype == 'list':
                                         for element in blueprint['modules'][module][ctype]:
@@ -405,6 +437,15 @@ def get_temp_name(path: str, module: str) -> str:
     fname = path + uts + '-' + module + '.png'
 
     return fname
+
+
+def get_zone_coordinates(zone: list, iteration: int) -> list:
+    if isinstance(zone[0], int):
+        target = [zone[0], zone[1]]
+    else:
+        target = [zone[iteration][0], zone[iteration][1]]
+
+    return target
 
 
 def resolve_meta_tags(string: str, data: dict) -> str:
