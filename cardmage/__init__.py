@@ -242,6 +242,11 @@ def cl_main() -> None:
                                         iteration = 0
                                         rendered = 0
 
+                                        if 'keys_as' in blueprint['modules'][module]:
+                                            keys_mode = blueprint['modules'][module]['keys_as']
+                                        else:
+                                            keys_mode = 'none'
+
                                         for number in blueprint['modules'][module][ctype]:
                                             if number > 0:
                                                 with Color('transparent') as bg:
@@ -267,14 +272,11 @@ def cl_main() -> None:
                                                     if targets == 1 and rendered > 0:
                                                         text += ", "
 
-                                                    if 'keys_as' and 'keys' in blueprint['modules'][module]:
-                                                        if blueprint['modules'][module]['keys_as'] == 'text':
-                                                            text += str(number) + " " + \
-                                                                    blueprint['modules'][module]['keys'][iteration]
-                                                        elif blueprint['modules'][module]['keys_as'] == 'icons':
-                                                            text += str(number)
-                                                        else:
-                                                            text += str(number)
+                                                    if keys_mode == 'text':
+                                                        text += str(number) + " " + \
+                                                                blueprint['modules'][module]['keys'][iteration]
+                                                    elif keys_mode == 'icons':
+                                                        text += str(number)
                                                     else:
                                                         print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
                                                               "using default 'keys_as = none'")
@@ -292,8 +294,7 @@ def cl_main() -> None:
                                                         buildpath, module + str(iteration)))
 
                                                     if isinstance(target_coordinates[0], int):
-                                                        draw.composite(operator='atop',
-                                                                       left=target_coordinates[0],
+                                                        draw.composite(operator='atop', left=target_coordinates[0],
                                                                        top=target_coordinates[1],
                                                                        width=content_layer.width,
                                                                        height=content_layer.height,
