@@ -113,25 +113,10 @@ def cl_main() -> None:
                 draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
 
                 # 4. Use wand to place text onto card (save intermediate files in _build)
-                if 'fontstyle' in font['tags']['title']:
-                    draw.font = base_dir + settings['paths']['fonts'] + font['config']['font_' + font['tags']['title']['fontstyle']]
-                else:
-                    draw.font = base_dir + settings['paths']['fonts'] + font['config']['font_normal']
-
-                if 'fontsize' in font['tags']['title']:
-                    draw.font_size = font['tags']['title']['fontsize']
-                else:
-                    draw.font_size = font['default']['fontsize']
-
-                if 'fontcolor' in font['tags']['title']:
-                    draw.fill_color = Color(font['tags']['title']['fontcolor'])
-                else:
-                    draw.fill_color = Color(font['default']['fontcolor'])
-
-                if 'textalign' in font['tags']['title']:
-                    draw.text_alignment = font['tags']['title']['textalign']
-                else:
-                    draw.text_alignment = font['default']['textalign']
+                draw.font = base_dir + settings['paths']['fonts'] + get_title_font_style(font, 'fontstyle')
+                draw.font_size = get_title_font_style(font, 'fontsize')
+                draw.fill_color = Color(get_title_font_style(font, 'fontcolor'))
+                draw.text_alignment = get_title_font_style(font, 'textalign')
 
                 if 'outline' in font['tags']['title']:
                     draw.stroke_color = Color(font['tags']['title']['outline']['color'])
@@ -437,6 +422,20 @@ def get_temp_name(path: str, module: str) -> str:
     fname = path + uts + '-' + module + '.png'
 
     return fname
+
+
+def get_title_font_style(styling: list, attribute: str):
+    """Checks title font settings and returns the desired value"""
+    if attribute in styling['tags']['title']:
+        if attribute == "fontstyle":
+            return styling['config']['font_' + styling['tags']['title'][attribute]]
+        else:
+            return styling['tags']['title'][attribute]
+    else:
+        if attribute == "fontstyle":
+            return styling['config']['font_normal']
+        else:
+            return styling['default'][attribute]
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
