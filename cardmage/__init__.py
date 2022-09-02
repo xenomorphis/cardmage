@@ -440,6 +440,7 @@ def get_temp_name(path: str, module: str) -> str:
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
+    """Returns the current zone target coordinates"""
     if isinstance(zone[0], int):
         target = [zone[0], zone[1]]
     else:
@@ -481,6 +482,7 @@ def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height:
     while ctx.font_size > 0 and iteration_attempts:
         iteration_attempts -= 1
         width, height = eval_metrics(mutable_message)
+
         if height > roi_height:
             ctx.font_size -= 0.5  # Reduce font size
             mutable_message = text  # Restore original text
@@ -490,15 +492,20 @@ def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height:
                 columns -= 1
                 mutable_message = '\n'.join(wrap(mutable_message, columns))
                 wrapped_width, _ = eval_metrics(mutable_message)
+
                 if wrapped_width <= roi_width:
                     break
+
             if columns < 1:
                 ctx.font_size -= 0.5  # Reduce font size
                 mutable_message = text  # Restore original text
+
         else:
             break
+
     if iteration_attempts < 1:
         raise RuntimeError("Unable to calculate word_wrap for " + text)
+
     return mutable_message
 
 
