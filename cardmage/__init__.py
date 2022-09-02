@@ -310,6 +310,9 @@ def cl_main() -> None:
                                                         if iteration < targets - 1:
                                                             iteration += 1
 
+                                            else:
+                                                continue
+
                                     elif ctype == 'list':
                                         for element in blueprint['modules'][module][ctype]:
                                             content = resolve_meta_tags(element, blueprint)
