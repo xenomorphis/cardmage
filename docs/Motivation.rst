@@ -1,5 +1,5 @@
-The Motivation
-==============
+1. The Motivation
+=================
 As a child of the 90s, my childhood fell into the late era of the great and glorious trading card games (TCGs). At the time, I played mostly *Yu-Gi-Oh* (mostly because the accompanying anime series was probably the best publicity KONAMI could hope for), but I also owned a few *Magic - The Gathering* cards (even though I had no idea how that game was supposed to work at the time).
 
 And as a side effect of tinkering with different play styles and strategies, I started designing my own cards based on the Yu-Gi-Oh rulebook (I guess you could call it a kind of 'fan fiction' - not for comics, but for card games). Back then I wrote them on index cards, just as plain text without illustrations.

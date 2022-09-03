@@ -1,5 +1,5 @@
-Setting up a (new) project
-==========================
+2. Setting up a (new) project
+============================
 The whole **CARDmage** workflow was designed to be as intuitive and flexible as possible.
 It doesn't require any coding skills at all and depends only on following a few but important
 guidelines. But don't worry, this document should get you covered.
@@ -65,7 +65,13 @@ folders, move some folders into other folders or throw everything into one folde
 - as long as you remember to set the paths in the **settings.toml** accordingly everything
 should work just as fine.
 
-However be careful  if you think about mixing project parts together in different folders or
+However be careful if you think about mixing project parts together in different folders or
 creating a new folder for each card. *CARDmage* won't support such project setups as it would
 introduce the requirement for a search algorithm and with that adds unnecessary levels of
 complexity to the script.
+
+Once the directories are in place and configured in the **settings.toml** you're ready to
+start developing your own open source card game.
+
+`Read on`_ for an in-depth explanation of how to configure the different aspects of your card
+game.
