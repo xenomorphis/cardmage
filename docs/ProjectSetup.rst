@@ -5,8 +5,8 @@ It doesn't require any coding skills at all and depends only on following a few 
 guidelines. But don't worry, this document should get you covered.
 
 **Note:** To better understand this document it is advisable to download the source code
-of this project, as it explains pretty much everything based on the *'testdata'*
-directory and its contents.
+of this project, as the documentation explains pretty much everything based on the
+*'testdata'* directory and its contents.
 
 
 The TOML format

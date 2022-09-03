@@ -8,5 +8,6 @@ Table of Contents
 -----------------
 1. `The motivation behind this project <https://github.com/xenomorphis/cardmage/blob/main/docs/Motivation.rst>`_
 2. `Setting up a project <https://github.com/xenomorphis/cardmage/blob/main/docs/ProjectSetup.rst>`_
-3. Usage of the command line tool
-4. `Planned enhancements <https://github.com/xenomorphis/cardmage/blob/main/docs/Features.rst>`_
+3. How to build your own card game
+4. Usage of the command line tool
+5. `Planned enhancements <https://github.com/xenomorphis/cardmage/blob/main/docs/Features.rst>`_
