@@ -49,3 +49,23 @@ A valid line can only have one evaluated statement (either a block or a definiti
 also contain an appended comment (since it will be ignored it doesn't count as a statement).
 
 And that's all the magic to be found in TOML files.
+
+
+The project settings
+--------------------
+If you want to create a new cardmage project, the **settings.toml** is the first file to start
+with. This file tells the script where all the resources needed for creating the playing cards
+are to be found. If you open up the **settings.toml** from the testdata directory you'll see
+nothing but the paths to the different folders **relative** to the directory the
+settings.toml is in.
+
+For the sake of simplicity I separated the distinct parts of the test project into their
+separate folders, but that's subject to ones' personal taste. You may want to rename the
+folders, move some folders into other folders or throw everything into one folder
+- as long as you remember to set the paths in the **settings.toml** accordingly everything
+should work just as fine.
+
+However be careful  if you think about mixing project parts together in different folders or
+creating a new folder for each card. *CARDmage* won't support such project setups as it would
+introduce the requirement for a search algorithm and with that adds unnecessary levels of
+complexity to the script.
