@@ -14,7 +14,23 @@ the card is already done.
 
 TL;DR: Nothing to do here.
 
-3.2 Fonts
+3.2 Icons
+---------
+Icons bear similarities to the images described above. Just throw them all into the folder.
+But because icons can be used multiple times on the same card, you need an easy way to assign
+them later in the card settings. And that's the job of the **standard.toml** found in this
+folder::
+
+    [icons]
+    attack = "attack.png"
+    defense = "defense.png"
+    fire = "element_fire.png"
+
+This file assigns every icon file to a unique 'name' to be used for referencing it in the card
+settings later on. This is one of the rare cases where the key name you assign a icon file to
+is completely up to you.
+
+3.3 Fonts
 ---------
 Believe it or not, but without any text on your playing cards you'd be pretty limited in your
 game design options (except you're just building a game like memory - but you wouldn't need
