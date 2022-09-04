@@ -150,7 +150,8 @@ def cl_main() -> None:
 
                             for ctype in priorities:
                                 # load default font settings
-                                render.font = base_dir + settings['paths']['fonts'] + font['config']['font_normal']
+                                render.font = base_dir + settings['paths']['fonts'] + \
+                                              font['config']['font_' + font['default']['fontstyle']]
                                 render.font_size = font['default']['fontsize']
                                 render.fill_color = Color(font['default']['fontcolor'])
                                 render.text_alignment = font['default']['textalign']
