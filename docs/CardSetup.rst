@@ -32,15 +32,21 @@ tells CARDmage which font to use in which font size and for which part of the ca
 
 Have a look at the **standard.toml** file found in *testdata/fonts*. It contains a lot of
 blocks and many definitions. But let's break it down a little bit. All you need to make it
-work are the **[config]** and **[default]** blocks. So let's focus on them first.
-
-Config-Block::
+work are the **[config]** and **[default]** blocks. So let's focus on them first::
 
     [config]
     font_normal = "Sansation/Sansation.ttf"
     font_bold = "Sansation/SansationB.ttf"
-    ...
+    font_italic = "Sansation/SansationI.ttf"
+    font_light = "Sansation/SansationL.ttf"
+
+    [default]
+    fontcolor = "black"
+    fontsize = 24
+    fontstyle = "normal"
+    textalign = "left"
 
 The config-block points to the actual font files to be used by CARDmage – once again relative
 to the directory this file is contained in. It contains one definition for each font-style
-used later on (like **bold** or *italic*).
+used later on (like **bold** or *italic*). But with that information alone CARDmage doesn't
+know how the text on the card should be rendered. That's specified within the default-block.
