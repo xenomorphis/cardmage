@@ -27,7 +27,7 @@ folder::
     fire = "element_fire.png"
 
 This file assigns every icon file to a unique 'name' to be used for referencing it in the card
-settings later on. This is one of the rare cases where the key name you assign a icon file to
+settings later on. This is one of the rare cases where the key name you assign the icon file to
 is completely up to you.
 
 3.3 Fonts
@@ -88,3 +88,21 @@ look like::
 This instructs CARDmage to use for text displayed inside the 'type' module the default values
 for fontcolor (*black*) and textalign (*left*) as well as the module-specific values for
 fontsize (*30*) and fontstyle (*bold*).
+
+3.4 Templates & Layouts
+-----------------------
+
+**Templates**
+
+Now we come to the more interesting parts of configuring your own playing cards. A template in
+this context describes an image file used as an overlay that adds the overall structure to a
+card. It contains all of the graphical structures and design elements common to a larger
+number of cards. As an example: Imagine a standard Pokémon card and take away all texts, the
+different element icons (since Pokèmon can have different types, we'd need a lot of different
+templates to cover all possible combination of icons possible, so let's remove them from the
+basic card structure) and the card's artwork – and what's left would be in our case the card's
+**template**.
+
+Now that we have our artwork and a template, our progress is already visible. We can even
+see where the texts and the card's title are supposed to be. Just one problem: CARDmage
+doesn't know it (yet).
