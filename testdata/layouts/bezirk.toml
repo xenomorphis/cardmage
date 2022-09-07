@@ -4,9 +4,6 @@ title = "Bezirk-Layout"
 # icon_offset is calculated based on the coordinates given for the corresponding zone
 
 [config]
-# attribute_attack = []
-# attribute_defense = []
-# attribute_health = []
 image_zone = [0, 0]
 image_credits_zone = []
 title_zone = [60, 89]
@@ -28,7 +25,8 @@ use_vertical = true
 [modules]
 attributes_zone = [
     [672, 117],
-    [672, 177]
+    [672, 177],
+    [672, 237]
 ]
 attributes_zone_dimensions = [35, 40]
 attributes_zone_icon_offset = [-42, -5]
