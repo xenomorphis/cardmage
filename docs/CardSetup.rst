@@ -106,3 +106,61 @@ basic card structure) and the card's artwork – and what's left would be in our
 Now that we have our artwork and a template, our progress is already visible. We can even
 see where the texts and the card's title are supposed to be. Just one problem: CARDmage
 doesn't know it (yet).
+
+**Layouts**
+
+That's where the template's configuration file (also referred to as **layouts**) comes into
+play. Each layout belongs to exactly one template. If you open one of the TOML files
+inside the *testdata/layouts*, you'll find something like this::
+
+    [config]
+    image_zone = [0, 0]
+    image_credits_zone = []
+    title_zone = [60, 89]
+    title_zone_dimensions = [560, 40]
+
+    [icons]
+    set = "standard"
+
+    [image]
+    use_vertical = true
+
+    [modules]
+    attributes_zone = [
+        [672, 117],
+        [672, 177],
+        [672, 237]
+    ]
+    attributes_zone_dimensions = [35, 40]
+    attributes_zone_icon_offset = [-42, -5]
+    edition_icon_zone = [627, 576]
+    edition_icon_zone_dimensions = [90, 100]
+    legendary_zone = [52, 260]
+    legendary_zone_dimensions = [25, 316]
+    meta_id_zone = [309, 984]
+    meta_id_zone_dimensions = [120, 36]
+    resources_zone = [60, 927]
+    resources_zone_dimensions = [620, 48]
+    text_zone = [60, 656]
+    text_zone_dimensions = [620, 264]
+    type_zone = [60, 607]
+    type_zone_dimensions = [340, 56]
+
+    [template]
+    background = "black"
+    file = "bezirk.png"
+    size = [738, 1033]
+
+As you see a layout contains the coordinates needed to put all the elements of the card into
+place. But let's tear it down from top to bottom.
+
+**config**: The config block contains the coordinates needed for the mandatory content of a
+card – it's title and it's artwork. It also specifies the maximum size of the card's title
+(needed to avoid a possible out-of-bounds rendering of long texts).
+
+**icons**: This block contains a single key called 'set'. It is used to tell CARDmage which
+icon set it should use for cards using this layout. Enter here the file name of the desired
+icon configuration without the ".toml" ending (in this example "standard" refers to the file
+used as an example in chapter 3.2).
+
+**image**: Specifies if the current layout supports vertical oriented artworks.
