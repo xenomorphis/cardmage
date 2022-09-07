@@ -146,7 +146,7 @@ def cl_main() -> None:
                             if 'content' in data:
                                 priorities = data['content']
                             else:
-                                priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'array']
+                                priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'icons', 'array']
 
                             for ctype in priorities:
                                 # load default font settings
@@ -332,6 +332,8 @@ def cl_main() -> None:
 
                                                 iteration += 1
 
+                                    elif ctype == 'icons':
+                                        pass
                                     elif ctype == 'list':
                                         for element in data[ctype]:
                                             content = resolve_meta_tags(element, blueprint)
