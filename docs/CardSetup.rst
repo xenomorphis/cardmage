@@ -164,3 +164,34 @@ icon configuration without the ".toml" ending (in this example "standard" refers
 used as an example in chapter 3.2).
 
 **image**: Specifies if the current layout supports vertical oriented artworks.
+
+**modules**: Here you'll define every content area you need on your card (except the two most
+important ones from the [config] block). You can define as many content areas ("modules") as
+you like or need, but be sure to give each module a unique name::
+
+    #  <name>_zone
+    legendary_zone = [52, 260]
+    #  <name>_zone_dimensions
+    legendary_zone_dimensions = [25, 316]
+
+Each module consists of two keys here: *<name>_zone* (the coordinates of the modules' top left
+corner) and *<name>_zone_dimensions* (the size of the module). The unique name allows CARDmage
+to assign the card's contents to their correct destination areas.
+
+But how do you assign content or custom styling to a module? Let's have a look at the second
+example in chapter 3.3::
+
+    # modules.<name>
+    [modules.type]
+    fontsize = 30
+    fontstyle = "bold"
+
+This part of the font definition only applies to the module named 'type'. All other modules
+will ignore these settings. You'll later assign content to a module in very much the same way:
+Create a *[modules.<name>]* block and it's contents will be rendered in the card's area
+defined by *<name>_zone* and *<name>_zone_dimensions*. This gives you precise control about
+what goes where on your cards.
+
+**template**: This block connects the layout with it's template counterpart ('file'), defines
+the card's background color ('background') and specifies the overall size of the card ('size'
+– in pixels).
