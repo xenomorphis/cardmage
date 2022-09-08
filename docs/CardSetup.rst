@@ -1,5 +1,5 @@
-3. How to build your own card game
-==================================
+3. How to build your own card game - Assets configuration
+=========================================================
 Now that you've told CARDmage where to find the assets needed for generating the cards, you
 should now focus on the cards itself. CARDmage uses six different configurations (or parts)
 to create your cards - but don't worry, a few of them are reusable once configured so you
