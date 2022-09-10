@@ -2,7 +2,7 @@ title = "Die Aetheriumschmiede"
 
 [card]
 back = ""
-element = "neutral"
+# element = "neutral"
 font = "standard"
 
 [image]
@@ -10,13 +10,13 @@ source = "AetherSchmiede.png"
 source_hd = "AetherSchmiede.png"
 source_vertical = "AetherSchmiede.png"
 source_vertical_hd = "AetherSchmiede.png"
-artist = "xenomorphis"
 
 [layout]
 type = "bezirk"
 # background = "white"
 
 [meta]
+artist = "xenomorphis"
 edition = "PRE"
 id = "000"
 language = "DE"

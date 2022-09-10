@@ -13,7 +13,6 @@ title_zone_dimensions = [560, 40]
 render_attribute_icons = true
 render_cost_icons = false
 render_edition_icon = false
-render_image_credits = false
 
 [icons]
 set = "standard"
