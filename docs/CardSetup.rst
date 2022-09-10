@@ -73,8 +73,8 @@ specified otherwise for individual text blocks. Definitions deactivated with a h
 example above are optional (built-in defaults will be used if they're not specified),
 all other definitions are mandatory.
 
-**Overriding Defaults**
-
+Overriding Defaults
+'''''''''''''''''''
 So what if a certain text block on the card is supposed to have another text color? That's
 where the concept of **modular layouts** comes into play. We'll go into the details what modular
 layouts are and how they work in the next chapter. But in a nutshell, you can define different
@@ -92,8 +92,8 @@ fontsize (*30*) and fontstyle (*bold*).
 3.4 Templates & Layouts
 -----------------------
 
-**Templates**
-
+Templates
+'''''''''
 Now we come to the more interesting parts of configuring your own playing cards. A template in
 this context describes an image file used as an overlay that adds the overall structure to a
 card. It contains all of the graphical structures and design elements common to a larger
@@ -107,8 +107,8 @@ Now that we have our artwork and a template, our progress is already visible. We
 see where the texts and the card's title are supposed to be. Just one problem: CARDmage
 doesn't know it (yet).
 
-**Layouts**
-
+Layouts
+'''''''
 That's where the template's configuration file (also referred to as **layouts**) comes into
 play. Each layout belongs to exactly one template. If you open one of the TOML files
 inside the *testdata/layouts*, you'll find something like this::
