@@ -4,6 +4,9 @@ Once you've configured everything the last step is getting CARDmage to do it's j
 the cards. Since CARDmage is a command line tool written in Python you'll have a bunch of
 dependencies to take care of first.
 
+5.1 Installation
+----------------
+
 Install 'python'
 ''''''''''''''''
 The first step is getting the necessary compilers set up on your machine. You'll find the
@@ -35,3 +38,17 @@ Install 'pip'
 **pip** is an acronym for *Package Installer for Python* and the de-facto standard package
 manager for everything python-related. With ``pip`` setting up the necessary dependencies for
 CARDmage is a breeze.
+
+- Windows & MacOS: pip is already included if you've installed Python in version 3.4 or higher from the python.org website
+- Linux: ``sudo apt install pip`` (Debian/APT) or ``pacman -S python-pip`` (Arch-a-likes)
+
+Check the availability of pip with the following command: ``pip --version``. If you get back
+a version number you can proceed with the next step.
+
+Install dependencies
+''''''''''''''''''''
+Now you've pip up and running you can easily install the needed dependencies via *pip*::
+
+    pip install toml
+    pip install Wand
+
