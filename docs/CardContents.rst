@@ -59,7 +59,7 @@ here. For an in-depth explanation of the different attributes please refer to th
 
 4.1 Must-have configurations
 ----------------------------
-The following blocks and /or keys are always needed and will likely cause CARDmage to fail if
+The following blocks and/or keys are always needed and will likely cause CARDmage to fail if
 not present:
 
 title
@@ -90,3 +90,75 @@ layout
 | You need to assign a layout to each card by adding the name of the layout's TOML
   definition file to the *type* key. In this example the card uses the layout specified in
   the *bezirk.toml* found inside the *layouts* folder.
+
+4.2 Optional configurations
+---------------------------
+The following settings and sections represent the card's contents and are purely optional.
+Use them as you need 'em.
+
+meta
+''''
+| The meta block contains any number of single line text snippets. You can name the keys
+  however you want and those keys defined here will not be rendered initially, but you can
+  insert those text snippets in any module via **meta tags**.
+| As an example: If you defined a meta key like this ``copy = "©2022 ACME Inc."`` you can
+  easily insert this copyright information into any module by adding the corresponding meta
+  tag ``{copy}`` into one of it's content elements.
+
+modules
+'''''''
+| The modules block contains the actual content to be displayed on the card. The name of the
+  module is used to determine where on the card the content of a module will be rendered (see
+  chapter 3.4 for an example).
+| CARDmage supports some predefined keys for displaying content (called **content elements (CEs)**.
+  Depending on how you want your content to be rendered you'll have to use the corresponding
+  content element. In this chapter I'll give you a brief overview over the CEs offered by
+  CARDmage and when to use them.
+
+.. list-table::
+    :widths: 70 70 140 70 70
+    :header-rows: 1
+
+    * - key
+      - render priority
+      - used for
+      - allows other content elements in the same module
+      - forces new line for next content element
+    * - ``image``
+      - 0
+      - renders a given image inside the module
+      - yes
+      - yes
+    * - ``prefix``
+      - 1
+      - displaying a different formatted text at the beginning of a module **without** introducing a line-feed at it's end
+      - yes
+      - no
+    * - ``condition``
+      - 10
+      - displaying a different formatted text or headline at the beginning of a module **with** a line-feed at it's end
+      - yes
+      - yes
+    * - ``paragraph``
+      - 20
+      - displays a simple text element. Line breaks will be added automatically by CARDmage if needed
+      - yes
+      - yes
+    * - ``list``
+      - 30
+      - renders a set of texts as an bulleted list
+      - yes
+      - yes
+    * - ``icons``
+      - 40
+      - fills multiple zones with different icons
+      - no
+      - no
+    * - ``array``
+      - 50
+      - special content element used for filling multiple zones dynamically with similar content or creating a dynamic list in a single zone
+      - no
+      - no
+
+| You can find more details about how the different content elements work in the
+  `configuration reference (Chapter 7) <https://github.com/xenomorphis/cardmage/blob/main/docs/ConfigReference.rst>`_
