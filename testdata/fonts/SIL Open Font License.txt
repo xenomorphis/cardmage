@@ -1,7 +1,8 @@
 Copyright (c) 2011, Gesine Todt (hallo@gesine-todt.de), with Reserved Font Name 'Amaranth'
 Copyright (c) 2011, Hjort Nidudsson (http://caudex.sf.net), with Reserved Font Name 'Caudex'
+Copyright (c) 2015, Tharique Azeez (http://thariqueazeez.com|zeezat@gmail.com) – 'Kavivanar'
 Copyright (c) 2016, Paul Miller, with Reserved Font Name 'Kelvinch'
-Copyright (c) 2012, Eduardo Tunni (http://www.tipo.net.ar), with Reserved Font Name 'Merienda'
+Copyright (c) 2008-2010, Jovanny Lemonad (http://www.jovanny.ru) – 'Philosopher'
 Copyright (c) 2011, Bernd Montag (berndmontag@gmx.de), with Reserved Font Name 'Sansation'
 Copyright (c) 2011-2012, Brownfox (www.brownfox.org gayaneh.b@gmail.com), with Reserved Font Name 'Simonetta'
 
