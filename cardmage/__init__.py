@@ -10,7 +10,7 @@ import time
 import toml
 from wand.color import Color
 from wand.drawing import Drawing
-from wand.image import Image, COMPOSITE_OPERATORS
+from wand.image import Image
 
 
 def cl_main() -> None:
@@ -24,7 +24,12 @@ def cl_main() -> None:
 
     args = arg_parser.parse_args()
 
-    blueprint = dict()
+    global base_dir
+    global blueprint
+    global buildpath
+    global distpath
+    global settings
+
     build_no = 1
 
     if args.test:
@@ -125,260 +130,11 @@ def cl_main() -> None:
                 offset_x = get_alignment_offset(draw.text_alignment, layout, 'title')
                 draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
                 draw(current)
-                current.save(filename=get_temp_name(buildpath, 'template'))
+                current.save(filename=get_temp_name('template'))
 
                 for module in blueprint['modules']:
-                    # copy module data into shorthand property
-                    data = blueprint['modules'][module]
-
                     if module + '_zone' in layout['modules']:
-                        target_coordinates = layout['modules'][module + '_zone']
-
-                        # print(module)
-                        # print(target_coordinates)
-
-                        with Color('transparent') as bg:
-                            content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
-                                                  height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
-                            offset = [0, 0]
-
-                        with Drawing() as render:
-                            if 'content' in data:
-                                priorities = data['content']
-                            else:
-                                priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'icons', 'array']
-
-                            for ctype in priorities:
-                                # load default font settings
-                                render.font = base_dir + settings['paths']['fonts'] + \
-                                              font['config']['font_' + font['default']['fontstyle']]
-                                render.font_size = font['default']['fontsize']
-                                render.fill_color = Color(font['default']['fontcolor'])
-                                render.text_alignment = font['default']['textalign']
-
-                                if 'textdecoration' in font['default']:
-                                    render.text_decoration = font['default']['textdecoration']
-                                else:
-                                    render.text_decoration = 'no'
-
-                                # load module-specific font settings over defaults
-                                if module in font['modules']:
-                                    if 'fontstyle' in font['modules'][module]:
-                                        render.font = base_dir + settings['paths']['fonts'] + font['config'][
-                                            'font_' + font['modules'][module]['fontstyle']]
-
-                                    if 'fontsize' in font['modules'][module]:
-                                        render.font_size = font['modules'][module]['fontsize']
-
-                                    if 'fontcolor' in font['modules'][module]:
-                                        render.fill_color = Color(font['modules'][module]['fontcolor'])
-
-                                    if 'outline' in font['modules'][module]:
-                                        render.stroke_color = Color(font['modules'][module]['outline']['color'])
-                                        render.stroke_width = font['modules'][module]['outline']['width']
-
-                                    if 'textalign' in font['modules'][module]:
-                                        render.text_alignment = font['modules'][module]['textalign']
-
-                                    if 'textdecoration' in font['modules'][module]:
-                                        render.text_decoration = font['modules'][module]['textdecoration']
-
-                                # load tag-specific font settings over card-specific font settings over
-                                # module-specific font settings
-                                if ctype in data:
-                                    if ctype in font['tags']:
-                                        tag_override = True
-                                    else:
-                                        tag_override = False
-
-                                    if tag_override and 'fontstyle' in font['tags'][ctype]:
-                                        render.font = base_dir + settings['paths']['fonts'] + font['config'][
-                                            'font_' + font['tags'][ctype]['fontstyle']]
-                                    elif 'fontstyle' in data:
-                                        render.font = base_dir + settings['paths']['fonts'] + font['config'][
-                                            'font_' + data['fontstyle']]
-
-                                    if tag_override and 'fontsize' in font['tags'][ctype]:
-                                        render.font_size = font['tags'][ctype]['fontsize']
-                                    elif 'fontsize' in data:
-                                        render.font_size = data['fontsize']
-
-                                    if tag_override and 'color' in font['tags'][ctype]:
-                                        render.fill_color = font['tags'][ctype]['fontcolor']
-                                    elif 'fontcolor' in data:
-                                        render.fill_color = Color(data['fontcolor'])
-
-                                    if tag_override and 'textalign' in font['tags'][ctype]:
-                                        render.text_alignment = font['tags'][ctype]['textalign']
-                                    elif 'textalign' in data:
-                                        render.text_alignment = data['textalign']
-
-                                    if tag_override and 'textdecoration' in font['tags'][ctype]:
-                                        render.text_decoration = font['tags'][ctype]['textdecoration']
-                                    elif 'textdecoration' in data:
-                                        render.text_decoration = data['textdecoration']
-
-                                    if 'outline' in data:
-                                        render.stroke_color = Color(data['outline']['color'])
-                                        render.stroke_width = data['outline']['width']
-
-                                    if ctype == 'array':
-                                        iteration = 0
-                                        rendered = 0
-
-                                        if 'keys_as' in data:
-                                            keys_mode = data['keys_as']
-                                        else:
-                                            keys_mode = 'none'
-
-                                        if isinstance(target_coordinates[0], int) or len(target_coordinates) == 1:
-                                            targets = get_zone_coordinates(target_coordinates, iteration)
-
-                                            with Color('transparent') as bg:
-                                                content_layer = Image(
-                                                    width=layout['modules'][module + '_zone_dimensions'][0],
-                                                    height=layout['modules'][module + '_zone_dimensions'][1],
-                                                    background=bg)
-
-                                            with Drawing() as gfx:
-                                                gfx.font = render.font
-                                                gfx.font_size = render.font_size
-                                                gfx.fill_color = render.fill_color
-                                                gfx.text_alignment = render.text_alignment
-
-                                                if render.stroke_color:
-                                                    gfx.stroke_color = render.stroke_color
-
-                                                if render.stroke_width:
-                                                    gfx.stroke_width = render.stroke_width
-
-                                                text = ""
-
-                                                for number in data[ctype]:
-                                                    if number > 0:
-                                                        if rendered > 0:
-                                                            text += ", "
-
-                                                        if keys_mode == 'text':
-                                                            text += str(number) + " " + data['keys'][iteration]
-                                                        elif keys_mode == 'icons':
-                                                            text += str(number)
-                                                        else:
-                                                            print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
-                                                                  "using default 'keys_as = none'")
-                                                            text += str(number)
-
-                                                    iteration += 1
-
-                                                offset[0] += get_alignment_offset(render.text_alignment, layout, module)
-                                                gfx.text(int(offset[0]), int(render.font_size + offset[1]), text)
-                                                gfx.draw(content_layer)
-                                                content_layer.save(filename=get_temp_name(
-                                                        buildpath, module + str(iteration)))
-
-                                            draw.composite(operator='atop', left=targets[0], top=targets[1],
-                                                           width=content_layer.width, height=content_layer.height,
-                                                           image=content_layer)
-
-                                        else:
-                                            offset[0] += get_alignment_offset(render.text_alignment, layout, module)
-
-                                            for number in data[ctype]:
-                                                targets = get_zone_coordinates(target_coordinates, rendered)
-
-                                                if number > 0:
-                                                    with Color('transparent') as bg:
-                                                        content_layer = Image(
-                                                            width=layout['modules'][module + '_zone_dimensions'][0],
-                                                            height=layout['modules'][module + '_zone_dimensions'][1],
-                                                            background=bg)
-
-                                                    with Drawing() as gfx:
-                                                        gfx.font = render.font
-                                                        gfx.font_size = render.font_size
-                                                        gfx.fill_color = render.fill_color
-                                                        gfx.text_alignment = render.text_alignment
-
-                                                        if render.stroke_color:
-                                                            gfx.stroke_color = render.stroke_color
-
-                                                        if render.stroke_width:
-                                                            gfx.stroke_width = render.stroke_width
-
-                                                        text = ""
-
-                                                        if keys_mode == 'text':
-                                                            text += str(number) + " " + data['keys'][iteration]
-                                                        elif keys_mode == 'icons':
-                                                            text += str(number)
-                                                        else:
-                                                            print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
-                                                                  "using default 'keys_as = none'")
-                                                            text += str(number)
-
-                                                        gfx.text(int(offset[0]), int(render.font_size + offset[1]),
-                                                                 text)
-                                                        gfx.draw(content_layer)
-
-                                                    if rendered < len(target_coordinates) - 1:
-                                                        rendered += 1
-
-                                                    content_layer.save(filename=get_temp_name(buildpath,
-                                                                                              module + str(iteration)))
-
-                                                    draw.composite(operator='atop', left=targets[0], top=targets[1],
-                                                                   width=content_layer.width,
-                                                                   height=content_layer.height, image=content_layer)
-
-                                                iteration += 1
-
-                                    elif ctype == 'icons':
-                                        pass
-                                    elif ctype == 'list':
-                                        for element in data[ctype]:
-                                            content = resolve_meta_tags(element, blueprint)
-                                            content = word_wrap(content_layer, render, content,
-                                                                content_layer.width - int(1 * render.font_size),
-                                                                content_layer.height - offset[1])
-                                            metrics = render.get_font_metrics(content_layer, content, True)
-                                            render.text(int(offset[0]), int(render.font_size + offset[1]), '–')
-                                            render.text(int(1 * render.font_size + offset[0]),
-                                                        int(render.font_size + offset[1]), content)
-                                            offset[1] += metrics.text_height + int(render.font_size * 0.25)
-
-                                        render.draw(content_layer)
-                                        content_layer.save(filename=get_temp_name(buildpath, module))
-                                    elif ctype == 'image':
-                                        image = Image(filename=dir_path(base_dir + settings['paths']['images'] +
-                                                                        data[ctype]))
-                                        render.composite(operator='atop', left=0, top=0, width=image.width,
-                                                         height=image.height, image=image)
-                                        render.draw(content_layer)
-                                        content_layer.save(filename=get_temp_name(buildpath, module))
-                                    else:
-                                        content = resolve_meta_tags(data[ctype], blueprint)
-                                        offset[0] += get_alignment_offset(render.text_alignment, layout, module)
-                                        content = word_wrap(content_layer, render, content, content_layer.width,
-                                                            content_layer.height - offset[1])
-
-                                        render.text(int(offset[0]), int(render.font_size + offset[1]), content)
-                                        metrics = render.get_font_metrics(content_layer, content, True)
-
-                                        if ctype == 'prefix':
-                                            offset[0] += metrics.text_width + int(render.font_size * 0.25)
-                                        else:
-                                            offset[1] += metrics.text_height + int(render.font_size * 0.25)
-
-                                        render.draw(content_layer)
-                                        content_layer.save(filename=get_temp_name(buildpath, module))
-
-                                    if ctype != 'array':
-                                        draw.composite(operator='atop', left=target_coordinates[0],
-                                                       top=target_coordinates[1], width=content_layer.width,
-                                                       height=content_layer.height, image=content_layer)
-
-                                else:
-                                    continue
+                        render_card_content(blueprint['modules'][module], layout, font, module, draw)
 
                     else:
                         print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no rendering"
@@ -420,15 +176,15 @@ def get_alignment_offset(align: str, layout: dict, module: str) -> int:
         return 0
 
 
-def get_temp_name(path: str, module: str) -> str:
+def get_temp_name(module: str) -> str:
     """Creates and returns a unique file name for saving intermediate build artifacts"""
     uts = str(int(time.time()))
-    fname = path + uts + '-' + module + '.png'
+    fname = buildpath + uts + '-' + module + '.png'
 
     return fname
 
 
-def get_title_font_style(styling: list, attribute: str):
+def get_title_font_style(styling: dict, attribute: str):
     """Checks title font settings and returns the desired value"""
     if attribute in styling['tags']['title']:
         if attribute == "fontstyle":
@@ -452,7 +208,246 @@ def get_zone_coordinates(zone: list, iteration: int) -> list:
     return target
 
 
-def resolve_meta_tags(string: str, data: dict) -> str:
+def render_card_content(data: dict, layout: dict, font: dict, module: str, draw: Drawing) -> None:
+    """Renders a cards' modules"""
+    target_coordinates = layout['modules'][module + '_zone']
+
+    # print(module)
+    # print(target_coordinates)
+
+    with Color('transparent') as bg:
+        content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
+                              height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
+        offset = [0, 0]
+
+    with Drawing() as render:
+        if 'content' in data:
+            priorities = data['content']
+        else:
+            priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'icons', 'array']
+
+        for ctype in priorities:
+            # load default font settings
+            render.font = base_dir + settings['paths']['fonts'] + font['config']['font_' + font['default']['fontstyle']]
+            render.font_size = font['default']['fontsize']
+            render.fill_color = Color(font['default']['fontcolor'])
+            render.text_alignment = font['default']['textalign']
+
+            if 'textdecoration' in font['default']:
+                render.text_decoration = font['default']['textdecoration']
+            else:
+                render.text_decoration = 'no'
+
+            # load module-specific font settings over defaults
+            if module in font['modules']:
+                if 'fontstyle' in font['modules'][module]:
+                    render.font = base_dir + settings['paths']['fonts'] + font['config'][
+                        'font_' + font['modules'][module]['fontstyle']]
+
+                if 'fontsize' in font['modules'][module]:
+                    render.font_size = font['modules'][module]['fontsize']
+
+                if 'fontcolor' in font['modules'][module]:
+                    render.fill_color = Color(font['modules'][module]['fontcolor'])
+
+                if 'outline' in font['modules'][module]:
+                    render.stroke_color = Color(font['modules'][module]['outline']['color'])
+                    render.stroke_width = font['modules'][module]['outline']['width']
+
+                if 'textalign' in font['modules'][module]:
+                    render.text_alignment = font['modules'][module]['textalign']
+
+                if 'textdecoration' in font['modules'][module]:
+                    render.text_decoration = font['modules'][module]['textdecoration']
+
+            # load tag-specific font settings over card-specific font settings over
+            # module-specific font settings
+            if ctype in data:
+                if ctype in font['tags']:
+                    tag_override = True
+                else:
+                    tag_override = False
+
+                if tag_override and 'fontstyle' in font['tags'][ctype]:
+                    render.font = base_dir + settings['paths']['fonts'] + font['config'][
+                        'font_' + font['tags'][ctype]['fontstyle']]
+                elif 'fontstyle' in data:
+                    render.font = base_dir + settings['paths']['fonts'] + font['config']['font_' + data['fontstyle']]
+
+                if tag_override and 'fontsize' in font['tags'][ctype]:
+                    render.font_size = font['tags'][ctype]['fontsize']
+                elif 'fontsize' in data:
+                    render.font_size = data['fontsize']
+
+                if tag_override and 'color' in font['tags'][ctype]:
+                    render.fill_color = font['tags'][ctype]['fontcolor']
+                elif 'fontcolor' in data:
+                    render.fill_color = Color(data['fontcolor'])
+
+                if tag_override and 'textalign' in font['tags'][ctype]:
+                    render.text_alignment = font['tags'][ctype]['textalign']
+                elif 'textalign' in data:
+                    render.text_alignment = data['textalign']
+
+                if tag_override and 'textdecoration' in font['tags'][ctype]:
+                    render.text_decoration = font['tags'][ctype]['textdecoration']
+                elif 'textdecoration' in data:
+                    render.text_decoration = data['textdecoration']
+
+                if 'outline' in data:
+                    render.stroke_color = Color(data['outline']['color'])
+                    render.stroke_width = data['outline']['width']
+
+                if ctype == 'array':
+                    iteration = 0
+                    rendered = 0
+
+                    if 'keys_as' in data:
+                        keys_mode = data['keys_as']
+                    else:
+                        keys_mode = 'none'
+
+                    if isinstance(target_coordinates[0], int) or len(target_coordinates) == 1:
+                        targets = get_zone_coordinates(target_coordinates, iteration)
+
+                        with Color('transparent') as bg:
+                            content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
+                                                  height=layout['modules'][module + '_zone_dimensions'][1],
+                                                  background=bg)
+
+                        with Drawing() as gfx:
+                            gfx.font = render.font
+                            gfx.font_size = render.font_size
+                            gfx.fill_color = render.fill_color
+                            gfx.text_alignment = render.text_alignment
+
+                            if render.stroke_color:
+                                gfx.stroke_color = render.stroke_color
+
+                            if render.stroke_width:
+                                gfx.stroke_width = render.stroke_width
+
+                            text = ""
+
+                            for number in data[ctype]:
+                                if number > 0:
+                                    if rendered > 0:
+                                        text += ", "
+
+                                    if keys_mode == 'text':
+                                        text += str(number) + " " + data['keys'][iteration]
+                                    elif keys_mode == 'icons':
+                                        text += str(number)
+                                    else:
+                                        print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
+                                              "using default 'keys_as = none'")
+                                        text += str(number)
+
+                                iteration += 1
+
+                            offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+                            gfx.text(int(offset[0]), int(render.font_size + offset[1]), text)
+                            gfx.draw(content_layer)
+                            content_layer.save(filename=get_temp_name(module + str(iteration)))
+
+                        draw.composite(operator='atop', left=targets[0], top=targets[1], width=content_layer.width,
+                                       height=content_layer.height, image=content_layer)
+
+                    else:
+                        offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+
+                        for number in data[ctype]:
+                            targets = get_zone_coordinates(target_coordinates, rendered)
+
+                            if number > 0:
+                                with Color('transparent') as bg:
+                                    content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
+                                                          height=layout['modules'][module + '_zone_dimensions'][1],
+                                                          background=bg)
+
+                                with Drawing() as gfx:
+                                    gfx.font = render.font
+                                    gfx.font_size = render.font_size
+                                    gfx.fill_color = render.fill_color
+                                    gfx.text_alignment = render.text_alignment
+
+                                    if render.stroke_color:
+                                        gfx.stroke_color = render.stroke_color
+
+                                    if render.stroke_width:
+                                        gfx.stroke_width = render.stroke_width
+
+                                    text = ""
+
+                                    if keys_mode == 'text':
+                                        text += str(number) + " " + data['keys'][iteration]
+                                    elif keys_mode == 'icons':
+                                        text += str(number)
+                                    else:
+                                        print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
+                                              "using default 'keys_as = none'")
+                                        text += str(number)
+
+                                    gfx.text(int(offset[0]), int(render.font_size + offset[1]), text)
+                                    gfx.draw(content_layer)
+
+                                if rendered < len(target_coordinates) - 1:
+                                    rendered += 1
+
+                                content_layer.save(filename=get_temp_name(module + str(iteration)))
+
+                                draw.composite(operator='atop', left=targets[0], top=targets[1],
+                                               width=content_layer.width, height=content_layer.height,
+                                               image=content_layer)
+
+                            iteration += 1
+
+                elif ctype == 'icons':
+                    pass
+                elif ctype == 'list':
+                    for element in data[ctype]:
+                        content = resolve_meta_tags(element)
+                        content = word_wrap(content_layer, render, content,
+                                            content_layer.width - int(1 * render.font_size),
+                                            content_layer.height - offset[1])
+                        metrics = render.get_font_metrics(content_layer, content, True)
+                        render.text(int(offset[0]), int(render.font_size + offset[1]), '–')
+                        render.text(int(1 * render.font_size + offset[0]), int(render.font_size + offset[1]), content)
+                        offset[1] += metrics.text_height + int(render.font_size * 0.25)
+
+                    render.draw(content_layer)
+                    content_layer.save(filename=get_temp_name(module))
+                elif ctype == 'image':
+                    image = Image(filename=dir_path(base_dir + settings['paths']['images'] + data[ctype]))
+                    render.composite(operator='atop', left=0, top=0, width=image.width, height=image.height, image=image)
+                    render.draw(content_layer)
+                    content_layer.save(filename=get_temp_name(module))
+                else:
+                    content = resolve_meta_tags(data[ctype])
+                    offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+                    content = word_wrap(content_layer, render, content, content_layer.width,
+                                        content_layer.height - offset[1])
+
+                    render.text(int(offset[0]), int(render.font_size + offset[1]), content)
+                    metrics = render.get_font_metrics(content_layer, content, True)
+
+                    if ctype == 'prefix':
+                        offset[0] += metrics.text_width + int(render.font_size * 0.25)
+                    else:
+                        offset[1] += metrics.text_height + int(render.font_size * 0.25)
+
+                    render.draw(content_layer)
+                    content_layer.save(filename=get_temp_name(module))
+
+                if ctype != 'array':
+                    draw.composite(operator='atop', left=target_coordinates[0], top=target_coordinates[1],
+                                   width=content_layer.width, height=content_layer.height, image=content_layer)
+
+            else:
+                continue
+
+
+def resolve_meta_tags(string: str) -> str:
     """Resolves and replaces meta_tags"""
     meta_tags = ['{', '}']
     has_meta_tags = all([char in string for char in meta_tags])
@@ -463,10 +458,10 @@ def resolve_meta_tags(string: str, data: dict) -> str:
         for tag in content_parts:
             meta_key = tag.replace('{', '').replace('}', '')
 
-            if meta_key in data['meta']:
-                string = string.replace(tag, data['meta'][meta_key])
+            if meta_key in blueprint['meta']:
+                string = string.replace(tag, blueprint['meta'][meta_key])
             elif meta_key == 'title':
-                string = string.replace(tag, data['title'])
+                string = string.replace(tag, blueprint['title'])
 
     return string
 
