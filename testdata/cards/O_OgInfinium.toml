@@ -2,7 +2,6 @@ title = "Oghma Infinium"
 
 [card]
 back = ""
-# element = "neutral"
 font = "standard"
 
 [image]
