@@ -71,7 +71,7 @@ def cl_main() -> None:
         try:
             blueprint = toml.load(dir_path(base_dir + settings['paths']['cards'] + card))
             print("[" + str(build_no) + "/" + str(builds_total) + "] " + "Build '" +
-                  blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' started.")
+                  blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + "' started.")
 
             # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
             font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
@@ -145,8 +145,15 @@ def cl_main() -> None:
                 draw(current)
 
             # 5. Save image in dist
-            current.save(filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png"))
-            print("  - Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png' completed.")
+            if args.print:
+                current.transform_colorspace('cmyk')
+                current.save(
+                    filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + "-cmyk.tif"))
+            else:
+                current.save(
+                    filename=str(distpath + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + ".png"))
+
+            print("  - Build '" + blueprint['meta']['edition'] + "-" + blueprint['meta']['id'] + "' completed.")
             build_no += 1
 
     # 6. Remove _build and it's contents
