@@ -43,6 +43,7 @@ content you want. Let's have a look at an example::
     prefix = "Ressourcen: "
 
     [modules.text]
+    content = ['condition', 'list']
     condition = "Solange auf dem Feld:"
     list = [
         "Der Spieler kann Dwemer-Kreaturen in die Schlacht rufen.",
@@ -160,5 +161,13 @@ modules
       - no
       - no
 
-| You can find more details about how the different content elements work in the
-  `configuration reference (Chapter 7) <https://github.com/xenomorphis/cardmage/blob/main/docs/ConfigReference.rst>`_
+| If there's more than one content element present in a module the order in which the
+  individual content elements are rendered onto the card depends on the priority values as seen
+  in the table above. Content elements with a lower priority value will be rendered before those
+  with a higher priority value.
+| You can however define your own priority list within the optional ``content`` attribute
+  (that's useful if you want to render for example a *condition* first, then a *list* and
+  finally adding a *paragraph* below that).
+
+You can find more details about how the different content elements work in the
+`configuration reference (Chapter 7) <https://github.com/xenomorphis/cardmage/blob/main/docs/ConfigReference.rst>`_
