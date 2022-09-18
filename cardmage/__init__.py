@@ -76,6 +76,7 @@ def cl_main() -> None:
             # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
             font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
             layout = toml.load(dir_path(base_dir + settings['paths']['layouts'] + blueprint['layout']['type'] + ".toml"))
+            icons = toml.load(dir_path(base_dir + settings['paths']['icons'] + layout['icons']['set'] + ".toml"))
 
             template = Image(filename=dir_path(base_dir + settings['paths']['layouts'] + layout['template']['file']))
 
@@ -134,7 +135,7 @@ def cl_main() -> None:
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
-                        render_card_content(blueprint['modules'][module], layout, font, module, draw)
+                        render_card_content(blueprint['modules'][module], layout, font, icons['icons'], module, draw)
 
                     else:
                         print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no rendering"
@@ -208,7 +209,7 @@ def get_zone_coordinates(zone: list, iteration: int) -> list:
     return target
 
 
-def render_card_content(data: dict, layout: dict, font: dict, module: str, draw: Drawing) -> None:
+def render_card_content(data: dict, layout: dict, font: dict, icons: dict, module: str, draw: Drawing) -> None:
     """Renders a cards' modules"""
     target_coordinates = layout['modules'][module + '_zone']
 
@@ -403,7 +404,71 @@ def render_card_content(data: dict, layout: dict, font: dict, module: str, draw:
                             iteration += 1
 
                 elif ctype == 'icons':
-                    pass
+                    iteration = 0
+                    max_height = 0
+
+                    if isinstance(target_coordinates[0], int) or len(target_coordinates) == 1:
+                        targets = get_zone_coordinates(target_coordinates, iteration)
+
+                        for icon in data[ctype]:
+                            try:
+                                icon_file = Image(
+                                    filename=dir_path(base_dir + settings['paths']['icons'] + icons[icon]))
+                            except FileNotFoundError:
+                                print("  - NOTICE: Required icon file " + settings['paths']['icons'] + icons[icon] +
+                                      " not found. Skipping...")
+                                continue
+                            else:
+                                icon_layer = icon_file.clone()
+                                scale_x = layout['modules'][module + '_zone_dimensions'][0] / icon_layer.width
+                                scale_y = layout['modules'][module + '_zone_dimensions'][1] / icon_layer.height
+
+                                if scale_x < scale_y:
+                                    icon_layer.resize(icon_layer.width * scale_x, icon_layer.height * scale_x)
+                                else:
+                                    icon_layer.resize(icon_layer.width * scale_y, icon_layer.height * scale_y)
+
+                                draw.composite(operator='atop', left=targets[0] + offset[0], top=targets[1] + offset[1],
+                                               width=icon_layer.width, height=icon_layer.height, image=icon_layer)
+
+                                if icon_layer.height > max_height:
+                                    max_height = icon_layer.height
+
+                                if (offset[0] + icon_layer.width + 5) > layout['modules'][module + '_zone_dimensions'][0]:
+                                    offset[0] = 0
+                                    offset[1] += max_height + 5
+                                    max_height = icon_layer.height
+                                else:
+                                    offset[0] += icon_layer.width + 5
+
+                    else:
+                        for icon in data[ctype]:
+                            if iteration < len(target_coordinates):
+                                targets = get_zone_coordinates(target_coordinates, iteration)
+
+                                try:
+                                    icon_file = Image(
+                                        filename=dir_path(base_dir + settings['paths']['icons'] + icons[icon]))
+                                except FileNotFoundError:
+                                    print("  - NOTICE: Required icon file " + settings['paths']['icons'] + icons[icon] +
+                                          " not found. Skipping...")
+                                    iteration += 1
+                                    continue
+                                else:
+                                    icon_layer = icon_file.clone()
+                                    scale_x = layout['modules'][module + '_zone_dimensions'][0] / icon_layer.width
+                                    scale_y = layout['modules'][module + '_zone_dimensions'][1] / icon_layer.height
+
+                                    if scale_x < scale_y:
+                                        icon_layer.resize(icon_layer.width * scale_x, icon_layer.height * scale_x)
+                                    else:
+                                        icon_layer.resize(icon_layer.width * scale_y, icon_layer.height * scale_y)
+
+                                    draw.composite(operator='atop', left=targets[0], top=targets[1],
+                                                   width=icon_layer.width, height=icon_layer.height, image=icon_layer)
+
+                                iteration += 1
+
                 elif ctype == 'list':
                     for element in data[ctype]:
                         content = resolve_meta_tags(element)
