@@ -37,7 +37,7 @@ keys_as = "text"
 prefix = "Ressourcen: "
 
 [modules.text]
-content = ['condition', 'list']
+content = ["condition", "list"]
 condition = "Solange auf dem Feld:"
 list = [
     "Der Spieler kann Dwemer-Kreaturen in die Schlacht rufen.",

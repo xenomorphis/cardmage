@@ -32,7 +32,7 @@ paragraph = "{edition}-{id}"
 fontcolor = "black"
 
 [modules.text]
-content = ['condition', 'paragraph']
+content = ["condition", "paragraph"]
 condition = "Zu Beginn deines Spielzugs:"
 paragraph = "Du kannst diese Karte aus dem Spiel nehmen. Wenn diese Karte durch diesen Effekt aus dem Spiel genommen wird, ziehe 3 Karten."
 
