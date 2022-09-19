@@ -467,9 +467,11 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                     scale_y = layout['modules'][module + '_zone_dimensions'][1] / icon_layer.height
 
                                     if scale_x < scale_y:
-                                        icon_layer.resize(icon_layer.width * scale_x, icon_layer.height * scale_x)
+                                        icon_layer.resize(
+                                            int(icon_layer.width * scale_x), int(icon_layer.height * scale_x))
                                     else:
-                                        icon_layer.resize(icon_layer.width * scale_y, icon_layer.height * scale_y)
+                                        icon_layer.resize(
+                                            int(icon_layer.width * scale_y), int(icon_layer.height * scale_y))
 
                                     draw.composite(operator='atop', left=targets[0], top=targets[1],
                                                    width=icon_layer.width, height=icon_layer.height, image=icon_layer)
