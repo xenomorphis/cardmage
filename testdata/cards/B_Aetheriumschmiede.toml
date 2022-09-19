@@ -27,6 +27,9 @@ array = [0, 6, 3]
 keys = ["attack","defense","hp"]
 keys_as = "icons"
 
+[modules.edition_icon]
+icons = ["dwemer"]
+
 [modules.meta_id]
 paragraph = "{edition}-{id}"
 

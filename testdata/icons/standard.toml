@@ -3,6 +3,7 @@ title = "Standard-Icons"
 [icons]
 attack = "attack.png"
 defense = "defense.png"
+dwemer = "DwemerMask.png"
 fire = "element_fire.png"
 gold = "gold.png"
 hp = "health.png"
