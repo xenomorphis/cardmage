@@ -1,4 +1,4 @@
-title = "Objekt-Layout"
+title = "Neutral layout"
 
 # zones: Pixel offset (x, y) relative to top left corner
 # icon_offset is calculated based on the coordinates given for the corresponding zone
@@ -7,7 +7,7 @@ title = "Objekt-Layout"
 image_zone = [0, 0]
 image_credits_zone = []
 title_zone = [60, 89]
-title_zone_dimensions = [560, 40]
+title_zone_dimensions = [570, 40]
 
 [icons]
 set = "standard"
@@ -16,6 +16,13 @@ set = "standard"
 use_vertical = true
 
 [modules]
+attributes_zone = [
+    [672, 117],
+    [672, 177],
+    [672, 237]
+]
+attributes_zone_dimensions = [35, 40]
+attributes_zone_icon_offset = [-42, -5]
 costs_zone = [
     [45, 117],
     [45, 177]
@@ -24,8 +31,12 @@ costs_zone_dimensions = [35, 40]
 costs_zone_icon_offset = [30, -5]
 edition_icon_zone = [627, 576]
 edition_icon_zone_dimensions = [90, 100]
+legendary_zone = [52, 260]
+legendary_zone_dimensions = [25, 316]
 meta_id_zone = [309, 984]
 meta_id_zone_dimensions = [120, 36]
+resources_zone = [60, 927]
+resources_zone_dimensions = [620, 48]
 text_zone = [60, 656]
 text_zone_dimensions = [620, 264]
 type_zone = [60, 607]
@@ -33,5 +44,5 @@ type_zone_dimensions = [340, 56]
 
 [template]
 background = "black"
-file = "objekt.png"
+file = "neutral.png"
 size = [738, 1033]

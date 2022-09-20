@@ -16,7 +16,6 @@ render_edition_icon = false
 
 [icons]
 set = "standard"
-use = ["attributes"]
 
 [image]
 use_vertical = true
