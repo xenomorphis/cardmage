@@ -27,7 +27,7 @@ edition_icon_zone_dimensions = [90, 100]
 meta_id_zone = [309, 984]
 meta_id_zone_dimensions = [120, 36]
 text_zone = [60, 656]
-text_zone_dimensions = [620, 264]
+text_zone_dimensions = [620, 310]
 type_zone = [60, 607]
 type_zone_dimensions = [340, 56]
 
