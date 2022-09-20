@@ -508,10 +508,16 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                     render.draw(content_layer)
                     content_layer.save(filename=get_temp_name(module))
                 elif ctype == 'image':
-                    image = Image(filename=dir_path(base_dir + settings['paths']['images'] + data[ctype]))
-                    render.composite(operator='atop', left=0, top=0, width=image.width, height=image.height, image=image)
-                    render.draw(content_layer)
-                    content_layer.save(filename=get_temp_name(module))
+                    try:
+                        image = Image(filename=dir_path(base_dir + settings['paths']['images'] + data[ctype]))
+                    except FileNotFoundError:
+                        print("  - NOTICE: Required image file " + settings['paths']['images'] + data[ctype] +
+                              " not found. Skipping...")
+                        continue
+                    else:
+                        render.composite(operator='atop', left=0, top=0, width=image.width, height=image.height, image=image)
+                        render.draw(content_layer)
+                        content_layer.save(filename=get_temp_name(module))
                 else:
                     content = resolve_meta_tags(data[ctype])
                     offset[0] += get_alignment_offset(render.text_alignment, layout, module)
