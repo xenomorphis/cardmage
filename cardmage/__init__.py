@@ -216,6 +216,38 @@ def get_zone_coordinates(zone: list, iteration: int) -> list:
     return target
 
 
+def prepare_image(icon: Image, size: list, mode: int) -> Image:
+    """
+    Returns an icon as Image object and scales it, if necessary
+
+    Parameters
+    ----------
+        icon : Image
+            The raw icon file as a wand.Image object
+        size : list
+            A list containing the icon's target size [x, y]
+        mode : int
+            Defines if the icon shouldn't be scaled at all (0), only scaled down if it's too big (1)
+            or scaled in both directions to match the target size as close as possible (2)
+    """
+    if mode > 0:
+        scale_x = size[0] / icon.width
+        scale_y = size[1] / icon.height
+
+        if mode == 1:
+            if scale_x <= scale_y and scale_x <= 1:
+                icon.resize(int(icon.width * scale_x), int(icon.height * scale_x))
+            elif scale_x > scale_y and scale_y <= 1:
+                icon.resize(int(icon.width * scale_y), int(icon.height * scale_y))
+        else:
+            if scale_x <= scale_y:
+                icon.resize(int(icon.width * scale_x), int(icon.height * scale_x))
+            else:
+                icon.resize(int(icon.width * scale_y), int(icon.height * scale_y))
+
+    return icon
+
+
 def render_card_content(data: dict, layout: dict, font: dict, icons: dict, module: str, draw: Drawing) -> None:
     """Renders a cards' modules"""
     target_coordinates = layout['modules'][module + '_zone']
@@ -426,15 +458,8 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                       " not found. Skipping...")
                                 continue
                             else:
-                                icon_layer = icon_file.clone()
-                                scale_x = layout['modules'][module + '_zone_dimensions'][0] / icon_layer.width
-                                scale_y = layout['modules'][module + '_zone_dimensions'][1] / icon_layer.height
-
-                                if scale_x < scale_y:
-                                    icon_layer.resize(int(icon_layer.width * scale_x), int(icon_layer.height * scale_x))
-                                else:
-                                    icon_layer.resize(int(icon_layer.width * scale_y), int(icon_layer.height * scale_y))
-
+                                icon_layer = prepare_image(
+                                    icon_file.clone(), layout['modules'][module + '_zone_dimensions'], 1)
                                 draw.composite(operator='atop', left=targets[0] + offset[0], top=targets[1] + offset[1],
                                                width=icon_layer.width, height=icon_layer.height, image=icon_layer)
 
@@ -462,17 +487,8 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                     iteration += 1
                                     continue
                                 else:
-                                    icon_layer = icon_file.clone()
-                                    scale_x = layout['modules'][module + '_zone_dimensions'][0] / icon_layer.width
-                                    scale_y = layout['modules'][module + '_zone_dimensions'][1] / icon_layer.height
-
-                                    if scale_x < scale_y:
-                                        icon_layer.resize(
-                                            int(icon_layer.width * scale_x), int(icon_layer.height * scale_x))
-                                    else:
-                                        icon_layer.resize(
-                                            int(icon_layer.width * scale_y), int(icon_layer.height * scale_y))
-
+                                    icon_layer = prepare_image(
+                                        icon_file.clone(), layout['modules'][module + '_zone_dimensions'], 1)
                                     draw.composite(operator='atop', left=targets[0], top=targets[1],
                                                    width=icon_layer.width, height=icon_layer.height, image=icon_layer)
 
