@@ -378,10 +378,34 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                         text += str(number) + " " + data['keys'][iteration]
                                     elif keys_mode == 'icons':
                                         text += str(number)
+
+                                        try:
+                                            icon_file = Image(
+                                                filename=dir_path(base_dir + settings['paths']['icons'] +
+                                                                  icons[data['keys'][iteration]]))
+                                        except FileNotFoundError:
+                                            print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
+                                                  icons[data['keys'][iteration]] + " not found. Skipping...")
+                                            continue
+                                        else:
+                                            icon_layer = prepare_image(
+                                                icon_file.clone(), [layout['modules'][module + '_zone_dimensions'][0],
+                                                                    int(1.2 * gfx.font_size)], 1)
+                                            text_offset = gfx.get_font_metrics(content_layer, text, True)
+                                            space_offset = gfx.get_font_metrics(content_layer, ' ', True)
+                                            draw.composite(operator='atop',
+                                                           left=targets[0] + offset[0] + text_offset.text_width + 5,
+                                                           top=targets[1] + text_offset.text_height - int(1.2 * gfx.font_size),
+                                                           width=icon_layer.width, height=icon_layer.height,
+                                                           image=icon_layer)
+
+                                            text += int((icon_layer.width + 10) / space_offset.text_width) * ' '
                                     else:
                                         print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
                                               "using default 'keys_as = none'")
                                         text += str(number)
+
+                                    rendered += 1
 
                                 iteration += 1
 
