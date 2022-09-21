@@ -11,7 +11,7 @@ source_vertical = "AetherSchmiede.png"
 source_vertical_hd = "AetherSchmiede.png"
 
 [layout]
-type = "bezirk"
+type = "neutral"
 # background = "white"
 
 [meta]

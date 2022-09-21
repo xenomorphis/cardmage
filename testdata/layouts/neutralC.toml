@@ -21,7 +21,7 @@ attributes_zone = [
     [672, 177]
 ]
 attributes_zone_dimensions = [35, 40]
-attributes_zone_icon_offset = [-42, -5]
+attributes_zone_icon_offset = [-44, 4]
 edition_icon_zone = [627, 576]
 edition_icon_zone_dimensions = [90, 100]
 meta_id_zone = [309, 984]
