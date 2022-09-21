@@ -423,6 +423,23 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                         text += str(number) + " " + data['keys'][iteration]
                                     elif keys_mode == 'icons':
                                         text += str(number)
+
+                                        try:
+                                            icon_file = Image(
+                                                filename=dir_path(base_dir + settings['paths']['icons'] +
+                                                                  icons[data['keys'][iteration]]))
+                                        except FileNotFoundError:
+                                            print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
+                                                  icons[data['keys'][iteration]] + " not found. Skipping...")
+                                            continue
+                                        else:
+                                            icon_layer = prepare_image(
+                                                icon_file.clone(), layout['modules'][module + '_zone_dimensions'], 0)
+                                            draw.composite(operator='atop',
+                                                           left=targets[0] + layout['modules'][module + '_zone_icon_offset'][0],
+                                                           top=targets[1] + layout['modules'][module + '_zone_icon_offset'][1],
+                                                           width=icon_layer.width, height=icon_layer.height,
+                                                           image=icon_layer)
                                     else:
                                         print("  - NOTICE: No 'keys_as' or 'keys' attribute found; "
                                               "using default 'keys_as = none'")
