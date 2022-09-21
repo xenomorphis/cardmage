@@ -21,7 +21,7 @@ costs_zone = [
     [45, 177]
 ]
 costs_zone_dimensions = [35, 40]
-costs_zone_icon_offset = [31, 3]
+costs_zone_icon_offset = [33, 3]
 edition_icon_zone = [627, 576]
 edition_icon_zone_dimensions = [90, 100]
 meta_id_zone = [309, 984]
