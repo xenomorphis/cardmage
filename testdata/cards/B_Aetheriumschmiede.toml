@@ -35,8 +35,8 @@ paragraph = "{edition}-{id}"
 
 [modules.resources]
 array = [0, 1, 0, 0, 0, 0, 0]
-keys = ["Gold", "Feuer", "Wasser", "Wind", "Licht", "Schatten", "Ehre"]
-keys_as = "text"
+keys = ["gold", "fire", "Wasser", "Wind", "Licht", "Schatten", "Ehre"]
+keys_as = "icons"
 prefix = "Ressourcen: "
 
 [modules.text]
