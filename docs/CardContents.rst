@@ -152,7 +152,7 @@ modules
       - yes
     * - ``icons``
       - 40
-      - fills multiple zones with different icons (available in a future version)
+      - fills multiple zones with different icons
       - no
       - no
     * - ``array``
