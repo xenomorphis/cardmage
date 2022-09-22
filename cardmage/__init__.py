@@ -367,7 +367,11 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                             if render.stroke_width:
                                 gfx.stroke_width = render.stroke_width
 
+                            space_offset = gfx.get_font_metrics(content_layer, ' ', True)
                             text = ""
+
+                            if offset[0] > 0:
+                                text += int(1 + (offset[0] / space_offset.text_width)) * ' '
 
                             for number in data[ctype]:
                                 if number > 0:
@@ -392,9 +396,8 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                                 icon_file.clone(), [layout['modules'][module + '_zone_dimensions'][0],
                                                                     int(1.2 * gfx.font_size)], 1)
                                             text_offset = gfx.get_font_metrics(content_layer, text, True)
-                                            space_offset = gfx.get_font_metrics(content_layer, ' ', True)
                                             draw.composite(operator='atop',
-                                                           left=targets[0] + offset[0] + text_offset.text_width + 5,
+                                                           left=targets[0] + text_offset.text_width + 4,
                                                            top=targets[1] + text_offset.text_height - int(1.2 * gfx.font_size),
                                                            width=icon_layer.width, height=icon_layer.height,
                                                            image=icon_layer)
@@ -409,7 +412,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
                                 iteration += 1
 
-                            offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+                            offset[0] = 0 + get_alignment_offset(render.text_alignment, layout, module)
                             gfx.text(int(offset[0]), int(render.font_size + offset[1]), text)
                             gfx.draw(content_layer)
                             content_layer.save(filename=get_temp_name(module + str(iteration)))
