@@ -252,9 +252,6 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
     """Renders a cards' modules"""
     target_coordinates = layout['modules'][module + '_zone']
 
-    # print(module)
-    # print(target_coordinates)
-
     with Color('transparent') as bg:
         content_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
                               height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
