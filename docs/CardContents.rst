@@ -132,7 +132,7 @@ modules
       - yes
     * - ``prefix``
       - 1
-      - displaying a different formatted text at the beginning of a module **without** introducing a line-feed at it's end
+      - displaying a short different formatted text at the beginning of a module **without** introducing a line-feed at it's end
       - yes
       - no
     * - ``condition``
