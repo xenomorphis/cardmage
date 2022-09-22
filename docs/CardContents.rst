@@ -137,7 +137,7 @@ modules
       - no
     * - ``condition``
       - 10
-      - displaying a different formatted text or headline at the beginning of a module **with** a line-feed at it's end
+      - displaying a short different formatted text or headline at the beginning of a module **with** a line-feed at it's end
       - yes
       - yes
     * - ``paragraph``
