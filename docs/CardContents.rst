@@ -158,8 +158,8 @@ modules
     * - ``array``
       - 50
       - special content element used for filling multiple zones dynamically with similar content or creating a dynamic list in a single zone
-      - no
-      - no
+      - yes, when used in a single zone only
+      - there's no 'next content element'
 
 | If there's more than one content element present in a module the order in which the
   individual content elements are rendered onto the card depends on the priority values as seen
