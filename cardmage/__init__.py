@@ -338,6 +338,8 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                     render.stroke_color = Color(data['outline']['color'])
                     render.stroke_width = data['outline']['width']
 
+                space_offset = render.get_font_metrics(content_layer, ' ', True)
+
                 if ctype == 'array':
                     iteration = 0
                     rendered = 0
@@ -367,11 +369,10 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                             if render.stroke_width:
                                 gfx.stroke_width = render.stroke_width
 
-                            space_offset = gfx.get_font_metrics(content_layer, ' ', True)
                             text = ""
 
                             if offset[0] > 0:
-                                text += int(1 + (offset[0] / space_offset.text_width)) * ' '
+                                text += int(1 + offset[0] / space_offset.text_width) * ' '
 
                             for number in data[ctype]:
                                 if number > 0:
@@ -412,7 +413,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
                                 iteration += 1
 
-                            offset[0] = 0 + get_alignment_offset(render.text_alignment, layout, module)
+                            offset[0] = get_alignment_offset(render.text_alignment, layout, module)
                             gfx.text(int(offset[0]), int(render.font_size + offset[1]), text)
                             gfx.draw(content_layer)
                             content_layer.save(filename=get_temp_name(module + str(iteration)))
@@ -563,11 +564,16 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         render.draw(content_layer)
                         content_layer.save(filename=get_temp_name(module))
                 else:
-                    content = resolve_meta_tags(data[ctype])
-                    offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+                    content = ''
+
+                    if offset[0] > 0:
+                        content += int(1 + offset[0] / space_offset.text_width) * ' '
+
+                    content += resolve_meta_tags(data[ctype])
                     content = word_wrap(content_layer, render, content, content_layer.width,
                                         content_layer.height - offset[1])
 
+                    offset[0] = get_alignment_offset(render.text_alignment, layout, module)
                     render.text(int(offset[0]), int(render.font_size + offset[1]), content)
                     metrics = render.get_font_metrics(content_layer, content, True)
 
