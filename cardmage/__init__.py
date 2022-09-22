@@ -371,7 +371,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
                             text = ""
 
-                            if offset[0] > 0:
+                            if offset[0] > 0 and gfx.text_alignment == 'left':
                                 text += int(1 + offset[0] / space_offset.text_width) * ' '
 
                             for number in data[ctype]:
@@ -566,7 +566,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                 else:
                     content = ''
 
-                    if offset[0] > 0:
+                    if offset[0] > 0 and render.text_alignment == 'left':
                         content += int(1 + offset[0] / space_offset.text_width) * ' '
 
                     content += resolve_meta_tags(data[ctype])
