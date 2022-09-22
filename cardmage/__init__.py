@@ -564,23 +564,48 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         render.draw(content_layer)
                         content_layer.save(filename=get_temp_name(module))
                 else:
-                    content = ''
+                    offset[0] += get_alignment_offset(render.text_alignment, layout, module)
 
-                    if offset[0] > 0 and render.text_alignment == 'left':
-                        content += int(1 + offset[0] / space_offset.text_width) * ' '
+                    content = resolve_meta_tags(data[ctype])
 
-                    content += resolve_meta_tags(data[ctype])
-                    content = word_wrap(content_layer, render, content, content_layer.width,
-                                        content_layer.height - offset[1])
+                    if offset[0] == 0 or render.text_alignment != 'left':
+                        content = word_wrap(content_layer, render, content, content_layer.width,
+                                            content_layer.height - offset[1])
+                        render.text(int(offset[0]), int(render.font_size + offset[1]), content)
 
-                    offset[0] = get_alignment_offset(render.text_alignment, layout, module)
-                    render.text(int(offset[0]), int(render.font_size + offset[1]), content)
-                    metrics = render.get_font_metrics(content_layer, content, True)
+                        if '\n' in content:
+                            metrics = render.get_font_metrics(content_layer, content, True)
+                        else:
+                            metrics = render.get_font_metrics(content_layer, content, False)
+
+                        new_offset = [metrics.text_width, metrics.text_height]
+
+                    else:
+                        # Fill up the prefixed line first
+                        content_fl = word_wrap(content_layer, render, content, content_layer.width - offset[0],
+                                               content_layer.height - offset[1])
+                        content_fl = content_fl.partition('\n')[0]
+                        render.text(int(offset[0]), int(render.font_size + offset[1]), content_fl)
+                        metrics = render.get_font_metrics(content_layer, content_fl, False)
+
+                        if len(content) > len(content_fl):
+                            # render what's left normally and calculate the height of both text blocks
+                            content_rest = word_wrap(content_layer, render, content[len(content_fl):].strip(),
+                                                     content_layer.width, content_layer.height - offset[1])
+                            render.text(0, int(2.2 * render.font_size + offset[1]), content_rest)
+
+                            if '\n' in content_rest:
+                                metrics_rest = render.get_font_metrics(content_layer, content_rest, False)
+                            else:
+                                metrics_rest = render.get_font_metrics(content_layer, content_rest, False)
+
+                            new_offset = [0, metrics.text_height + metrics_rest.text_height]
 
                     if ctype == 'prefix':
-                        offset[0] += metrics.text_width + int(render.font_size * 0.25)
+                        offset[0] += new_offset[0] + int(render.font_size * 0.25)
                     else:
-                        offset[1] += metrics.text_height + int(render.font_size * 0.25)
+                        offset[0] = 0
+                        offset[1] += new_offset[1] + int(render.font_size * 0.25)
 
                     render.draw(content_layer)
                     content_layer.save(filename=get_temp_name(module))
@@ -620,7 +645,11 @@ def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height:
 
     def eval_metrics(txt: str):
         """Calculates width/height of text."""
-        metrics = ctx.get_font_metrics(image, txt, True)
+        if '\n' in txt:
+            metrics = ctx.get_font_metrics(image, txt, True)
+        else:
+            metrics = ctx.get_font_metrics(image, txt, False)
+
         return (metrics.text_width, metrics.text_height)
 
     while ctx.font_size > 0 and iteration_attempts:
