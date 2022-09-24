@@ -8,6 +8,7 @@ content you want. Let's have a look at an example::
 
     [card]
     back = ""  # currently not in use
+    code = "{edition}-{id}{language}"
     font = "standard"
 
     [image]
@@ -70,8 +71,9 @@ title
 
 card
 ''''
-| The 'card' block defines the image file used for the card's back (*'back'*) and the
-  font set used for text rendering (*'font'*).
+| The 'card' block defines the image file used for the card's back (*'back'*), a unique code
+  used as the generated card's file name (*'code'*) and the font set used for text rendering
+  (*'font'*).
 | Important to know: You don't need to add the file extension if you're referencing a TOML
   file. For image files however you need to add the file extension, because of the different
   formats a image file can have (PNGs, JPEGs, ...). Folder names or complete paths can be
