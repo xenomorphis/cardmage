@@ -627,7 +627,7 @@ def resolve_meta_tags(string: str) -> str:
     has_meta_tags = all([char in string for char in meta_tags])
 
     if has_meta_tags:
-        content_parts = re.findall(r'\{.*?\}', string)
+        content_parts = re.findall(r'\{.*?}', string)
 
         for tag in content_parts:
             meta_key = tag.replace('{', '').replace('}', '')
