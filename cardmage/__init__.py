@@ -562,10 +562,19 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         content_layer.save(filename=get_temp_name(module))
                 else:
                     offset[0] += get_alignment_offset(render.text_alignment, layout, module)
-
                     content = resolve_meta_tags(data[ctype])
 
-                    if offset[0] == 0 or render.text_alignment != 'left':
+                    # estimated amount of possible characters that can be rendered in the current rendering zone
+                    chars_line = int(layout['modules'][module + '_zone_dimensions'][0] / (0.75 * render.font_size))
+                    lines_max = int((layout['modules'][module + '_zone_dimensions'][1] - offset[1]) /
+                                    (1.2 * render.font_size))
+                    chars_max = (lines_max - 1) * chars_line
+
+                    if offset[0] == 0 or render.text_alignment != 'left' or len(content) > chars_max:
+                        if offset[0] > 0 and render.text_alignment == 'left':
+                            offset[0] = 0
+                            offset[1] += new_offset[1] + int(render.font_size * 0.25)
+
                         content = word_wrap(content_layer, render, content, content_layer.width,
                                             content_layer.height - offset[1])
                         render.text(int(offset[0]), int(render.font_size + offset[1]), content)
