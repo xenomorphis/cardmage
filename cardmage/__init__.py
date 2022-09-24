@@ -146,11 +146,9 @@ def cl_main() -> None:
             # 5. Save image in dist
             if args.print:
                 current.transform_colorspace('cmyk')
-                current.save(
-                    filename=str(distpath + blueprint['title'] + "-cmyk.tif"))
+                current.save(filename=str(distpath + blueprint['title'] + "-cmyk.tif"))
             else:
-                current.save(
-                    filename=str(distpath + blueprint['title'] + ".png"))
+                current.save(filename=str(distpath + blueprint['title'] + ".png"))
 
             print("  - Build '" + blueprint['title'] + "' completed.")
             build_no += 1
