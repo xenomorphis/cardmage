@@ -70,7 +70,8 @@ def cl_main() -> None:
     for card in args.path:
         try:
             blueprint = toml.load(dir_path(base_dir + settings['paths']['cards'] + card))
-            print("[" + str(build_no) + "/" + str(builds_total) + "] " + "Build '" + blueprint['title'] + "' started.")
+            print("[" + str(build_no) + "/" + str(builds_total) + "] " + "Build '" +
+                  resolve_meta_tags(blueprint['card']['code']) + "' started.")
 
             # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
             font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
@@ -96,7 +97,7 @@ def cl_main() -> None:
 
         except FileNotFoundError as error:
             print(error)
-            print("  - Build '" + blueprint['title'] + ".png' failed.")
+            print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + ".png' failed.")
             build_no += 1
             continue
 
@@ -146,11 +147,11 @@ def cl_main() -> None:
             # 5. Save image in dist
             if args.print:
                 current.transform_colorspace('cmyk')
-                current.save(filename=str(distpath + blueprint['title'] + "-cmyk.tif"))
+                current.save(filename=str(distpath + resolve_meta_tags(blueprint['card']['code']) + "-cmyk.tif"))
             else:
-                current.save(filename=str(distpath + blueprint['title'] + ".png"))
+                current.save(filename=str(distpath + resolve_meta_tags(blueprint['card']['code']) + ".png"))
 
-            print("  - Build '" + blueprint['title'] + "' completed.")
+            print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + "' completed.")
             build_no += 1
 
     # 6. Remove _build and it's contents

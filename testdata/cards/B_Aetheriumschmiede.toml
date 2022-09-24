@@ -2,6 +2,7 @@ title = "Die Aetheriumschmiede"
 
 [card]
 back = ""
+code = "{edition}-{id}{language}"
 font = "standard"
 
 [image]
