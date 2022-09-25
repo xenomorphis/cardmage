@@ -159,7 +159,19 @@ def cl_main() -> None:
 
 
 def dir_path(string: str):
-    """Checks file paths for existence before using them."""
+    """
+    Checks file paths for existence before using them.
+
+    Parameters
+    ----------
+        string : str
+            The path to be checked
+
+    Raises
+    ------
+        FileNotFoundError
+            Raised if the given path does not exist
+    """
     if os.path.exists(string):
         return string
     else:
@@ -227,6 +239,11 @@ def prepare_image(icon: Image, size: list, mode: int) -> Image:
         mode : int
             Defines if the icon shouldn't be scaled at all (0), only scaled down if it's too big (1)
             or scaled in both directions to match the target size as close as possible (2)
+
+    Returns
+    -------
+        Image
+            The processed wand.Image object
     """
     if mode > 0:
         scale_x = size[0] / icon.width
@@ -247,7 +264,24 @@ def prepare_image(icon: Image, size: list, mode: int) -> Image:
 
 
 def render_card_content(data: dict, layout: dict, font: dict, icons: dict, module: str, draw: Drawing) -> None:
-    """Renders a cards' modules"""
+    """
+    Renders a card's modules
+
+    Parameters
+    ----------
+        data : dict
+            The card data of the current module
+        layout : dict
+            The layout settings of the current card
+        font : dict
+            The default font settings
+        icons : dict
+            The current icon set
+        module : str
+            The name of the current module
+        draw : Drawing
+            A wand.Drawing object used for placing elements onto a card
+    """
     target_coordinates = layout['modules'][module + '_zone']
 
     with Color('transparent') as bg:
@@ -586,7 +620,31 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
 
 def render_text_multiline(content: str, layer: Image, layout: dict, module: str, offset: list, render: Drawing, mod=1.0) -> list:
-    """Renders text depending on available space and current horizontal offsets."""
+    """
+    Renders text depending on available space and current horizontal offsets.
+
+    Parameters
+    ----------
+        content : str
+            The text to be rendered
+        layer : Image
+            A wand.Image object used as a carrier for the rendering process
+        layout : dict
+            The layout settings of the current card
+        module : str
+            The name of the current module
+        offset : list
+            Contains the current rendering offset based on the modules base coordinates [x, y]
+        render : Drawing
+            A wand.Drawing object used for placing elements onto an Image object
+        mod : float
+            Modifier used for increasing the 'Mode 2' threshold if the 'content' is likely to contain a lot of spaces
+
+    Returns
+    -------
+        list
+            A list containing the new offset values resulting from the text rendering
+    """
     new_offset = [0, 0]
 
     # estimated amount of possible characters that can be rendered in the current rendering zone
@@ -633,7 +691,19 @@ def render_text_multiline(content: str, layer: Image, layout: dict, module: str,
 
 
 def resolve_meta_tags(string: str) -> str:
-    """Resolves and replaces meta_tags"""
+    """
+    Resolves and replaces meta_tags
+
+    Parameters
+    ----------
+        string : str
+            The text to be checked for meta tags
+
+    Returns
+    -------
+        str
+            Text with replaced meta tags
+    """
     meta_tags = ['{', '}']
     has_meta_tags = all([char in string for char in meta_tags])
 
