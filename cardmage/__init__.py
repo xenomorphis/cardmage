@@ -409,7 +409,12 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                 iteration += 1
 
                             offset[0] = get_alignment_offset(render.text_alignment, layout, module)
-                            gfx.text(int(offset[0]), int(render.font_size + offset[1]), text)
+
+                            if keys_mode == 'icons':
+                                render_text_multiline(text, content_layer, layout, module, offset, gfx, mod=1.5)
+                            else:
+                                render_text_multiline(text, content_layer, layout, module, offset, gfx)
+
                             gfx.draw(content_layer)
                             content_layer.save(filename=get_temp_name(module + str(iteration)))
 
@@ -561,49 +566,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                 else:
                     offset[0] += get_alignment_offset(render.text_alignment, layout, module)
                     content = resolve_meta_tags(data[ctype])
-
-                    # estimated amount of possible characters that can be rendered in the current rendering zone
-                    chars_line = int(layout['modules'][module + '_zone_dimensions'][0] / (0.75 * render.font_size))
-                    lines_max = int((layout['modules'][module + '_zone_dimensions'][1] - offset[1]) /
-                                    (1.2 * render.font_size))
-                    chars_max = (lines_max - 1) * chars_line
-
-                    if offset[0] == 0 or render.text_alignment != 'left' or len(content) > chars_max:
-                        if offset[0] > 0 and render.text_alignment == 'left':
-                            offset[0] = 0
-                            offset[1] += new_offset[1] + int(render.font_size * 0.25)
-
-                        content = word_wrap(content_layer, render, content, content_layer.width,
-                                            content_layer.height - offset[1])
-                        render.text(int(offset[0]), int(render.font_size + offset[1]), content)
-
-                        if '\n' in content:
-                            metrics = render.get_font_metrics(content_layer, content, True)
-                        else:
-                            metrics = render.get_font_metrics(content_layer, content, False)
-
-                        new_offset = [metrics.text_width, metrics.text_height]
-
-                    else:
-                        # Fill up the prefixed line first
-                        content_fl = word_wrap(content_layer, render, content, content_layer.width - offset[0],
-                                               content_layer.height - offset[1])
-                        content_fl = content_fl.partition('\n')[0]
-                        render.text(int(offset[0]), int(render.font_size + offset[1]), content_fl)
-                        metrics = render.get_font_metrics(content_layer, content_fl, False)
-
-                        if len(content) > len(content_fl):
-                            # render what's left normally and calculate the height of both text blocks
-                            content_rest = word_wrap(content_layer, render, content[len(content_fl):].strip(),
-                                                     content_layer.width, content_layer.height - offset[1])
-                            render.text(0, int(2.2 * render.font_size + offset[1]), content_rest)
-
-                            if '\n' in content_rest:
-                                metrics_rest = render.get_font_metrics(content_layer, content_rest, False)
-                            else:
-                                metrics_rest = render.get_font_metrics(content_layer, content_rest, False)
-
-                            new_offset = [0, metrics.text_height + metrics_rest.text_height]
+                    new_offset = render_text_multiline(content, content_layer, layout, module, offset, render)
 
                     if ctype == 'prefix':
                         offset[0] += new_offset[0] + int(render.font_size * 0.25)
@@ -620,6 +583,53 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
             else:
                 continue
+
+
+def render_text_multiline(content: str, layer: Image, layout: dict, module: str, offset: list, render: Drawing, mod=1.0) -> list:
+    """Renders text depending on available space and current horizontal offsets."""
+    new_offset = [0, 0]
+
+    # estimated amount of possible characters that can be rendered in the current rendering zone
+    chars_line = int(layout['modules'][module + '_zone_dimensions'][0] / (0.75 * render.font_size)) * mod
+    lines_max = int((layout['modules'][module + '_zone_dimensions'][1] - offset[1]) / (1.2 * render.font_size))
+    chars_max = (lines_max - 1) * chars_line
+
+    if offset[0] == 0 or render.text_alignment != 'left' or len(content) > chars_max:
+        if offset[0] > 0 and render.text_alignment == 'left':
+            offset[0] = 0
+            offset[1] += new_offset[1] + int(render.font_size * 0.25)
+
+        content = word_wrap(layer, render, content, layer.width, layer.height - offset[1])
+        render.text(int(offset[0]), int(render.font_size + offset[1]), content)
+
+        if '\n' in content:
+            metrics = render.get_font_metrics(layer, content, True)
+        else:
+            metrics = render.get_font_metrics(layer, content, False)
+
+        new_offset = [metrics.text_width, metrics.text_height]
+
+    else:
+        # Fill up the prefixed line first
+        content_fl = word_wrap(layer, render, content, layer.width - offset[0], layer.height - offset[1])
+        content_fl = content_fl.partition('\n')[0]
+        render.text(int(offset[0]), int(render.font_size + offset[1]), content_fl)
+        metrics = render.get_font_metrics(layer, content_fl, False)
+
+        if len(content) > len(content_fl):
+            # render what's left normally and calculate the height of both text blocks
+            content_rest = word_wrap(layer, render, content[len(content_fl):].strip(), layer.width,
+                                     layer.height - offset[1])
+            render.text(0, int(2.2 * render.font_size + offset[1]), content_rest)
+
+            if '\n' in content_rest:
+                metrics_rest = render.get_font_metrics(layer, content_rest, False)
+            else:
+                metrics_rest = render.get_font_metrics(layer, content_rest, False)
+
+            new_offset = [0, metrics.text_height + metrics_rest.text_height]
+
+    return new_offset
 
 
 def resolve_meta_tags(string: str) -> str:
