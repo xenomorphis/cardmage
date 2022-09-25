@@ -131,7 +131,7 @@ def cl_main() -> None:
                 offset_x = get_alignment_offset(draw.text_alignment, layout, 'title')
                 draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
                 draw(current)
-                current.save(filename=get_temp_name('template'))
+                # current.save(filename=get_temp_name('template'))
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
@@ -416,7 +416,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                 render_text_multiline(text, content_layer, layout, module, offset, gfx)
 
                             gfx.draw(content_layer)
-                            content_layer.save(filename=get_temp_name(module + str(iteration)))
+                            # content_layer.save(filename=get_temp_name(module + str(iteration)))
 
                         draw.composite(operator='atop', left=targets[0], top=targets[1], width=content_layer.width,
                                        height=content_layer.height, image=content_layer)
@@ -479,7 +479,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                 if rendered < len(target_coordinates) - 1:
                                     rendered += 1
 
-                                content_layer.save(filename=get_temp_name(module + str(iteration)))
+                                # content_layer.save(filename=get_temp_name(module + str(iteration)))
 
                                 draw.composite(operator='atop', left=targets[0], top=targets[1],
                                                width=content_layer.width, height=content_layer.height,
@@ -551,7 +551,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         offset[1] += metrics.text_height + int(render.font_size * 0.25)
 
                     render.draw(content_layer)
-                    content_layer.save(filename=get_temp_name(module))
+                    # content_layer.save(filename=get_temp_name(module))
                 elif ctype == 'image':
                     try:
                         image = Image(filename=dir_path(base_dir + settings['paths']['images'] + data[ctype]))
@@ -562,7 +562,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                     else:
                         render.composite(operator='atop', left=0, top=0, width=image.width, height=image.height, image=image)
                         render.draw(content_layer)
-                        content_layer.save(filename=get_temp_name(module))
+                        # content_layer.save(filename=get_temp_name(module))
                 else:
                     offset[0] += get_alignment_offset(render.text_alignment, layout, module)
                     content = resolve_meta_tags(data[ctype])
@@ -575,7 +575,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         offset[1] += new_offset[1] + int(render.font_size * 0.25)
 
                     render.draw(content_layer)
-                    content_layer.save(filename=get_temp_name(module))
+                    # content_layer.save(filename=get_temp_name(module))
 
                 if ctype != 'array':
                     draw.composite(operator='atop', left=target_coordinates[0], top=target_coordinates[1],
