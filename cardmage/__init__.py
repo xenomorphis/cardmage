@@ -445,9 +445,11 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                             offset[0] = get_alignment_offset(render.text_alignment, layout, module)
 
                             if keys_mode == 'icons':
-                                render_text_multiline(text, content_layer, layout, module, offset, gfx, mod=1.5)
+                                render_text_multiline(text, content_layer, layout['modules'][module + '_zone_dimensions'],
+                                                      offset, gfx, mod=1.5)
                             else:
-                                render_text_multiline(text, content_layer, layout, module, offset, gfx)
+                                render_text_multiline(text, content_layer,
+                                                      layout['modules'][module + '_zone_dimensions'], offset, gfx)
 
                             gfx.draw(content_layer)
                             # content_layer.save(filename=get_temp_name(module + str(iteration)))
@@ -600,7 +602,8 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                 else:
                     offset[0] += get_alignment_offset(render.text_alignment, layout, module)
                     content = resolve_meta_tags(data[ctype])
-                    new_offset = render_text_multiline(content, content_layer, layout, module, offset, render)
+                    new_offset = render_text_multiline(content, content_layer,
+                                                       layout['modules'][module + '_zone_dimensions'], offset, render)
 
                     if ctype == 'prefix':
                         offset[0] += new_offset[0] + int(render.font_size * 0.25)
@@ -619,7 +622,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                 continue
 
 
-def render_text_multiline(content: str, layer: Image, layout: dict, module: str, offset: list, render: Drawing, mod=1.0) -> list:
+def render_text_multiline(content: str, layer: Image, size: list, offset: list, render: Drawing, mod=1.0) -> list:
     """
     Renders text depending on available space and current horizontal offsets.
 
@@ -629,16 +632,15 @@ def render_text_multiline(content: str, layer: Image, layout: dict, module: str,
             The text to be rendered
         layer : Image
             A wand.Image object used as a carrier for the rendering process
-        layout : dict
+        size : list
             The layout settings of the current card
-        module : str
-            The name of the current module
         offset : list
             Contains the current rendering offset based on the modules base coordinates [x, y]
         render : Drawing
             A wand.Drawing object used for placing elements onto an Image object
         mod : float
-            Modifier used for increasing the 'Mode 2' threshold if the 'content' is likely to contain a lot of spaces
+            Optional modifier used for increasing the 'Mode 2' threshold if the 'content' is likely to contain a
+            lot of spaces
 
     Returns
     -------
@@ -648,8 +650,8 @@ def render_text_multiline(content: str, layer: Image, layout: dict, module: str,
     new_offset = [0, 0]
 
     # estimated amount of possible characters that can be rendered in the current rendering zone
-    chars_line = int(layout['modules'][module + '_zone_dimensions'][0] / (0.75 * render.font_size)) * mod
-    lines_max = int((layout['modules'][module + '_zone_dimensions'][1] - offset[1]) / (1.2 * render.font_size))
+    chars_line = int(size[0] / (0.75 * render.font_size)) * mod
+    lines_max = int((size[1] - offset[1]) / (1.2 * render.font_size))
     chars_max = (lines_max - 1) * chars_line
 
     if offset[0] == 0 or render.text_alignment != 'left' or len(content) > chars_max:
