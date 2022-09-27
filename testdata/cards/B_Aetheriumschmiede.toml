@@ -4,6 +4,7 @@ title = "Die Aetheriumschmiede"
 back = ""
 code = "{edition}-{id}{language}"
 font = "standard"
+#translations = []
 
 [image]
 source = "AetherSchmiede.png"

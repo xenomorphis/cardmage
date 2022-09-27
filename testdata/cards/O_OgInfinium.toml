@@ -4,6 +4,7 @@ title = "Oghma Infinium"
 back = ""
 code = "{edition}-{id}{language}"
 font = "standard"
+#translations = []
 
 [image]
 source = "OgInfinium.png"
