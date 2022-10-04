@@ -19,6 +19,7 @@ def cl_main() -> None:
     arg_parser = argparse.ArgumentParser(description='Cardmage open-source card builder')
     arg_parser.add_argument("path", nargs="*", help="Path to one or more card's root TOML file. Leave empty to build "
                                                     "all root files found in the card directory")
+    arg_parser.add_argument("-l", "--languages", help="Render card translations", default=False, action="store_true")
     arg_parser.add_argument("-p", "--print", help="Render card in print quality", default=False, action="store_true")
     arg_parser.add_argument("-t", "--test", help="Use test settings", default=False, action="store_true")
 
@@ -52,7 +53,7 @@ def cl_main() -> None:
     buildpath = os.path.join(base_dir, '_build/')
     distpath = os.path.join(base_dir, 'dist/')
 
-    if not os.path.exists(buildpath):
+    if not os.path.exists(buildpath) and args.languages:
         os.mkdir(buildpath)
 
     if not os.path.exists(distpath):
@@ -131,7 +132,9 @@ def cl_main() -> None:
                 offset_x = get_alignment_offset(draw.text_alignment, layout, 'title')
                 draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
                 draw(current)
-                # current.save(filename=get_temp_name('template'))
+
+                if args.languages:
+                    current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
@@ -155,7 +158,8 @@ def cl_main() -> None:
             build_no += 1
 
     # 6. Remove _build and it's contents
-    shutil.rmtree(buildpath)
+    if args.languages:
+        shutil.rmtree(buildpath)
 
 
 def dir_path(string: str):
@@ -450,7 +454,6 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                 render_text_multiline(text, content_layer, offset, gfx)
 
                             gfx.draw(content_layer)
-                            # content_layer.save(filename=get_temp_name(module + str(iteration)))
 
                         draw.composite(operator='atop', left=targets[0], top=targets[1], width=content_layer.width,
                                        height=content_layer.height, image=content_layer)
@@ -512,8 +515,6 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
                                 if rendered < len(target_coordinates) - 1:
                                     rendered += 1
-
-                                # content_layer.save(filename=get_temp_name(module + str(iteration)))
 
                                 draw.composite(operator='atop', left=targets[0], top=targets[1],
                                                width=content_layer.width, height=content_layer.height,
@@ -585,7 +586,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         offset[1] += metrics.text_height + int(render.font_size * 0.25)
 
                     render.draw(content_layer)
-                    # content_layer.save(filename=get_temp_name(module))
+
                 elif ctype == 'image':
                     try:
                         image = Image(filename=dir_path(base_dir + settings['paths']['images'] + data[ctype]))
@@ -596,7 +597,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                     else:
                         render.composite(operator='atop', left=0, top=0, width=image.width, height=image.height, image=image)
                         render.draw(content_layer)
-                        # content_layer.save(filename=get_temp_name(module))
+
                 else:
                     offset[0] += get_alignment_offset(render.text_alignment, layout, module)
                     content = resolve_meta_tags(data[ctype])
@@ -609,7 +610,6 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         offset[1] += new_offset[1] + int(render.font_size * 0.25)
 
                     render.draw(content_layer)
-                    # content_layer.save(filename=get_temp_name(module))
 
                 if ctype != 'array':
                     draw.composite(operator='atop', left=target_coordinates[0], top=target_coordinates[1],
