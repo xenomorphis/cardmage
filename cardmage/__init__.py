@@ -6,7 +6,6 @@ import re
 import shutil
 import sys
 from textwrap import wrap
-import time
 import toml
 from wand.color import Color
 from wand.drawing import Drawing
@@ -196,14 +195,6 @@ def get_alignment_offset(align: str, layout: dict, module: str) -> int:
             return int(layout['modules'][module + '_zone_dimensions'][0])
     else:
         return 0
-
-
-def get_temp_name(module: str) -> str:
-    """Creates and returns a unique file name for saving intermediate build artifacts"""
-    uts = str(int(time.time()))
-    fname = buildpath + uts + '-' + module + '.png'
-
-    return fname
 
 
 def get_title_font_style(styling: dict, attribute: str):
