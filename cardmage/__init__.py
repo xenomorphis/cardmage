@@ -118,6 +118,9 @@ def cl_main() -> None:
                                top=layout['config']['image_zone'][1], width=hero.width, height=hero.height, image=hero)
                 draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
 
+                if args.languages:
+                    current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
+
                 # 4. Use wand to place text onto card (save intermediate files in _build)
                 draw.font = base_dir + settings['paths']['fonts'] + get_title_font_style(font, 'fontstyle')
                 draw.font_size = get_title_font_style(font, 'fontsize')
@@ -131,9 +134,6 @@ def cl_main() -> None:
                 offset_x = get_alignment_offset(draw.text_alignment, layout, 'title')
                 draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
                 draw(current)
-
-                if args.languages:
-                    current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
