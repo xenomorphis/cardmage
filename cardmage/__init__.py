@@ -592,8 +592,19 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         render.draw(content_layer)
 
                 else:
+                    if ctype in default_prio:
+                        raw_content = data[ctype]
+                    else:
+                        try:
+                            str_index = data['paragraph']['alias'].index(ctype)
+                        except ValueError:
+                            print("  - NOTICE: Couldn't find a paragraph named " + ctype + ". Skipping...")
+                            continue
+                        else:
+                            raw_content = data['paragraph']['text'][str_index]
+
                     offset[0] += get_alignment_offset(render.text_alignment, layout, module)
-                    content = resolve_meta_tags(data[ctype])
+                    content = resolve_meta_tags(raw_content)
                     new_offset = render_text_multiline(content, content_layer, offset, render)
 
                     if ctype == 'prefix':
