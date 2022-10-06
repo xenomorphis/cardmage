@@ -28,6 +28,9 @@ def cl_main() -> None:
     global blueprint
     global buildpath
     global distpath
+    global font
+    global icons
+    global layout
     global settings
 
     build_no = 1
@@ -122,22 +125,22 @@ def cl_main() -> None:
                     current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
 
                 # 4. Use wand to place text onto card (save intermediate files in _build)
-                draw.font = base_dir + settings['paths']['fonts'] + get_title_font_style(font, 'fontstyle')
-                draw.font_size = get_title_font_style(font, 'fontsize')
-                draw.fill_color = Color(get_title_font_style(font, 'fontcolor'))
-                draw.text_alignment = get_title_font_style(font, 'textalign')
+                draw.font = base_dir + settings['paths']['fonts'] + get_title_font_style('fontstyle')
+                draw.font_size = get_title_font_style('fontsize')
+                draw.fill_color = Color(get_title_font_style('fontcolor'))
+                draw.text_alignment = get_title_font_style('textalign')
 
                 if 'outline' in font['tags']['title']:
                     draw.stroke_color = Color(font['tags']['title']['outline']['color'])
                     draw.stroke_width = font['tags']['title']['outline']['width']
 
-                offset_x = get_alignment_offset(draw.text_alignment, layout, 'title')
+                offset_x = get_alignment_offset(draw.text_alignment, 'title')
                 draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
                 draw(current)
 
                 for module in blueprint['modules']:
                     if module + '_zone' in layout['modules']:
-                        render_card_content(blueprint['modules'][module], layout, font, icons['icons'], module, draw)
+                        render_card_content(blueprint['modules'][module], module, draw)
 
                     else:
                         print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no rendering"
@@ -181,7 +184,7 @@ def dir_path(string: str):
         raise FileNotFoundError(string)
 
 
-def get_alignment_offset(align: str, layout: dict, module: str) -> int:
+def get_alignment_offset(align: str, module: str) -> int:
     """Checks current text alignment and returns the corresponding x-axis offset"""
     if align == 'center':
         if module == 'title':
@@ -197,18 +200,18 @@ def get_alignment_offset(align: str, layout: dict, module: str) -> int:
         return 0
 
 
-def get_title_font_style(styling: dict, attribute: str):
+def get_title_font_style(attribute: str):
     """Checks title font settings and returns the desired value"""
-    if attribute in styling['tags']['title']:
+    if attribute in font['tags']['title']:
         if attribute == "fontstyle":
-            return styling['config']['font_' + styling['tags']['title'][attribute]]
+            return font['config']['font_' + font['tags']['title'][attribute]]
         else:
-            return styling['tags']['title'][attribute]
+            return font['tags']['title'][attribute]
     else:
         if attribute == "fontstyle":
-            return styling['config']['font_normal']
+            return font['config']['font_normal']
         else:
-            return styling['default'][attribute]
+            return font['default'][attribute]
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
@@ -258,7 +261,7 @@ def prepare_image(icon: Image, size: list, mode: int) -> Image:
     return icon
 
 
-def render_card_content(data: dict, layout: dict, font: dict, icons: dict, module: str, draw: Drawing) -> None:
+def render_card_content(data: dict, module: str, draw: Drawing) -> None:
     """
     Renders a card's modules
 
@@ -266,12 +269,6 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
     ----------
         data : dict
             The card data of the current module
-        layout : dict
-            The layout settings of the current card
-        font : dict
-            The default font settings
-        icons : dict
-            The current icon set
         module : str
             The name of the current module
         draw : Drawing
@@ -413,10 +410,10 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                         try:
                                             icon_file = Image(
                                                 filename=dir_path(base_dir + settings['paths']['icons'] +
-                                                                  icons[data['keys'][iteration]]))
+                                                                  icons['icons'][data['keys'][iteration]]))
                                         except FileNotFoundError:
                                             print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                                  icons[data['keys'][iteration]] + " not found. Skipping...")
+                                                  icons['icons'][data['keys'][iteration]] + " not found. Skipping...")
                                             continue
                                         else:
                                             icon_layer = prepare_image(
@@ -439,7 +436,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
                                 iteration += 1
 
-                            offset[0] = get_alignment_offset(render.text_alignment, layout, module)
+                            offset[0] = get_alignment_offset(render.text_alignment, module)
 
                             if keys_mode == 'icons':
                                 render_text_multiline(text, content_layer, offset, gfx, mod=1.5)
@@ -452,7 +449,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                        height=content_layer.height, image=content_layer)
 
                     else:
-                        offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+                        offset[0] += get_alignment_offset(render.text_alignment, module)
 
                         for number in data[ctype]:
                             targets = get_zone_coordinates(target_coordinates, rendered)
@@ -485,10 +482,10 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                                         try:
                                             icon_file = Image(
                                                 filename=dir_path(base_dir + settings['paths']['icons'] +
-                                                                  icons[data['keys'][iteration]]))
+                                                                  icons['icons'][data['keys'][iteration]]))
                                         except FileNotFoundError:
                                             print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                                  icons[data['keys'][iteration]] + " not found. Skipping...")
+                                                  icons['icons'][data['keys'][iteration]] + " not found. Skipping...")
                                             continue
                                         else:
                                             icon_layer = prepare_image(
@@ -525,10 +522,10 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         for icon in data[ctype]:
                             try:
                                 icon_file = Image(
-                                    filename=dir_path(base_dir + settings['paths']['icons'] + icons[icon]))
+                                    filename=dir_path(base_dir + settings['paths']['icons'] + icons['icons'][icon]))
                             except FileNotFoundError:
-                                print("  - NOTICE: Required icon file " + settings['paths']['icons'] + icons[icon] +
-                                      " not found. Skipping...")
+                                print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
+                                      icons['icons'][icon] + " not found. Skipping...")
                                 continue
                             else:
                                 icon_layer = prepare_image(
@@ -553,10 +550,10 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
 
                                 try:
                                     icon_file = Image(
-                                        filename=dir_path(base_dir + settings['paths']['icons'] + icons[icon]))
+                                        filename=dir_path(base_dir + settings['paths']['icons'] + icons['icons'][icon]))
                                 except FileNotFoundError:
-                                    print("  - NOTICE: Required icon file " + settings['paths']['icons'] + icons[icon] +
-                                          " not found. Skipping...")
+                                    print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
+                                          icons['icons'][icon] + " not found. Skipping...")
                                     iteration += 1
                                     continue
                                 else:
@@ -603,7 +600,7 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
                         else:
                             raw_content = data['paragraph']['text'][str_index]
 
-                    offset[0] += get_alignment_offset(render.text_alignment, layout, module)
+                    offset[0] += get_alignment_offset(render.text_alignment, module)
                     content = resolve_meta_tags(raw_content)
                     new_offset = render_text_multiline(content, content_layer, offset, render)
 
@@ -735,7 +732,7 @@ def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height:
         else:
             metrics = ctx.get_font_metrics(image, txt, False)
 
-        return (metrics.text_width, metrics.text_height)
+        return metrics.text_width, metrics.text_height
 
     while ctx.font_size > 0 and iteration_attempts:
         iteration_attempts -= 1
