@@ -612,7 +612,7 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
 
                     render.draw(content_layer)
 
-                if ctype != 'array' and ctype != 'icons':
+                if ctype not in ['array', 'icons']:
                     draw.composite(operator='atop', left=target_coordinates[0], top=target_coordinates[1],
                                    width=content_layer.width, height=content_layer.height, image=content_layer)
 
