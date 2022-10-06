@@ -285,10 +285,12 @@ def render_card_content(data: dict, layout: dict, font: dict, icons: dict, modul
         offset = [0, 0]
 
     with Drawing() as render:
+        default_prio = ['image', 'prefix', 'condition', 'paragraph', 'list', 'icons', 'array']
+
         if 'content' in data:
             priorities = data['content']
         else:
-            priorities = ['image', 'prefix', 'condition', 'paragraph', 'list', 'icons', 'array']
+            priorities = default_prio
 
         for ctype in priorities:
             # load default font settings
