@@ -591,7 +591,7 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                     raw_content = list()
 
                     if ctype in default_prio:
-                        if ctype == 'paragraph' and 'text' in data['paragraph'] and 'alias' not in data['paragraph']:
+                        if ctype == 'paragraph' and isinstance(data['paragraph'], dict) and 'alias' not in data['paragraph']:
                             for text in data['paragraph']['text']:
                                 raw_content.append(text)
 
