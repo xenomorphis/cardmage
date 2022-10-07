@@ -589,26 +589,45 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                         render.draw(content_layer)
 
                 else:
+                    raw_content = list()
+
                     if ctype in default_prio:
-                        raw_content = data[ctype]
+                        if ctype == 'paragraph' and 'text' in data['paragraph'] and 'alias' not in data['paragraph']:
+                            for text in data['paragraph']['text']:
+                                raw_content.append(text)
+
+                        else:
+                            raw_content.append(data[ctype])
+
                     else:
-                        try:
-                            str_index = data['paragraph']['alias'].index(ctype)
-                        except ValueError:
+                        if 'paragraph' not in data:
                             print("  - NOTICE: Couldn't find a paragraph named " + ctype + ". Skipping...")
                             continue
+
+                        if 'alias' in data['paragraph']:
+                            try:
+                                str_index = data['paragraph']['alias'].index(ctype)
+                            except ValueError:
+                                print("  - NOTICE: Couldn't find a paragraph named " + ctype + ". Skipping...")
+                                continue
+                            else:
+                                raw_content.append(data['paragraph']['text'][str_index])
+
                         else:
-                            raw_content = data['paragraph']['text'][str_index]
+                            print("  - NOTICE: Couldn't find the content element " + ctype + ". Skipping...")
+                            continue
 
                     offset[0] += get_alignment_offset(render.text_alignment, module)
-                    content = resolve_meta_tags(raw_content)
-                    new_offset = render_text_multiline(content, content_layer, offset, render)
 
-                    if ctype == 'prefix':
-                        offset[0] += new_offset[0] + int(render.font_size * 0.25)
-                    else:
-                        offset[0] = 0
-                        offset[1] += new_offset[1] + int(render.font_size * 0.25)
+                    for text in raw_content:
+                        content = resolve_meta_tags(text)
+                        new_offset = render_text_multiline(content, content_layer, offset, render)
+
+                        if ctype == 'prefix':
+                            offset[0] += new_offset[0] + int(render.font_size * 0.25)
+                        else:
+                            offset[0] = 0
+                            offset[1] += new_offset[1] + int(render.font_size * 0.25)
 
                     render.draw(content_layer)
 
