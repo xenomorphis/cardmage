@@ -125,10 +125,10 @@ def cl_main() -> None:
                     current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
 
                 # 4. Use wand to place text onto card (save intermediate files in _build)
-                draw.font = base_dir + settings['paths']['fonts'] + get_title_font_style('fontstyle')
-                draw.font_size = get_title_font_style('fontsize')
-                draw.fill_color = Color(get_title_font_style('fontcolor'))
-                draw.text_alignment = get_title_font_style('textalign')
+                draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
+                draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
+                draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
+                draw.text_alignment = get_font_style('textalign', 'title', dict(), '_null_')
 
                 if 'outline' in font['tags']['title']:
                     draw.stroke_color = Color(font['tags']['title']['outline']['color'])
@@ -200,18 +200,55 @@ def get_alignment_offset(align: str, module: str) -> int:
         return 0
 
 
-def get_title_font_style(attribute: str):
-    """Checks title font settings and returns the desired value"""
-    if attribute in font['tags']['title']:
-        if attribute == "fontstyle":
-            return font['config']['font_' + font['tags']['title'][attribute]]
-        else:
-            return font['tags']['title'][attribute]
+def get_font_style(attribute: str, ctype: str, data: dict, module: str):
+
+    if ctype in font['tags']:
+        override = 'tag'
+    elif attribute in data:
+        override = 'card'
+    elif module in font['modules']:
+        override = 'module'
     else:
-        if attribute == "fontstyle":
-            return font['config']['font_normal']
+        override = 'none'
+
+    if override == 'tag' and attribute in font['tags'][ctype]:
+        if attribute == 'fontstyle':
+            return base_dir + settings['paths']['fonts'] + font['config']['font_' + font['tags'][ctype]['fontstyle']]
+        elif attribute == 'fontcolor':
+            return Color(font['tags'][ctype]['fontcolor'])
         else:
-            return font['default'][attribute]
+            return font['tags'][ctype][attribute]
+    else:
+        override = 'card'
+
+    if override == 'card' and attribute in data:
+        if attribute == 'fontstyle':
+            return base_dir + settings['paths']['fonts'] + font['config']['font_' + data['fontstyle']]
+        elif attribute == 'fontcolor':
+            return Color(data['fontcolor'])
+        else:
+            return data[attribute]
+    else:
+        override = 'module'
+
+    if override == 'module' and module in font['modules']:
+        if attribute == 'fontstyle' and attribute in font['modules'][module]:
+            return base_dir + settings['paths']['fonts'] + font['config']['font_' + font['modules'][module]['fontstyle']]
+        elif attribute == 'fontcolor' and attribute in font['modules'][module]:
+            return Color(font['modules'][module]['fontcolor'])
+        elif attribute in font['modules'][module]:
+            return font['modules'][module][attribute]
+
+    if attribute == 'fontstyle':
+        return base_dir + settings['paths']['fonts'] + font['config']['font_' + font['default']['fontstyle']]
+    elif attribute == 'fontcolor':
+        return Color(font['default']['fontcolor'])
+    elif attribute in font['default']:
+        return font['default'][attribute]
+    elif attribute == "textdecoration":
+        return "no"
+    elif attribute == "textalign":
+        return "left"
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
@@ -290,72 +327,20 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
             priorities = default_prio
 
         for ctype in priorities:
-            # load default font settings
-            render.font = base_dir + settings['paths']['fonts'] + font['config']['font_' + font['default']['fontstyle']]
-            render.font_size = font['default']['fontsize']
-            render.fill_color = Color(font['default']['fontcolor'])
-            render.text_alignment = font['default']['textalign']
-
-            if 'textdecoration' in font['default']:
-                render.text_decoration = font['default']['textdecoration']
-            else:
-                render.text_decoration = 'no'
-
             # load module-specific font settings over defaults
             if module in font['modules']:
-                if 'fontstyle' in font['modules'][module]:
-                    render.font = base_dir + settings['paths']['fonts'] + font['config'][
-                        'font_' + font['modules'][module]['fontstyle']]
-
-                if 'fontsize' in font['modules'][module]:
-                    render.font_size = font['modules'][module]['fontsize']
-
-                if 'fontcolor' in font['modules'][module]:
-                    render.fill_color = Color(font['modules'][module]['fontcolor'])
-
                 if 'outline' in font['modules'][module]:
                     render.stroke_color = Color(font['modules'][module]['outline']['color'])
                     render.stroke_width = font['modules'][module]['outline']['width']
 
-                if 'textalign' in font['modules'][module]:
-                    render.text_alignment = font['modules'][module]['textalign']
-
-                if 'textdecoration' in font['modules'][module]:
-                    render.text_decoration = font['modules'][module]['textdecoration']
-
             # load tag-specific font settings over card-specific font settings over
             # module-specific font settings
             if ctype in data:
-                if ctype in font['tags']:
-                    tag_override = True
-                else:
-                    tag_override = False
-
-                if tag_override and 'fontstyle' in font['tags'][ctype]:
-                    render.font = base_dir + settings['paths']['fonts'] + font['config'][
-                        'font_' + font['tags'][ctype]['fontstyle']]
-                elif 'fontstyle' in data:
-                    render.font = base_dir + settings['paths']['fonts'] + font['config']['font_' + data['fontstyle']]
-
-                if tag_override and 'fontsize' in font['tags'][ctype]:
-                    render.font_size = font['tags'][ctype]['fontsize']
-                elif 'fontsize' in data:
-                    render.font_size = data['fontsize']
-
-                if tag_override and 'color' in font['tags'][ctype]:
-                    render.fill_color = font['tags'][ctype]['fontcolor']
-                elif 'fontcolor' in data:
-                    render.fill_color = Color(data['fontcolor'])
-
-                if tag_override and 'textalign' in font['tags'][ctype]:
-                    render.text_alignment = font['tags'][ctype]['textalign']
-                elif 'textalign' in data:
-                    render.text_alignment = data['textalign']
-
-                if tag_override and 'textdecoration' in font['tags'][ctype]:
-                    render.text_decoration = font['tags'][ctype]['textdecoration']
-                elif 'textdecoration' in data:
-                    render.text_decoration = data['textdecoration']
+                render.font = get_font_style('fontstyle', ctype, data, module)
+                render.font_size = get_font_style('fontsize', ctype, data, module)
+                render.fill_color = get_font_style('fontcolor', ctype, data, module)
+                render.text_alignment = get_font_style('textalign', ctype, data, module)
+                render.text_decoration = get_font_style('textdecoration', ctype, data, module)
 
                 if 'outline' in data:
                     render.stroke_color = Color(data['outline']['color'])
