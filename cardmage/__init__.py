@@ -164,7 +164,7 @@ def cl_main() -> None:
         shutil.rmtree(buildpath)
 
 
-def dir_path(string: str):
+def dir_path(string: str) -> str:
     """
     Checks file paths for existence before using them.
 
@@ -252,7 +252,21 @@ def get_font_style(attribute: str, ctype: str, data: dict, module: str):
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
-    """Returns the current zone target coordinates"""
+    """
+    Returns the current zone target coordinates and handles eventual type differences
+
+    Parameters
+    ----------
+        zone : list
+            A list of zone coordinates
+        iteration : int
+            Indicates which set of coordinates from the list should be returned (index)
+
+    Returns
+    -------
+        list
+            A specific set of coordinates from the list
+    """
     if isinstance(zone[0], int):
         target = [zone[0], zone[1]]
     else:
@@ -723,7 +737,7 @@ def resolve_meta_tags(string: str) -> str:
     return string
 
 
-def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height: int):
+def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height: int) -> str:
     """Break long text to multiple lines, and reduce point size
     until all text fits within a bounding box."""
     mutable_message = text
