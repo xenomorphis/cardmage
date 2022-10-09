@@ -593,9 +593,14 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                 elif ctype == 'list':
                     for element in data[ctype]:
                         content = resolve_meta_tags(element)
-                        content = word_wrap(content_layer, render, content,
-                                            content_layer.width - int(1 * render.font_size),
-                                            content_layer.height - offset[1])
+                        textdata = word_wrap(content_layer, render, content,
+                                             content_layer.width - int(1 * render.font_size),
+                                             content_layer.height - offset[1])
+                        content = textdata[0]
+
+                        if textdata[1] != render.font_size:
+                            render.font_size = textdata[1]
+
                         metrics = render.get_font_metrics(content_layer, content, True)
                         render.text(int(offset[0]), int(render.font_size + offset[1]), '–')
                         render.text(int(1 * render.font_size + offset[0]), int(render.font_size + offset[1]), content)
@@ -700,7 +705,12 @@ def render_text_multiline(content: str, layer: Image, offset: list, render: Draw
             offset[0] = 0
             offset[1] += new_offset[1] + int(render.font_size * 0.25)
 
-        content = word_wrap(layer, render, content, layer.width, layer.height - offset[1])
+        textdata = word_wrap(layer, render, content, layer.width, layer.height - offset[1])
+        content = textdata[0]
+
+        if textdata[1] != render.font_size:
+            render.font_size = textdata[1]
+
         render.text(int(offset[0]), int(render.font_size + offset[1]), content)
 
         if '\n' in content:
@@ -712,15 +722,25 @@ def render_text_multiline(content: str, layer: Image, offset: list, render: Draw
 
     else:
         # Fill up the prefixed line first
-        content_fl = word_wrap(layer, render, content, layer.width - offset[0], layer.height - offset[1])
+        textdata = word_wrap(layer, render, content, layer.width - offset[0], layer.height - offset[1])
+        content_fl = textdata[0]
+
+        if textdata[1] != render.font_size:
+            render.font_size = textdata[1]
+
         content_fl = content_fl.partition('\n')[0]
         render.text(int(offset[0]), int(render.font_size + offset[1]), content_fl)
         metrics = render.get_font_metrics(layer, content_fl, False)
 
         if len(content) > len(content_fl):
             # render what's left normally and calculate the height of both text blocks
-            content_rest = word_wrap(layer, render, content[len(content_fl):].strip(), layer.width,
-                                     layer.height - offset[1])
+            textdata = word_wrap(layer, render, content[len(content_fl):].strip(), layer.width,
+                                 layer.height - offset[1])
+            content_rest = textdata[0]
+
+            if textdata[1] != render.font_size:
+                render.font_size = textdata[1]
+
             render.text(0, int(2.2 * render.font_size + offset[1]), content_rest)
 
             if '\n' in content_rest:
@@ -764,7 +784,7 @@ def resolve_meta_tags(string: str) -> str:
     return string
 
 
-def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height: int) -> str:
+def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height: int) -> list:
     """
     Breaks long text to multiple lines, and reduces point size if necessary until all text
     fits within a bounding box.
@@ -784,8 +804,8 @@ def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height:
 
     Returns
     -------
-        str
-            The pre-processed string including line feeds
+        list
+            A list object containing the pre-processed string including line feeds and the calculated font size
     """
     mutable_message = text
     iteration_attempts = 30
@@ -826,7 +846,7 @@ def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height:
     if iteration_attempts < 1:
         raise RuntimeError("Unable to calculate word_wrap for " + text)
 
-    return mutable_message
+    return [mutable_message, ctx.font_size]
 
 
 if __name__ == "__main__":
