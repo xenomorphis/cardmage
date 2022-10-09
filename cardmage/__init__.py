@@ -173,6 +173,11 @@ def dir_path(string: str) -> str:
         string : str
             The path to be checked
 
+    Returns
+    -------
+        str
+            The (validated) path
+
     Raises
     ------
         FileNotFoundError
@@ -799,6 +804,11 @@ def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height:
     -------
         list
             A list object containing the pre-processed string including line feeds and the calculated font size
+
+    Raises
+    ------
+        RuntimeError
+            Raised if the function runs out of attempts given for fitting the text into the box
     """
     mutable_message = text
     iteration_attempts = 30
