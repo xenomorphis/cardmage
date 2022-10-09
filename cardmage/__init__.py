@@ -185,7 +185,21 @@ def dir_path(string: str) -> str:
 
 
 def get_alignment_offset(align: str, module: str) -> int:
-    """Checks current text alignment and returns the corresponding x-axis offset"""
+    """
+    Checks current text alignment and returns the corresponding x-axis offset.
+
+    Parameters
+    ----------
+        align : str
+            The current value of the 'text_alignment' setting
+        module : str
+            The name of the currently rendered module
+
+    Returns
+    -------
+        int
+            The calculated x-axis offset
+    """
     if align == 'center':
         if module == 'title':
             return int(layout['config']['title_zone_dimensions'][0] / 2)
@@ -201,7 +215,20 @@ def get_alignment_offset(align: str, module: str) -> int:
 
 
 def get_font_style(attribute: str, ctype: str, data: dict, module: str):
+    """
+    Checks all available font settings and returns the matching setting with the highest priority.
 
+    Parameters
+    ----------
+        attribute : str
+            The name of the requested font setting.
+        ctype : str
+            The type of the current content element.
+        data : dict
+            Contains the settings of the card's currently rendered module.
+        module : str
+            The name of the current module.
+    """
     if ctype in font['tags']:
         override = 'tag'
     elif attribute in data:
@@ -319,11 +346,11 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
     Parameters
     ----------
         data : dict
-            The card data of the current module
+            The card data of the current module.
         module : str
-            The name of the current module
+            The name of the current module.
         draw : Drawing
-            A wand.Drawing object used for placing elements onto a card
+            A wand.Drawing object used for placing elements onto a card.
     """
     target_coordinates = layout['modules'][module + '_zone']
 
@@ -738,8 +765,28 @@ def resolve_meta_tags(string: str) -> str:
 
 
 def word_wrap(image: Image, ctx: Drawing, text: str, roi_width: int, roi_height: int) -> str:
-    """Break long text to multiple lines, and reduce point size
-    until all text fits within a bounding box."""
+    """
+    Breaks long text to multiple lines, and reduces point size if necessary until all text
+    fits within a bounding box.
+
+    Parameters
+    ----------
+        image: Image
+            The current image layer to fit the text in
+        ctx : Drawing
+            A Drawing object for image manipulation purposes
+        text : str
+            The text to be rendered
+        roi_width : int
+            Width of the text box (in pixels)
+        roi_height : int
+            Height of the text box (in pixels)
+
+    Returns
+    -------
+        str
+            The pre-processed string including line feeds
+    """
     mutable_message = text
     iteration_attempts = 30
 
