@@ -276,6 +276,8 @@ def get_font_style(attribute: str, ctype: str, data: dict, module: str):
         return "no"
     elif attribute == "textalign":
         return "left"
+    elif attribute == "outline":
+        return dict(color='none', width=1)
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
@@ -368,24 +370,15 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
             priorities = default_prio
 
         for ctype in priorities:
-            # load module-specific font settings over defaults
-            if module in font['modules']:
-                if 'outline' in font['modules'][module]:
-                    render.stroke_color = Color(font['modules'][module]['outline']['color'])
-                    render.stroke_width = font['modules'][module]['outline']['width']
-
-            # load tag-specific font settings over card-specific font settings over
-            # module-specific font settings
             if ctype in data:
+                outline = get_font_style('outline', ctype, data, module)
                 render.font = get_font_style('fontstyle', ctype, data, module)
                 render.font_size = get_font_style('fontsize', ctype, data, module)
                 render.fill_color = get_font_style('fontcolor', ctype, data, module)
                 render.text_alignment = get_font_style('textalign', ctype, data, module)
                 render.text_decoration = get_font_style('textdecoration', ctype, data, module)
-
-                if 'outline' in data:
-                    render.stroke_color = Color(data['outline']['color'])
-                    render.stroke_width = data['outline']['width']
+                render.stroke_color = Color(outline['color'])
+                render.stroke_width = outline['width']
 
                 space_offset = render.get_font_metrics(content_layer, ' ', True)
 
