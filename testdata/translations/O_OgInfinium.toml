@@ -1,0 +1,29 @@
+[original]
+# This section contains all texts of a card that need to be translated.
+# It is optional, since this section will not be used by CardMage, but it may be used by the translators as a template.
+title = "Oghma Infinium"
+
+[original.meta]
+language = "DE"
+
+[original.modules.text]
+condition = "Zu Beginn deines Spielzugs:"
+paragraph = "Du kannst diese Karte aus dem Spiel nehmen. Wenn diese Karte durch diesen Effekt aus dem Spiel genommen wird, ziehe 3 Karten."
+
+[original.modules.type]
+paragraph = "Objekt - Permanent"
+
+
+### Start Translation EN
+[translations.en]
+title = "Oghma Infinium"
+
+[translations.en.meta]
+language = "EN"
+
+[translations.en.modules.text]
+condition = "At the start of your turn:"
+paragraph = "You can remove this card from play. When this card is removed from play by this effect, draw 3 cards."
+
+[translations.en.modules.type]
+paragraph = "Item - Permanent"
