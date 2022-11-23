@@ -33,7 +33,7 @@ prefix = "Resources: "
 [translations.en.modules.text]
 condition = "While on the field:"
 list = [
-	"The player may summon Dwemer-type creatures."
+	"The player may summon Dwemer-type creatures.",
 	"Recruitment costs of Dwemer creatures are reduced by 1 gold."
 ]
 
