@@ -207,7 +207,7 @@ def cl_main() -> None:
             build_no += 1
 
     # 7. Remove _build and it's contents
-    if has_translations:
+    if args.languages:
         shutil.rmtree(buildpath)
 
 
