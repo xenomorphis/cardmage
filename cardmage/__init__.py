@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
+import operator
+from functools import reduce
 import os
 import re
 import shutil
@@ -32,6 +34,7 @@ def cl_main() -> None:
     global icons
     global layout
     global settings
+    global translations
 
     build_no = 1
 
@@ -71,6 +74,8 @@ def cl_main() -> None:
     builds_total = len(args.path)
 
     for card in args.path:
+        has_translations = False
+
         try:
             blueprint = toml.load(dir_path(base_dir + settings['paths']['cards'] + card))
             print("[" + str(build_no) + "/" + str(builds_total) + "] " + "Build '" +
@@ -80,6 +85,12 @@ def cl_main() -> None:
             font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
             layout = toml.load(dir_path(base_dir + settings['paths']['layouts'] + blueprint['layout']['type'] + ".toml"))
             icons = toml.load(dir_path(base_dir + settings['paths']['icons'] + layout['icons']['set'] + ".toml"))
+
+            if args.languages and os.path.exists(dir_path(base_dir + settings['paths']['translations'] + card)):
+                translations = toml.load(base_dir + settings['paths']['translations'] + card)
+
+                if len(blueprint["card"]["translations"]) > 0:
+                    has_translations = True
 
             template = Image(filename=dir_path(base_dir + settings['paths']['layouts'] + layout['template']['file']))
 
@@ -121,10 +132,11 @@ def cl_main() -> None:
                                top=layout['config']['image_zone'][1], width=hero.width, height=hero.height, image=hero)
                 draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
 
-                if args.languages:
+                if has_translations:
+                    draw(current)
                     current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
 
-                # 4. Use wand to place text onto card (save intermediate files in _build)
+                # 4. Use wand to place text onto card
                 draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
                 draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
                 draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
@@ -156,11 +168,46 @@ def cl_main() -> None:
             else:
                 current.save(filename=str(distpath + resolve_meta_tags(blueprint['card']['code']) + ".png"))
 
+            # 6. Repeat 4 and 5 for translations
+            if has_translations:
+                card_base = Image(
+                    filename=dir_path(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
+
+                for language in blueprint["card"]["translations"]:
+                    if str(language).lower() in translations["translations"]:
+                        with Drawing() as draw:
+                            base = card_base.clone()
+                            draw.composite(operator='atop', left=0, top=0, width=base.width, height=base.height,
+                                           image=base)
+
+                            draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
+                            draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
+                            draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
+                            draw.text_alignment = get_font_style('textalign', 'title', dict(), '_null_')
+
+                            if 'outline' in font['tags']['title']:
+                                draw.stroke_color = Color(font['tags']['title']['outline']['color'])
+                                draw.stroke_width = font['tags']['title']['outline']['width']
+
+                            offset_x = get_alignment_offset(draw.text_alignment, 'title')
+                            draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1],
+                                      get_translation_strings(str(language).lower(), "title"))
+                            draw(base)
+
+                        if args.print:
+                            base.transform_colorspace('cmyk')
+                            base.save(
+                                filename=str(
+                                    distpath + resolve_meta_tags(blueprint['card']['code']) + language + "-cmyk.tif"))
+                        else:
+                            base.save(filename=str(
+                                distpath + resolve_meta_tags(blueprint['card']['code']) + language + ".png"))
+
             print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + "' completed.")
             build_no += 1
 
-    # 6. Remove _build and it's contents
-    if args.languages:
+    # 7. Remove _build and it's contents
+    if has_translations:
         shutil.rmtree(buildpath)
 
 
@@ -283,6 +330,15 @@ def get_font_style(attribute: str, ctype: str, data: dict, module: str):
         return "left"
     elif attribute == "outline":
         return dict(color='none', width=1)
+
+
+def get_translation_strings(language: str, path: str) -> str:
+    fields = path.split()
+
+    try:
+        return reduce(operator.getitem, fields, translations["translations"][language])
+    except KeyError:
+        return reduce(operator.getitem, fields, blueprint)
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
