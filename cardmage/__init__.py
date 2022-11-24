@@ -333,6 +333,23 @@ def get_font_style(attribute: str, ctype: str, data: dict, module: str):
 
 
 def get_translation_strings(language: str, path: str) -> str:
+    """
+    Checks the provided translation data for a specific string and returns it if found.
+    If the requested string wasn't found in the translation data the function will return the untranslated
+    string instead.
+
+    Parameters
+    ----------
+        language : str
+            The identifier of the desired target language
+        path : str
+            The path to the required string in the card's data
+
+    Returns
+    -------
+        str
+            The translated (or untranslated, if no translation was found) string
+    """
     fields = path.split()
 
     try:
