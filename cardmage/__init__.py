@@ -191,7 +191,7 @@ def cl_main() -> None:
 
                             offset_x = get_alignment_offset(draw.text_alignment, 'title')
                             draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1],
-                                      get_translation_strings(str(language).lower(), "title"))
+                                      get_card_text(str(language).lower(), "title"))
                             draw(base)
 
                         if args.print:
@@ -266,6 +266,43 @@ def get_alignment_offset(align: str, module: str) -> int:
         return 0
 
 
+def get_card_text(language: str, path: str) -> str:
+    """
+    Finds and returns (translated) card texts.
+
+    Parameters
+    ----------
+        language : str
+            The identifier of the desired target language
+        path : str
+            The path to the required string in the card's data
+
+    Returns
+    -------
+        str
+            The translated string or an untranslated string, if no translation was found or no language was given
+    """
+    fields = path.split()
+
+    if len(language) > 0:
+        try:
+            return reduce(operator.getitem, fields, translations["translations"][language])
+        except KeyError:
+            pass
+
+        try:
+            return reduce(operator.getitem, fields, blueprint)
+        except KeyError:
+            print("  - Missing text string '" + path.replace(" ", ".") + "’")
+            return ""
+
+    else:
+        try:
+            return reduce(operator.getitem, fields, blueprint)
+        except KeyError:
+            print("  - Missing text string '" + path.replace(" ", ".") + "’")
+
+
 def get_font_style(attribute: str, ctype: str, data: dict, module: str):
     """
     Checks all available font settings and returns the matching setting with the highest priority.
@@ -330,32 +367,6 @@ def get_font_style(attribute: str, ctype: str, data: dict, module: str):
         return "left"
     elif attribute == "outline":
         return dict(color='none', width=1)
-
-
-def get_translation_strings(language: str, path: str) -> str:
-    """
-    Checks the provided translation data for a specific string and returns it if found.
-    If the requested string wasn't found in the translation data the function will return the untranslated
-    string instead.
-
-    Parameters
-    ----------
-        language : str
-            The identifier of the desired target language
-        path : str
-            The path to the required string in the card's data
-
-    Returns
-    -------
-        str
-            The translated (or untranslated, if no translation was found) string
-    """
-    fields = path.split()
-
-    try:
-        return reduce(operator.getitem, fields, translations["translations"][language])
-    except KeyError:
-        return reduce(operator.getitem, fields, blueprint)
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
