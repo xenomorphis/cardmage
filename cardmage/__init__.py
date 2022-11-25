@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-import operator
 from functools import reduce
+import operator
 import os
 import re
 import shutil
@@ -196,9 +196,8 @@ def cl_main() -> None:
 
                         if args.print:
                             base.transform_colorspace('cmyk')
-                            base.save(
-                                filename=str(
-                                    distpath + resolve_meta_tags(blueprint['card']['code']) + language + "-cmyk.tif"))
+                            base.save(filename=str(
+                                distpath + resolve_meta_tags(blueprint['card']['code']) + language + "-cmyk.tif"))
                         else:
                             base.save(filename=str(
                                 distpath + resolve_meta_tags(blueprint['card']['code']) + language + ".png"))
