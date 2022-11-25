@@ -286,19 +286,19 @@ def get_card_text(language: str, path: str) -> str:
 
     if len(language) > 0:
         try:
-            return reduce(operator.getitem, fields, translations["translations"][language])
+            return str(reduce(operator.getitem, fields, translations["translations"][language]))
         except KeyError:
             pass
 
         try:
-            return reduce(operator.getitem, fields, blueprint)
+            return str(reduce(operator.getitem, fields, blueprint))
         except KeyError:
             print("  - Missing text string '" + path.replace(" ", ".") + "’")
             return ""
 
     else:
         try:
-            return reduce(operator.getitem, fields, blueprint)
+            return str(reduce(operator.getitem, fields, blueprint))
         except KeyError:
             print("  - Missing text string '" + path.replace(" ", ".") + "’")
 
