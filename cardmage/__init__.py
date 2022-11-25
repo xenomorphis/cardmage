@@ -174,7 +174,9 @@ def cl_main() -> None:
                     filename=dir_path(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
 
                 for language in blueprint["card"]["translations"]:
-                    if str(language).lower() in translations["translations"]:
+                    language = str(language).lower()
+
+                    if language in translations["translations"]:
                         with Drawing() as draw:
                             base = card_base.clone()
                             draw.composite(operator='atop', left=0, top=0, width=base.width, height=base.height,
@@ -191,16 +193,16 @@ def cl_main() -> None:
 
                             offset_x = get_alignment_offset(draw.text_alignment, 'title')
                             draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1],
-                                      get_card_text(str(language).lower(), "title"))
+                                      get_card_text(language, "title"))
                             draw(base)
 
                         if args.print:
                             base.transform_colorspace('cmyk')
                             base.save(filename=str(
-                                distpath + resolve_meta_tags(blueprint['card']['code']) + language + "-cmyk.tif"))
+                                distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + "-cmyk.tif"))
                         else:
                             base.save(filename=str(
-                                distpath + resolve_meta_tags(blueprint['card']['code']) + language + ".png"))
+                                distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + ".png"))
 
             print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + "' completed.")
             build_no += 1
@@ -834,7 +836,7 @@ def render_text_multiline(content: str, layer: Image, offset: list, render: Draw
     return new_offset
 
 
-def resolve_meta_tags(string: str) -> str:
+def resolve_meta_tags(string: str, language="") -> str:
     """
     Resolves and replaces meta_tags
 
@@ -842,6 +844,8 @@ def resolve_meta_tags(string: str) -> str:
     ----------
         string : str
             The text to be checked for meta tags
+        language : str
+            Defines a target language to be used for the meta tag replacement (optional)
 
     Returns
     -------
@@ -858,9 +862,9 @@ def resolve_meta_tags(string: str) -> str:
             meta_key = tag.replace('{', '').replace('}', '')
 
             if meta_key in blueprint['meta']:
-                string = string.replace(tag, blueprint['meta'][meta_key])
+                string = string.replace(tag, get_card_text(language, "meta " + meta_key))
             elif meta_key == 'title':
-                string = string.replace(tag, blueprint['title'])
+                string = string.replace(tag, get_card_text(language, "title"))
 
     return string
 
