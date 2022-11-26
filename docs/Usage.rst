@@ -74,6 +74,7 @@ Inside the terminal you can now execute the script using the following syntax::
     Options:
         -h  Displays more information about how to use the script
         -p  Activates print quality mode
+        -l  Renders the cards in all available languages
 
     Examples:
         python cardmage.py
