@@ -1,10 +1,10 @@
-5. Installation & usage of the command line tool
+6. Installation & usage of the command line tool
 ================================================
 Once you've configured everything the last step is getting CARDmage to do it's job and render
 the cards. Since CARDmage is a command line tool written in Python you'll have a bunch of
 dependencies to take care of first.
 
-5.1 Installation
+6.1 Installation
 ----------------
 
 Install 'python'
@@ -52,7 +52,7 @@ Now you've pip up and running you can easily install the needed dependencies via
     pip install toml
     pip install Wand
 
-5.2 How to use CARDmage
+6.2 How to use CARDmage
 -----------------------
 Once you've everything set up, you can start to work with CARDmage to build your cards.
 Just download the ``cardmage.py`` found in the release section and copy that file into the
