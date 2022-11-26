@@ -9,6 +9,7 @@ import shutil
 import sys
 from textwrap import wrap
 import toml
+from typing import Union
 from wand.color import Color
 from wand.drawing import Drawing
 from wand.image import Image
@@ -193,7 +194,19 @@ def cl_main() -> None:
 
                             offset_x = get_alignment_offset(draw.text_alignment, 'title')
                             draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1],
-                                      get_card_text(language, "title"))
+                                      get_card_content(language, "title"))
+                            draw(base)
+
+                            for module in blueprint['modules']:
+                                if module + '_zone' in layout['modules']:
+                                    render_card_content(blueprint['modules'][module], module, draw, language=language)
+
+                                else:
+                                    print(
+                                        "  - NOTICE: Module '" + module + "' found, but the current layout specifies no"
+                                                                          " rendering zone for this module; skipping")
+                                    continue
+
                             draw(base)
 
                         if args.print:
@@ -267,7 +280,7 @@ def get_alignment_offset(align: str, module: str) -> int:
         return 0
 
 
-def get_card_text(language: str, path: str) -> str:
+def get_card_content(language: str, path: str) -> str | dict:
     """
     Finds and returns (translated) card texts.
 
@@ -280,14 +293,14 @@ def get_card_text(language: str, path: str) -> str:
 
     Returns
     -------
-        str
-            The translated string or an untranslated string, if no translation was found or no language was given
+        str | dict
+            The translated object or an untranslated object, if no translation was found or no language was given
     """
     fields = path.split()
 
     if len(language) > 0:
         try:
-            return str(reduce(operator.getitem, fields, translations["translations"][language]))
+            return reduce(operator.getitem, fields, translations["translations"][language])
         except KeyError:
             pass
 
@@ -299,7 +312,7 @@ def get_card_text(language: str, path: str) -> str:
 
     else:
         try:
-            return str(reduce(operator.getitem, fields, blueprint))
+            return reduce(operator.getitem, fields, blueprint)
         except KeyError:
             print("  - Missing text string '" + path.replace(" ", ".") + "’")
 
@@ -431,7 +444,7 @@ def prepare_image(icon: Image, size: list, mode: int) -> Image:
     return icon
 
 
-def render_card_content(data: dict, module: str, draw: Drawing) -> None:
+def render_card_content(data: dict, module: str, draw: Drawing, language="") -> None:
     """
     Renders a card's modules
 
@@ -443,6 +456,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
             The name of the current module.
         draw : Drawing
             A wand.Drawing object used for placing elements onto a card.
+        language : str
+            Defines a target language for the cards texts (optional)
     """
     target_coordinates = layout['modules'][module + '_zone']
 
@@ -512,7 +527,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                         text += ", "
 
                                     if keys_mode == 'text':
-                                        text += str(number) + " " + data['keys'][iteration]
+                                        text += str(number) + " " + get_card_content(
+                                            language, " ".join(["modules", module, "keys"]))[iteration]
                                     elif keys_mode == 'icons':
                                         text += str(number)
 
@@ -584,7 +600,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                     text = ""
 
                                     if keys_mode == 'text':
-                                        text += str(number) + " " + data['keys'][iteration]
+                                        text += str(number) + " " + get_card_content(
+                                            language, " ".join(["modules", module, "keys"]))[iteration]
                                     elif keys_mode == 'icons':
                                         text += str(number)
 
@@ -674,8 +691,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                 iteration += 1
 
                 elif ctype == 'list':
-                    for element in data[ctype]:
-                        content = resolve_meta_tags(element)
+                    for element in get_card_content(language, " ".join(["modules", module, ctype])):
+                        content = resolve_meta_tags(element, language=language)
                         textdata = word_wrap(content_layer, render, content,
                                              content_layer.width - int(1 * render.font_size),
                                              content_layer.height - offset[1])
@@ -707,11 +724,11 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
 
                     if ctype in default_prio:
                         if ctype == 'paragraph' and isinstance(data['paragraph'], dict) and 'alias' not in data['paragraph']:
-                            for text in data['paragraph']['text']:
+                            for text in get_card_content(language, " ".join(["modules", module, "paragraph", "text"])):
                                 raw_content.append(text)
 
                         else:
-                            raw_content.append(data[ctype])
+                            raw_content.append(get_card_content(language, " ".join(["modules", module, ctype])))
 
                     else:
                         if 'paragraph' not in data:
@@ -725,7 +742,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                 print("  - NOTICE: Couldn't find a paragraph named " + ctype + ". Skipping...")
                                 continue
                             else:
-                                raw_content.append(data['paragraph']['text'][str_index])
+                                raw_content.append(get_card_content(
+                                    language, " ".join(["modules", module, "paragraph", "text"]))[str_index])
 
                         else:
                             print("  - NOTICE: Couldn't find the content element " + ctype + ". Skipping...")
@@ -734,7 +752,7 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                     offset[0] += get_alignment_offset(render.text_alignment, module)
 
                     for text in raw_content:
-                        content = resolve_meta_tags(text)
+                        content = resolve_meta_tags(text, language=language)
                         new_offset = render_text_multiline(content, content_layer, offset, render)
 
                         if ctype == 'prefix':
@@ -862,9 +880,9 @@ def resolve_meta_tags(string: str, language="") -> str:
             meta_key = tag.replace('{', '').replace('}', '')
 
             if meta_key in blueprint['meta']:
-                string = string.replace(tag, get_card_text(language, "meta " + meta_key))
+                string = string.replace(tag, get_card_content(language, " ".join(["meta", meta_key])))
             elif meta_key == 'title':
-                string = string.replace(tag, get_card_text(language, "title"))
+                string = string.replace(tag, get_card_content(language, "title"))
 
     return string
 
