@@ -9,7 +9,6 @@ import shutil
 import sys
 from textwrap import wrap
 import toml
-from typing import Union
 from wand.color import Color
 from wand.drawing import Drawing
 from wand.image import Image
@@ -122,105 +121,72 @@ def cl_main() -> None:
             continue
 
         else:
-            # 3. Use wand to construct the final card (save intermediate files in _build)
-            with Color(layout['template']['background']) as bg:
-                current = Image(width=layout['template']['size'][0], height=layout['template']['size'][1], background=bg)
+            iteration = 0
 
-            with Drawing() as draw:
-                hero = card_image.clone()
-                layer = template.clone()
-                draw.composite(operator='atop', left=layout['config']['image_zone'][0],
-                               top=layout['config']['image_zone'][1], width=hero.width, height=hero.height, image=hero)
-                draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
+            # 3. Use wand to construct the final card and its translated variants
+            while iteration <= len(blueprint['card']["translations"]):
+                if iteration < 1:
+                    language = ""
 
-                if has_translations:
-                    draw(current)
-                    current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
+                elif has_translations:
+                    language = blueprint['card']["translations"][iteration - 1].lower()
 
-                # 4. Use wand to place text onto card
-                draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
-                draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
-                draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
-                draw.text_alignment = get_font_style('textalign', 'title', dict(), '_null_')
-
-                if 'outline' in font['tags']['title']:
-                    draw.stroke_color = Color(font['tags']['title']['outline']['color'])
-                    draw.stroke_width = font['tags']['title']['outline']['width']
-
-                offset_x = get_alignment_offset(draw.text_alignment, 'title')
-                draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
-                draw(current)
-
-                for module in blueprint['modules']:
-                    if module + '_zone' in layout['modules']:
-                        render_card_content(blueprint['modules'][module], module, draw)
-
-                    else:
-                        print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no rendering"
-                                                                " zone for this module; skipping")
+                    if language not in translations["translations"]:
                         continue
 
-                draw(current)
+                iteration += 1
 
-            # 5. Save image in dist
-            if args.print:
-                current.transform_colorspace('cmyk')
-                current.save(filename=str(distpath + resolve_meta_tags(blueprint['card']['code']) + "-cmyk.tif"))
-            else:
-                current.save(filename=str(distpath + resolve_meta_tags(blueprint['card']['code']) + ".png"))
+                with Color(layout['template']['background']) as bg:
+                    current = Image(width=layout['template']['size'][0], height=layout['template']['size'][1],
+                                    background=bg)
 
-            # 6. Repeat 4 and 5 for translations
-            if has_translations:
-                card_base = Image(
-                    filename=dir_path(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
+                with Drawing() as draw:
+                    hero = card_image.clone()
+                    layer = template.clone()
+                    draw.composite(operator='atop', left=layout['config']['image_zone'][0],
+                                   top=layout['config']['image_zone'][1], width=hero.width, height=hero.height,
+                                   image=hero)
+                    draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
 
-                for language in blueprint["card"]["translations"]:
-                    language = str(language).lower()
+                    # 4. Use wand to place text onto card
+                    draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
+                    draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
+                    draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
+                    draw.text_alignment = get_font_style('textalign', 'title', dict(), '_null_')
 
-                    if language in translations["translations"]:
-                        with Drawing() as draw:
-                            base = card_base.clone()
-                            draw.composite(operator='atop', left=0, top=0, width=base.width, height=base.height,
-                                           image=base)
+                    if 'outline' in font['tags']['title']:
+                        draw.stroke_color = Color(font['tags']['title']['outline']['color'])
+                        draw.stroke_width = font['tags']['title']['outline']['width']
 
-                            draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
-                            draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
-                            draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
-                            draw.text_alignment = get_font_style('textalign', 'title', dict(), '_null_')
+                    offset_x = get_alignment_offset(draw.text_alignment, 'title')
+                    draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1],
+                              get_card_content(language, "title"))
+                    draw(current)
 
-                            if 'outline' in font['tags']['title']:
-                                draw.stroke_color = Color(font['tags']['title']['outline']['color'])
-                                draw.stroke_width = font['tags']['title']['outline']['width']
+                    for module in blueprint['modules']:
+                        if module + '_zone' in layout['modules']:
+                            render_card_content(blueprint['modules'][module], module, draw, language=language)
 
-                            offset_x = get_alignment_offset(draw.text_alignment, 'title')
-                            draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1],
-                                      get_card_content(language, "title"))
-                            draw(base)
-
-                            for module in blueprint['modules']:
-                                if module + '_zone' in layout['modules']:
-                                    render_card_content(blueprint['modules'][module], module, draw, language=language)
-
-                                else:
-                                    print(
-                                        "  - NOTICE: Module '" + module + "' found, but the current layout specifies no"
-                                                                          " rendering zone for this module; skipping")
-                                    continue
-
-                            draw(base)
-
-                        if args.print:
-                            base.transform_colorspace('cmyk')
-                            base.save(filename=str(
-                                distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + "-cmyk.tif"))
                         else:
-                            base.save(filename=str(
-                                distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + ".png"))
+                            print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no"
+                                                                    " rendering zone for this module; skipping")
+                        continue
+
+                    draw(current)
+
+                    # 5. Save image in dist
+                    if args.print:
+                        current.transform_colorspace('cmyk')
+                        current.save(filename=str(
+                            distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + "-cmyk.tif"))
+                    else:
+                        current.save(filename=str(
+                            distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + ".png"))
 
             print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + "' completed.")
             build_no += 1
 
-    # 7. Remove _build and it's contents
+    # 6. Remove _build and it's contents
     if args.languages:
         shutil.rmtree(buildpath)
 
