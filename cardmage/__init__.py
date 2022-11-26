@@ -5,7 +5,6 @@ from functools import reduce
 import operator
 import os
 import re
-import shutil
 import sys
 from textwrap import wrap
 import toml
@@ -28,7 +27,6 @@ def cl_main() -> None:
 
     global base_dir
     global blueprint
-    global buildpath
     global distpath
     global font
     global icons
@@ -55,11 +53,7 @@ def cl_main() -> None:
             sys.exit(0)
 
     base_dir = settings['paths']['base']
-    buildpath = os.path.join(base_dir, '_build/')
     distpath = os.path.join(base_dir, 'dist/')
-
-    if not os.path.exists(buildpath) and args.languages:
-        os.mkdir(buildpath)
 
     if not os.path.exists(distpath):
         os.mkdir(distpath)
@@ -125,10 +119,9 @@ def cl_main() -> None:
 
             # 3. Use wand to construct the final card and its translated variants
             while iteration <= len(blueprint['card']["translations"]):
-                if iteration < 1:
-                    language = ""
+                language = ""
 
-                elif has_translations:
+                if has_translations and iteration > 0:
                     language = blueprint['card']["translations"][iteration - 1].lower()
 
                     if language not in translations["translations"]:
@@ -185,10 +178,6 @@ def cl_main() -> None:
 
             print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + "' completed.")
             build_no += 1
-
-    # 6. Remove _build and it's contents
-    if args.languages:
-        shutil.rmtree(buildpath)
 
 
 def dir_path(string: str) -> str:
