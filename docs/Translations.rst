@@ -59,6 +59,50 @@ want to examine. But I'll go with :code:`B_Aetheriumschmiede.toml` here::
     [translations.en.modules.type]
     paragraph = "District - Dwemer"
 
+A translation file contains only two sections and one of them is completely optional.
+
+Section 'original'
+''''''''''''''''''
+The first one is the *'original'* section. You should (but not must) copy all original texts that need
+to be translated into this section **while keeping the hierarchy intact**, so your translators are
+able to use it as a template or starting point for their translations. If you have a look at the
+example above you'll find all german texts from the card definition file in the corresponding spot
+inside the *original* section (the *title* can be found in *original.title*, the module
+*modules.text* can be found in *original.modules.text* etc.).
+Note: CARDmage will ignore this section completely, so you won't run in any errors even if you've messed
+up the file hierarchy inside this section. But it might introduce some errors later on, if the
+translators are using it as a template for the translations.
+
+Section 'translations'
+''''''''''''''''''''''
+The second section called *'translations'* is the more important one. It contains a subsection
+for each language a card is translated into:
+
+* :code:`translations.en.*` for the english translation,
+* :code:`translations.de.*` for the german translation,
+* :code:`translations.it.*` for the italian translation, etc.
+
+Because there are some international standards regarding language codes, it is recommended to use
+the abbreviations defined in `ISO 639-1 <https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes>`_
+here.
+
+The translated texts inside the subsections need to reflect the hierarchy from the card definition
+file. Let's review the two examples from earlier: *title* must be placed in *original.title* for
+the *'original'* section and in *translations.<language_code>.title* for the *'translations'*
+section. Following the same pattern *modules.text* must be placed in *original.modules.text*
+(for the template) and in *translations.<language_code>.modules.text* (for the actual translations).
+
+Workflow
+''''''''
+So you might ask "What is now the purpose of having the *'original'* section at all?".
+The basic workflow is as follows: If there's a *'original'* section all the translator has to do is
+copying the entire section, pasting it at the end of the file and replacing the *'original'* in
+the name of the newly added sections with *'translations.<language_code>'*. Of course the
+translator should then translate the card texts after that, but at this point the newly created
+translations subsection can already be used by CARDmage.
+
+Design considerations
+'''''''''''''''''''''
 As you might have already spotted: This file isn't just a copy of the card definition but with
 english texts instead of german ones. I could have done that, but there are three reasons, why I
 did things differently:
