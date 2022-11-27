@@ -99,7 +99,7 @@ The basic workflow is as follows: If there's a *'original'* section all the tran
 copying the entire section, pasting it at the end of the file and replacing the *'original'* in
 the name of the newly added sections with *'translations.<language_code>'*. Of course the
 translator should then translate the card texts after that, but at this point the newly created
-translations subsection can already be used by CARDmage.
+translations subsection is ready to be used by CARDmage.
 
 Design considerations
 '''''''''''''''''''''
