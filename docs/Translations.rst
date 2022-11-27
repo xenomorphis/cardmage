@@ -131,3 +131,27 @@ did things differently:
   you don't need to in this case. If you give them a complete card definiton file they might
   want to add their own 'flavour' to the card's functionality – and that's rarely a step forward,
   but mostly a step to the side.
+
+5.2 Activating the translations
+-------------------------------
+Once you've set up the translation file you're more than halfway there. The last step to do is
+telling CARDmage which translation to use. CARDmage doesn't use a translation unless you instruct
+it to do so. This behaviour gives you a maximum of control on a per-card level about which
+translations to use (because they are 'ready for production') and which not (for example
+incomplete or outdated ones).
+
+To enable a translation for a card simply add its ISO 639-1 abbreviation to the *'translations'*
+key in the card's definition file (upper- or lowercase is a matter of personal taste here)::
+
+    [card]
+    back = ""
+    code = "{edition}-{id}{language}"
+    font = "standard"
+    translations = ["EN"]   # English translation is now enabled
+
+5.3 Run CARDmage in translation mode
+------------------------------------
+CARDmage doesn't generate the translations of cards by default (since it can be a quite
+time-consuming task depending on the amount of cards and available translations). Use the
+command-line switch :code:`-l` to use CARDmages translation mode (see
+`chapter 6 <https://github.com/xenomorphis/cardmage/blob/main/docs/Usage.rst>`_ for an example).
