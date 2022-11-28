@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
+from functools import reduce
+import operator
 import os
 import re
-import shutil
 import sys
 from textwrap import wrap
 import toml
@@ -26,12 +27,12 @@ def cl_main() -> None:
 
     global base_dir
     global blueprint
-    global buildpath
     global distpath
     global font
     global icons
     global layout
     global settings
+    global translations
 
     build_no = 1
 
@@ -52,11 +53,7 @@ def cl_main() -> None:
             sys.exit(0)
 
     base_dir = settings['paths']['base']
-    buildpath = os.path.join(base_dir, '_build/')
     distpath = os.path.join(base_dir, 'dist/')
-
-    if not os.path.exists(buildpath) and args.languages:
-        os.mkdir(buildpath)
 
     if not os.path.exists(distpath):
         os.mkdir(distpath)
@@ -71,6 +68,8 @@ def cl_main() -> None:
     builds_total = len(args.path)
 
     for card in args.path:
+        has_translations = False
+
         try:
             blueprint = toml.load(dir_path(base_dir + settings['paths']['cards'] + card))
             print("[" + str(build_no) + "/" + str(builds_total) + "] " + "Build '" +
@@ -80,6 +79,12 @@ def cl_main() -> None:
             font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
             layout = toml.load(dir_path(base_dir + settings['paths']['layouts'] + blueprint['layout']['type'] + ".toml"))
             icons = toml.load(dir_path(base_dir + settings['paths']['icons'] + layout['icons']['set'] + ".toml"))
+
+            if args.languages and os.path.exists(dir_path(base_dir + settings['paths']['translations'] + card)):
+                translations = toml.load(base_dir + settings['paths']['translations'] + card)
+
+                if len(blueprint["card"]["translations"]) > 0:
+                    has_translations = True
 
             template = Image(filename=dir_path(base_dir + settings['paths']['layouts'] + layout['template']['file']))
 
@@ -110,58 +115,69 @@ def cl_main() -> None:
             continue
 
         else:
-            # 3. Use wand to construct the final card (save intermediate files in _build)
-            with Color(layout['template']['background']) as bg:
-                current = Image(width=layout['template']['size'][0], height=layout['template']['size'][1], background=bg)
+            iteration = 0
 
-            with Drawing() as draw:
-                hero = card_image.clone()
-                layer = template.clone()
-                draw.composite(operator='atop', left=layout['config']['image_zone'][0],
-                               top=layout['config']['image_zone'][1], width=hero.width, height=hero.height, image=hero)
-                draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
+            # 3. Use wand to construct the final card and its translated variants
+            while iteration <= len(blueprint['card']["translations"]):
+                language = ""
 
-                if args.languages:
-                    current.save(filename=str(buildpath + resolve_meta_tags(blueprint['card']['code']) + '-base.png'))
+                if has_translations and iteration > 0:
+                    language = blueprint['card']["translations"][iteration - 1].lower()
 
-                # 4. Use wand to place text onto card (save intermediate files in _build)
-                draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
-                draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
-                draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
-                draw.text_alignment = get_font_style('textalign', 'title', dict(), '_null_')
-
-                if 'outline' in font['tags']['title']:
-                    draw.stroke_color = Color(font['tags']['title']['outline']['color'])
-                    draw.stroke_width = font['tags']['title']['outline']['width']
-
-                offset_x = get_alignment_offset(draw.text_alignment, 'title')
-                draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1], blueprint['title'])
-                draw(current)
-
-                for module in blueprint['modules']:
-                    if module + '_zone' in layout['modules']:
-                        render_card_content(blueprint['modules'][module], module, draw)
-
-                    else:
-                        print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no rendering"
-                                                                " zone for this module; skipping")
+                    if language not in translations["translations"]:
                         continue
 
-                draw(current)
+                iteration += 1
 
-            # 5. Save image in dist
-            if args.print:
-                current.transform_colorspace('cmyk')
-                current.save(filename=str(distpath + resolve_meta_tags(blueprint['card']['code']) + "-cmyk.tif"))
-            else:
-                current.save(filename=str(distpath + resolve_meta_tags(blueprint['card']['code']) + ".png"))
+                with Color(layout['template']['background']) as bg:
+                    current = Image(width=layout['template']['size'][0], height=layout['template']['size'][1],
+                                    background=bg)
+
+                with Drawing() as draw:
+                    hero = card_image.clone()
+                    layer = template.clone()
+                    draw.composite(operator='atop', left=layout['config']['image_zone'][0],
+                                   top=layout['config']['image_zone'][1], width=hero.width, height=hero.height,
+                                   image=hero)
+                    draw.composite(operator='atop', left=0, top=0, width=layer.width, height=layer.height, image=layer)
+
+                    # 4. Use wand to place text onto card
+                    draw.font = get_font_style('fontstyle', 'title', dict(), '_null_')
+                    draw.font_size = get_font_style('fontsize', 'title', dict(), '_null_')
+                    draw.fill_color = get_font_style('fontcolor', 'title', dict(), '_null_')
+                    draw.text_alignment = get_font_style('textalign', 'title', dict(), '_null_')
+
+                    if 'outline' in font['tags']['title']:
+                        draw.stroke_color = Color(font['tags']['title']['outline']['color'])
+                        draw.stroke_width = font['tags']['title']['outline']['width']
+
+                    offset_x = get_alignment_offset(draw.text_alignment, 'title')
+                    draw.text(layout['config']['title_zone'][0] + offset_x, layout['config']['title_zone'][1],
+                              get_card_content(language, "title"))
+                    draw(current)
+
+                    for module in blueprint['modules']:
+                        if module + '_zone' in layout['modules']:
+                            render_card_content(blueprint['modules'][module], module, draw, language=language)
+
+                        else:
+                            print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no"
+                                                                    " rendering zone for this module; skipping")
+                        continue
+
+                    draw(current)
+
+                    # 5. Save image in dist
+                    if args.print:
+                        current.transform_colorspace('cmyk')
+                        current.save(filename=str(
+                            distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + "-cmyk.tif"))
+                    else:
+                        current.save(filename=str(
+                            distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + ".png"))
 
             print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + "' completed.")
             build_no += 1
-
-    # 6. Remove _build and it's contents
-    if args.languages:
-        shutil.rmtree(buildpath)
 
 
 def dir_path(string: str) -> str:
@@ -217,6 +233,43 @@ def get_alignment_offset(align: str, module: str) -> int:
             return int(layout['modules'][module + '_zone_dimensions'][0])
     else:
         return 0
+
+
+def get_card_content(language: str, path: str) -> str | dict:
+    """
+    Finds and returns (translated) card texts.
+
+    Parameters
+    ----------
+        language : str
+            The identifier of the desired target language
+        path : str
+            The path to the required string in the card's data
+
+    Returns
+    -------
+        str | dict
+            The translated object or an untranslated object, if no translation was found or no language was given
+    """
+    fields = path.split()
+
+    if len(language) > 0:
+        try:
+            return reduce(operator.getitem, fields, translations["translations"][language])
+        except KeyError:
+            pass
+
+        try:
+            return str(reduce(operator.getitem, fields, blueprint))
+        except KeyError:
+            print("  - Missing text string '" + path.replace(" ", ".") + "’")
+            return ""
+
+    else:
+        try:
+            return reduce(operator.getitem, fields, blueprint)
+        except KeyError:
+            print("  - Missing text string '" + path.replace(" ", ".") + "’")
 
 
 def get_font_style(attribute: str, ctype: str, data: dict, module: str):
@@ -346,7 +399,7 @@ def prepare_image(icon: Image, size: list, mode: int) -> Image:
     return icon
 
 
-def render_card_content(data: dict, module: str, draw: Drawing) -> None:
+def render_card_content(data: dict, module: str, draw: Drawing, language="") -> None:
     """
     Renders a card's modules
 
@@ -358,6 +411,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
             The name of the current module.
         draw : Drawing
             A wand.Drawing object used for placing elements onto a card.
+        language : str
+            Defines a target language for the cards texts (optional)
     """
     target_coordinates = layout['modules'][module + '_zone']
 
@@ -427,7 +482,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                         text += ", "
 
                                     if keys_mode == 'text':
-                                        text += str(number) + " " + data['keys'][iteration]
+                                        text += str(number) + " " + get_card_content(
+                                            language, " ".join(["modules", module, "keys"]))[iteration]
                                     elif keys_mode == 'icons':
                                         text += str(number)
 
@@ -499,7 +555,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                     text = ""
 
                                     if keys_mode == 'text':
-                                        text += str(number) + " " + data['keys'][iteration]
+                                        text += str(number) + " " + get_card_content(
+                                            language, " ".join(["modules", module, "keys"]))[iteration]
                                     elif keys_mode == 'icons':
                                         text += str(number)
 
@@ -589,8 +646,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                 iteration += 1
 
                 elif ctype == 'list':
-                    for element in data[ctype]:
-                        content = resolve_meta_tags(element)
+                    for element in get_card_content(language, " ".join(["modules", module, ctype])):
+                        content = resolve_meta_tags(element, language=language)
                         textdata = word_wrap(content_layer, render, content,
                                              content_layer.width - int(1 * render.font_size),
                                              content_layer.height - offset[1])
@@ -622,11 +679,11 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
 
                     if ctype in default_prio:
                         if ctype == 'paragraph' and isinstance(data['paragraph'], dict) and 'alias' not in data['paragraph']:
-                            for text in data['paragraph']['text']:
+                            for text in get_card_content(language, " ".join(["modules", module, "paragraph", "text"])):
                                 raw_content.append(text)
 
                         else:
-                            raw_content.append(data[ctype])
+                            raw_content.append(get_card_content(language, " ".join(["modules", module, ctype])))
 
                     else:
                         if 'paragraph' not in data:
@@ -640,7 +697,8 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                                 print("  - NOTICE: Couldn't find a paragraph named " + ctype + ". Skipping...")
                                 continue
                             else:
-                                raw_content.append(data['paragraph']['text'][str_index])
+                                raw_content.append(get_card_content(
+                                    language, " ".join(["modules", module, "paragraph", "text"]))[str_index])
 
                         else:
                             print("  - NOTICE: Couldn't find the content element " + ctype + ". Skipping...")
@@ -649,7 +707,7 @@ def render_card_content(data: dict, module: str, draw: Drawing) -> None:
                     offset[0] += get_alignment_offset(render.text_alignment, module)
 
                     for text in raw_content:
-                        content = resolve_meta_tags(text)
+                        content = resolve_meta_tags(text, language=language)
                         new_offset = render_text_multiline(content, content_layer, offset, render)
 
                         if ctype == 'prefix':
@@ -751,7 +809,7 @@ def render_text_multiline(content: str, layer: Image, offset: list, render: Draw
     return new_offset
 
 
-def resolve_meta_tags(string: str) -> str:
+def resolve_meta_tags(string: str, language="") -> str:
     """
     Resolves and replaces meta_tags
 
@@ -759,6 +817,8 @@ def resolve_meta_tags(string: str) -> str:
     ----------
         string : str
             The text to be checked for meta tags
+        language : str
+            Defines a target language to be used for the meta tag replacement (optional)
 
     Returns
     -------
@@ -775,9 +835,9 @@ def resolve_meta_tags(string: str) -> str:
             meta_key = tag.replace('{', '').replace('}', '')
 
             if meta_key in blueprint['meta']:
-                string = string.replace(tag, blueprint['meta'][meta_key])
+                string = string.replace(tag, get_card_content(language, " ".join(["meta", meta_key])))
             elif meta_key == 'title':
-                string = string.replace(tag, blueprint['title'])
+                string = string.replace(tag, get_card_content(language, "title"))
 
     return string
 

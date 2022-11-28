@@ -1,0 +1,2 @@
+ADDENDUM B: Configuration reference
+===================================

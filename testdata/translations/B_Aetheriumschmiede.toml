@@ -1,0 +1,41 @@
+[original]
+# This section contains all texts of a card that need to be translated.
+# It is optional, since this section will not be used by CardMage, but it may be used by the translators as a template.
+title = "Die Aetheriumschmiede"
+
+[original.meta]
+language = "DE"
+
+[original.modules.resources]
+prefix = "Ressourcen: "
+
+[original.modules.text]
+condition = "Solange auf dem Feld:"
+list = [
+    "Der Spieler kann Dwemer-Kreaturen in die Schlacht rufen.",
+    "Rekrutierungskosten von Dwemer-Kreaturen sind um 1 Gold reduziert."
+]
+
+[original.modules.type]
+paragraph = "Bezirk - Dwemer"
+
+
+### Start Translation EN
+[translations.en]
+title = "The Aetherium Forge"
+
+[translations.en.meta]
+language = "EN"
+
+[translations.en.modules.resources]
+prefix = "Resources: "
+
+[translations.en.modules.text]
+condition = "While on the field:"
+list = [
+	"The player may summon Dwemer-type creatures.",
+	"Recruitment costs of Dwemer creatures are reduced by 1 gold."
+]
+
+[translations.en.modules.type]
+paragraph = "District - Dwemer"
