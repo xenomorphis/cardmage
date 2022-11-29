@@ -336,6 +336,8 @@ def get_font_style(attribute: str, ctype: str, data: dict, module: str):
         return "left"
     elif attribute == "outline":
         return dict(color='none', width=1)
+    else:
+        return ""
 
 
 def get_zone_coordinates(zone: list, iteration: int) -> list:
@@ -656,8 +658,13 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                         if textdata[1] != render.font_size:
                             render.font_size = textdata[1]
 
+                        if get_font_style('bullet', ctype, data, module) == "dot":
+                            bullet = '•'
+                        else:
+                            bullet = '–'
+
                         metrics = render.get_font_metrics(content_layer, content, True)
-                        render.text(int(offset[0]), int(render.font_size + offset[1]), '–')
+                        render.text(int(offset[0]), int(render.font_size + offset[1]), bullet)
                         render.text(int(1 * render.font_size + offset[0]), int(render.font_size + offset[1]), content)
                         offset[1] += metrics.text_height + int(render.font_size * 0.25)
 
