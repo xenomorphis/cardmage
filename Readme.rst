@@ -16,4 +16,4 @@ Table of Contents
 Addendum
 --------
 | `Part A: Planned enhancements <https://github.com/xenomorphis/cardmage/blob/main/docs/Features.rst>`_
-| Part B: Configuration reference
+| `Part B: Configuration reference <https://github.com/xenomorphis/cardmage/blob/main/docs/ConfigReference.rst>`_
