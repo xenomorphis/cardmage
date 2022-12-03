@@ -327,7 +327,11 @@ def get_font_style(attribute: str, ctype: str, data: dict, module: str):
     if attribute == 'fontstyle':
         return base_dir + settings['paths']['fonts'] + font['config']['font_' + font['default']['fontstyle']]
     elif attribute == 'fontcolor':
-        return Color(font['default']['fontcolor'])
+        try:
+            return Color(font['default']['fontcolor'])
+        except KeyError:
+            return Color("black")
+
     elif attribute in font['default']:
         return font['default'][attribute]
     elif attribute == "textdecoration":
