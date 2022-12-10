@@ -39,6 +39,9 @@ fontstyle = "bold"
 [tags.condition]
 textdecoration = "underline"
 
+[tags.list]
+bullet = "dash"
+
 [tags.prefix]
 fontstyle = "bold"
 

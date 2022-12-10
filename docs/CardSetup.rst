@@ -195,3 +195,7 @@ what goes where on your cards.
 **template**: This block connects the layout with it's template counterpart ('file'), defines
 the card's background color ('background') and specifies the overall size of the card ('size'
 – in pixels).
+
+----
+
+`« previous chapter <https://github.com/xenomorphis/cardmage/blob/main/docs/ProjectSetup.rst>`_  |  `next chapter » <https://github.com/xenomorphis/cardmage/blob/main/docs/CardContents.rst>`_
