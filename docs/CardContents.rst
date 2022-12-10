@@ -174,3 +174,7 @@ modules
 
 You can find more details about how the different content elements work in the
 `configuration reference (Chapter 7) <https://github.com/xenomorphis/cardmage/blob/main/docs/ConfigReference.rst>`_
+
+----
+
+`« previous chapter <https://github.com/xenomorphis/cardmage/blob/main/docs/CardSetup.rst>`_  |  `next chapter » <https://github.com/xenomorphis/cardmage/blob/main/docs/Translations.rst>`_

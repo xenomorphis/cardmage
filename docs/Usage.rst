@@ -88,3 +88,7 @@ Inside the terminal you can now execute the script using the following syntax::
 
 Once the script has finished you'll find a new *dist* folder in the project directory
 containing your freshly built cards in PNG format.
+
+----
+
+`« previous chapter <https://github.com/xenomorphis/cardmage/blob/main/docs/Usage.rst>`_

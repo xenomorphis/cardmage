@@ -155,3 +155,7 @@ CARDmage doesn't generate the translations of cards by default (since it can be 
 time-consuming task depending on the amount of cards and available translations). Use the
 command-line switch :code:`-l` to use CARDmages translation mode (see
 `chapter 6 <https://github.com/xenomorphis/cardmage/blob/main/docs/Usage.rst>`_ for an example).
+
+----
+
+`« previous chapter <https://github.com/xenomorphis/cardmage/blob/main/docs/CardContents.rst>`_  |  `next chapter » <https://github.com/xenomorphis/cardmage/blob/main/docs/Usage.rst>`_

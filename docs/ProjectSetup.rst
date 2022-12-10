@@ -73,5 +73,9 @@ complexity to the script.
 Once the directories are in place and configured in the **settings.toml** you're ready to
 start developing your own open source card game.
 
-`Read on <https://github.com/xenomorphis/cardmage/blob/main/docs/CardSetup.rst>`_ for an in-depth explanation of how to configure the different aspects of your card
-game.
+`Read on <https://github.com/xenomorphis/cardmage/blob/main/docs/CardSetup.rst>`_ for an in-depth
+explanation of how to configure the different aspects of your card game.
+
+----
+
+`« previous chapter <https://github.com/xenomorphis/cardmage/blob/main/docs/Motivation.rst>`_  |  `next chapter » <https://github.com/xenomorphis/cardmage/blob/main/docs/CardSetup.rst>`_
