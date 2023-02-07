@@ -682,8 +682,15 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                               " not found. Skipping...")
                         continue
                     else:
-                        render.composite(operator='atop', left=0, top=0, width=image.width, height=image.height, image=image)
-                        render.draw(content_layer)
+                        temp_offset = get_alignment_offset(render.text_alignment, module)
+
+                        if render.text_alignment == 'center':
+                            temp_offset -= image.width / 2
+                        elif render.text_alignment == 'right':
+                            temp_offset -= image.width
+
+                        draw.composite(operator='atop', left=target_coordinates[0] + temp_offset,
+                                       top=target_coordinates[1], width=image.width, height=image.height, image=image)
 
                 else:
                     raw_content = list()
@@ -729,7 +736,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
 
                     render.draw(content_layer)
 
-                if ctype not in ['array', 'icons']:
+                if ctype not in ['array', 'icons', 'image']:
                     draw.composite(operator='atop', left=target_coordinates[0], top=target_coordinates[1],
                                    width=content_layer.width, height=content_layer.height, image=content_layer)
 

@@ -32,6 +32,9 @@ fontsize = 20
 fontstyle = "bold"
 textalign = "center"
 
+[modules.runes]
+textalign = "right"
+
 [modules.type]
 fontsize = 30
 fontstyle = "bold"
