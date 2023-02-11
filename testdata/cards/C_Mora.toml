@@ -38,5 +38,24 @@ paragraph = "{edition}-{id}"
 [modules.runes]
 image = "C_Nature6.png"
 
+[modules.text]
+content = ["cond1", "effect1", "cond2", "effect2"]
+
+[modules.text.cond1]
+type = "condition"
+condition = "Zu Spielbeginn:"
+
+[modules.text.effect1]
+type = "paragraph"
+paragraph = "Durchsuche dein Deck nach 1 \"Apocrypha\"-Karte und spiele sie aus."
+
+[modules.text.cond2]
+type = "condition"
+condition = "Solange du höchstens drei Bezirke kontrollierst:"
+
+[modules.text.effect2]
+type = "paragraph"
+paragraph = "Du kannst eine beliebige Anzahl Handkarten zurück ins Deck mischen um für jede zurückgemischte Karte 1 Gold zu generieren."
+
 [modules.type]
 paragraph = "Charakter - Daedra"
