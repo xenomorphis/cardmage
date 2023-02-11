@@ -444,10 +444,12 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                     continue
                 else:
                     el_data = data[element]
+                    path = " ".join(["modules", module, element, ctype])
 
             else:
                 ctype = element
                 el_data = data
+                path = " ".join(["modules", module, ctype])
 
             if ctype in el_data:
                 outline = get_font_style('outline', ctype, el_data, module)
@@ -667,11 +669,6 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                 iteration += 1
 
                 elif ctype == 'list':
-                    if element == ctype:
-                        path = " ".join(["modules", module, ctype])
-                    else:
-                        path = " ".join(["modules", module, element, ctype])
-
                     for line in get_card_content(language, path):
                         content = resolve_meta_tags(line, language=language)
                         textdata = word_wrap(content_layer, render, content,
@@ -731,7 +728,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                             gfx.stroke_width = render.stroke_width
 
                         offset[0] += get_alignment_offset(render.text_alignment, module)
-                        content = resolve_meta_tags(el_data[ctype])
+                        content = resolve_meta_tags(get_card_content(language, path), language=language)
                         new_offset = render_text_multiline(content, text_layer, offset, gfx)
 
                         if ctype == 'prefix':
