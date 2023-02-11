@@ -80,11 +80,14 @@ def cl_main() -> None:
             layout = toml.load(dir_path(base_dir + settings['paths']['layouts'] + blueprint['layout']['type'] + ".toml"))
             icons = toml.load(dir_path(base_dir + settings['paths']['icons'] + layout['icons']['set'] + ".toml"))
 
-            if args.languages and os.path.exists(dir_path(base_dir + settings['paths']['translations'] + card)):
-                translations = toml.load(base_dir + settings['paths']['translations'] + card)
-
-                if len(blueprint["card"]["translations"]) > 0:
-                    has_translations = True
+            if args.languages and os.path.exists(base_dir + settings['paths']['translations'] + card):
+                try:
+                    translations = toml.load(base_dir + settings['paths']['translations'] + card)
+                except toml.TomlDecodeError:
+                    print("  - Translation for '" + card + "': Wrong file format. Skipping translations...")
+                else:
+                    if len(blueprint["card"]["translations"]) > 0:
+                        has_translations = True
 
             template = Image(filename=dir_path(base_dir + settings['paths']['layouts'] + layout['template']['file']))
 
