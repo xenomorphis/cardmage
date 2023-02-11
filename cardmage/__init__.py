@@ -480,19 +480,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                                   height=layout['modules'][module + '_zone_dimensions'][1],
                                                   background=bg)
 
-                        with Drawing() as gfx:
-                            gfx.font = render.font
-                            gfx.font_size = render.font_size
-                            gfx.fill_color = render.fill_color
-                            gfx.text_alignment = render.text_alignment
-                            gfx.text_decoration = render.text_decoration
-
-                            if render.stroke_color:
-                                gfx.stroke_color = render.stroke_color
-
-                            if render.stroke_width:
-                                gfx.stroke_width = render.stroke_width
-
+                        with Drawing(render) as gfx:
                             text = ""
 
                             if offset[0] > 0 and gfx.text_alignment == 'left':
@@ -562,19 +550,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                                           height=layout['modules'][module + '_zone_dimensions'][1],
                                                           background=bg)
 
-                                with Drawing() as gfx:
-                                    gfx.font = render.font
-                                    gfx.font_size = render.font_size
-                                    gfx.fill_color = render.fill_color
-                                    gfx.text_alignment = render.text_alignment
-                                    gfx.text_decoration = render.text_decoration
-
-                                    if render.stroke_color:
-                                        gfx.stroke_color = render.stroke_color
-
-                                    if render.stroke_width:
-                                        gfx.stroke_width = render.stroke_width
-
+                                with Drawing(render) as gfx:
                                     text = ""
 
                                     if keys_mode == 'text':
@@ -714,19 +690,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                         text_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
                                            height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
 
-                    with Drawing() as gfx:
-                        gfx.font = render.font
-                        gfx.font_size = render.font_size
-                        gfx.fill_color = render.fill_color
-                        gfx.text_alignment = render.text_alignment
-                        gfx.text_decoration = render.text_decoration
-
-                        if render.stroke_color:
-                            gfx.stroke_color = render.stroke_color
-
-                        if render.stroke_width:
-                            gfx.stroke_width = render.stroke_width
-
+                    with Drawing(render) as gfx:
                         offset[0] += get_alignment_offset(render.text_alignment, module)
                         content = resolve_meta_tags(get_card_content(language, path), language=language)
                         new_offset = render_text_multiline(content, text_layer, offset, gfx)
