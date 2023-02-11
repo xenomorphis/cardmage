@@ -435,14 +435,27 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
         else:
             priorities = default_prio
 
-        for ctype in priorities:
-            if ctype in data:
-                outline = get_font_style('outline', ctype, data, module)
-                render.font = get_font_style('fontstyle', ctype, data, module)
-                render.font_size = get_font_style('fontsize', ctype, data, module)
-                render.fill_color = get_font_style('fontcolor', ctype, data, module)
-                render.text_alignment = get_font_style('textalign', ctype, data, module)
-                render.text_decoration = get_font_style('textdecoration', ctype, data, module)
+        for element in priorities:
+            if element not in default_prio:
+                try:
+                    ctype = data[element]['type']
+                except KeyError:
+                    print("  - Missing type declaration for content element '" + element + "’. Skipping...")
+                    continue
+                else:
+                    el_data = data[element]
+
+            else:
+                ctype = element
+                el_data = data
+
+            if ctype in el_data:
+                outline = get_font_style('outline', ctype, el_data, module)
+                render.font = get_font_style('fontstyle', ctype, el_data, module)
+                render.font_size = get_font_style('fontsize', ctype, el_data, module)
+                render.fill_color = get_font_style('fontcolor', ctype, el_data, module)
+                render.text_alignment = get_font_style('textalign', ctype, el_data, module)
+                render.text_decoration = get_font_style('textdecoration', ctype, el_data, module)
                 render.stroke_color = Color(outline['color'])
                 render.stroke_width = outline['width']
 
@@ -452,8 +465,8 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                     iteration = 0
                     rendered = 0
 
-                    if 'keys_as' in data:
-                        keys_mode = data['keys_as']
+                    if 'keys_as' in el_data:
+                        keys_mode = el_data['keys_as']
                     else:
                         keys_mode = 'none'
 
@@ -470,6 +483,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                             gfx.font_size = render.font_size
                             gfx.fill_color = render.fill_color
                             gfx.text_alignment = render.text_alignment
+                            gfx.text_decoration = render.text_decoration
 
                             if render.stroke_color:
                                 gfx.stroke_color = render.stroke_color
@@ -482,7 +496,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                             if offset[0] > 0 and gfx.text_alignment == 'left':
                                 text += int(1 + offset[0] / space_offset.text_width) * ' '
 
-                            for number in data[ctype]:
+                            for number in el_data[ctype]:
                                 if number > 0:
                                     if rendered > 0:
                                         text += ", "
@@ -496,10 +510,10 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                         try:
                                             icon_file = Image(
                                                 filename=dir_path(base_dir + settings['paths']['icons'] +
-                                                                  icons['icons'][data['keys'][iteration]]))
+                                                                  icons['icons'][el_data['keys'][iteration]]))
                                         except FileNotFoundError:
                                             print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                                  icons['icons'][data['keys'][iteration]] + " not found. Skipping...")
+                                                  icons['icons'][el_data['keys'][iteration]] + " not found. Skipping...")
                                             continue
                                         else:
                                             icon_layer = prepare_image(
@@ -537,7 +551,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                     else:
                         offset[0] += get_alignment_offset(render.text_alignment, module)
 
-                        for number in data[ctype]:
+                        for number in el_data[ctype]:
                             targets = get_zone_coordinates(target_coordinates, rendered)
 
                             if number > 0:
@@ -551,6 +565,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                     gfx.font_size = render.font_size
                                     gfx.fill_color = render.fill_color
                                     gfx.text_alignment = render.text_alignment
+                                    gfx.text_decoration = render.text_decoration
 
                                     if render.stroke_color:
                                         gfx.stroke_color = render.stroke_color
@@ -569,10 +584,10 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                         try:
                                             icon_file = Image(
                                                 filename=dir_path(base_dir + settings['paths']['icons'] +
-                                                                  icons['icons'][data['keys'][iteration]]))
+                                                                  icons['icons'][el_data['keys'][iteration]]))
                                         except FileNotFoundError:
                                             print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                                  icons['icons'][data['keys'][iteration]] + " not found. Skipping...")
+                                                  icons['icons'][el_data['keys'][iteration]] + " not found. Skipping...")
                                             continue
                                         else:
                                             icon_layer = prepare_image(
@@ -606,7 +621,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                     if isinstance(target_coordinates[0], int) or len(target_coordinates) == 1:
                         targets = get_zone_coordinates(target_coordinates, iteration)
 
-                        for icon in data[ctype]:
+                        for icon in el_data[ctype]:
                             try:
                                 icon_file = Image(
                                     filename=dir_path(base_dir + settings['paths']['icons'] + icons['icons'][icon]))
@@ -631,7 +646,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                     offset[0] += icon_layer.width + 5
 
                     else:
-                        for icon in data[ctype]:
+                        for icon in el_data[ctype]:
                             if iteration < len(target_coordinates):
                                 targets = get_zone_coordinates(target_coordinates, iteration)
 
@@ -652,8 +667,13 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                 iteration += 1
 
                 elif ctype == 'list':
-                    for element in get_card_content(language, " ".join(["modules", module, ctype])):
-                        content = resolve_meta_tags(element, language=language)
+                    if element == ctype:
+                        path = " ".join(["modules", module, ctype])
+                    else:
+                        path = " ".join(["modules", module, element, ctype])
+
+                    for line in get_card_content(language, path):
+                        content = resolve_meta_tags(line, language=language)
                         textdata = word_wrap(content_layer, render, content,
                                              content_layer.width - int(1 * render.font_size),
                                              content_layer.height - offset[1])
@@ -662,7 +682,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                         if textdata[1] != render.font_size:
                             render.font_size = textdata[1]
 
-                        if get_font_style('bullet', ctype, data, module) == "dot":
+                        if get_font_style('bullet', ctype, el_data, module) == "dot":
                             bullet = '•'
                         else:
                             bullet = '–'
@@ -676,9 +696,9 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
 
                 elif ctype == 'image':
                     try:
-                        image = Image(filename=dir_path(base_dir + settings['paths']['images'] + data[ctype]))
+                        image = Image(filename=dir_path(base_dir + settings['paths']['images'] + el_data[ctype]))
                     except FileNotFoundError:
-                        print("  - NOTICE: Required image file " + settings['paths']['images'] + data[ctype] +
+                        print("  - NOTICE: Required image file " + settings['paths']['images'] + el_data[ctype] +
                               " not found. Skipping...")
                         continue
                     else:
@@ -693,40 +713,26 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                        top=target_coordinates[1], width=image.width, height=image.height, image=image)
 
                 else:
-                    raw_content = list()
+                    with Color('transparent') as bg:
+                        text_layer = Image(width=layout['modules'][module + '_zone_dimensions'][0],
+                                           height=layout['modules'][module + '_zone_dimensions'][1], background=bg)
 
-                    if ctype in default_prio:
-                        if ctype == 'paragraph' and isinstance(data['paragraph'], dict) and 'alias' not in data['paragraph']:
-                            for text in get_card_content(language, " ".join(["modules", module, "paragraph", "text"])):
-                                raw_content.append(text)
+                    with Drawing() as gfx:
+                        gfx.font = render.font
+                        gfx.font_size = render.font_size
+                        gfx.fill_color = render.fill_color
+                        gfx.text_alignment = render.text_alignment
+                        gfx.text_decoration = render.text_decoration
 
-                        else:
-                            raw_content.append(get_card_content(language, " ".join(["modules", module, ctype])))
+                        if render.stroke_color:
+                            gfx.stroke_color = render.stroke_color
 
-                    else:
-                        if 'paragraph' not in data:
-                            print("  - NOTICE: Couldn't find a paragraph named " + ctype + ". Skipping...")
-                            continue
+                        if render.stroke_width:
+                            gfx.stroke_width = render.stroke_width
 
-                        if 'alias' in data['paragraph']:
-                            try:
-                                str_index = data['paragraph']['alias'].index(ctype)
-                            except ValueError:
-                                print("  - NOTICE: Couldn't find a paragraph named " + ctype + ". Skipping...")
-                                continue
-                            else:
-                                raw_content.append(get_card_content(
-                                    language, " ".join(["modules", module, "paragraph", "text"]))[str_index])
-
-                        else:
-                            print("  - NOTICE: Couldn't find the content element " + ctype + ". Skipping...")
-                            continue
-
-                    offset[0] += get_alignment_offset(render.text_alignment, module)
-
-                    for text in raw_content:
-                        content = resolve_meta_tags(text, language=language)
-                        new_offset = render_text_multiline(content, content_layer, offset, render)
+                        offset[0] += get_alignment_offset(render.text_alignment, module)
+                        content = resolve_meta_tags(el_data[ctype])
+                        new_offset = render_text_multiline(content, text_layer, offset, gfx)
 
                         if ctype == 'prefix':
                             offset[0] += new_offset[0] + int(render.font_size * 0.25)
@@ -734,7 +740,9 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                             offset[0] = 0
                             offset[1] += new_offset[1] + int(render.font_size * 0.25)
 
-                    render.draw(content_layer)
+                        gfx.draw(text_layer)
+                        draw.composite(operator='atop', left=target_coordinates[0], top=target_coordinates[1],
+                                       width=text_layer.width, height=text_layer.height, image=text_layer)
 
                 if ctype not in ['array', 'icons', 'image']:
                     draw.composite(operator='atop', left=target_coordinates[0], top=target_coordinates[1],
