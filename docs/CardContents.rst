@@ -114,7 +114,7 @@ modules
 | The modules block contains the actual content to be displayed on the card. The name of the
   module is used to determine where on the card the content of a module will be rendered (see
   chapter 3.4 for an example).
-| CARDmage supports some predefined keys for displaying content (called **content elements (CEs)**.
+| CARDmage supports some predefined keys for displaying content called **content elements (CEs)**.
   Depending on how you want your content to be rendered you'll have to use the corresponding
   content element. In this chapter I'll give you a brief overview over the CEs offered by
   CARDmage and when to use them.
@@ -124,7 +124,7 @@ modules
     :header-rows: 1
 
     * - key
-      - render priority
+      - default render priority
       - used for
       - allows other content elements in the same module
       - forces new line for next content element
@@ -173,7 +173,7 @@ modules
   finally adding a *paragraph* below that).
 
 You can find more details about how the different content elements work in the
-`configuration reference (Chapter 7) <https://github.com/xenomorphis/cardmage/blob/main/docs/ConfigReference.rst>`_
+`configuration reference (Addendum B) <https://github.com/xenomorphis/cardmage/blob/main/docs/ConfigReference.rst>`_
 
 ----
 
