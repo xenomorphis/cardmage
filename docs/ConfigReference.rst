@@ -1,8 +1,6 @@
 ADDENDUM B: Configuration reference
 ===================================
 
-Introductory remarks
-''''''''''''''''''''
 This addendum contains information about all configuration options supported and used by CARDmage.
 
 B.1 Font settings
