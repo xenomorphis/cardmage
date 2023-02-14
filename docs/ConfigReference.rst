@@ -3,8 +3,7 @@ ADDENDUM B: Configuration reference
 
 Introductory remarks
 ''''''''''''''''''''
-The following tables contains all configuration options supported by CARDmage and may serve as the
-official configuration reference.
+This addendum contains information about all configuration options supported and used by CARDmage.
 
 B.1 Font settings
 -----------------
@@ -25,7 +24,7 @@ unless specified otherwise.
     * - bullet
       - Defines the style of all bullets in a list. CARDmage currently supports either dots or dashes.
       - ``dash``, ``dot``
-      - ``bullet = ["dash"]``
+      - ``bullet = "dash"``
       - yes² (default value: ``dash``)
     * - font
       - Defines the font to be used for a specific **font style** (see below). This parameter must be used with a suffix declaring the font style this entry is related to (for example ``font_normal`` defines the font file to be used for *normal* styled text). You must declare at least one font style inside the ``[config]`` section of each font set.
@@ -53,7 +52,7 @@ unless specified otherwise.
       - ``outline = {color = "black", width = 1.5}``
       - yes (default value: ``{color = "none", width = 1}``)
     * - textalign
-      - Defines the alignment of a text.
+      - Defines the alignment of a text or image.
       - either ``left``, ``center`` or ``right``
       - ``textalign = "left"``
       - yes (default value: ``left``)
@@ -67,3 +66,63 @@ Annotations
 '''''''''''
 | ¹: This setting has to be defined at least once inside the ``[default]`` section of each font set.
 | ²: This setting has no effect if not used in ``[tags.list]`` or inside a module containing a ``list`` content element.
+
+
+B.2 Content elements
+--------------------
+| Content elements are used to add different types of content like texts or images to a card. This chapter provides
+  detailed descriptions, usage guides and lists containing the mandatory and optional settings for each content element.
+| All configurations and features described in this section are only relevant inside card definition files (and card
+  translation files since their contents are derived from the card definitions) as mentioned in
+  `chapter 4.2 <https://github.com/xenomorphis/cardmage/blob/main/docs/CardContents.rst>`_.
+
+image
+'''''
+The **image** content element renders an image inside the current module.
+
+| The alignment of the image inside the module is determined by the ``textalign`` setting. Other font settings are
+  irrelevant for this content element.
+| Important note: The image CE does **not** advance or update the rendering offset. Any text-based content element
+  following right after an image element will cause the text to be rendered on top of the image.
+
+Available settings:
+
+.. list-table::
+    :widths: 100 140 100 100 70
+    :header-rows: 1
+
+    * - setting
+      - usage / description
+      - possible values
+      - example
+      - optional
+    * - image
+      - Filename of the image you'd like to render
+      - any valid filename
+      - ``image = "background2.jpg"``
+      - no
+
+prefix
+''''''
+The **prefix** content element renders a short text inside the current module.
+
+| All font settings apply for this content element.
+| Prefixes were designed to add short texts with a different formatting in front of paragraph elements. Texts rendered
+  as a prefix shouldn't exceed one line in length.
+
+Available settings:
+
+.. list-table::
+    :widths: 100 140 100 100 70
+    :header-rows: 1
+
+    * - setting
+      - usage / description
+      - possible values
+      - example
+      - optional
+    * - prefix
+      - Contains the text fragment to be rendered
+      - any text string
+      - ``prefix = "Resources:"``
+      - no
