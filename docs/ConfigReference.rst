@@ -83,6 +83,7 @@ The **image** content element renders an image inside the current module.
 | Important note: The image CE does **not** advance or update the rendering offset. Any text-based content element
   following right after an image element will cause the text to be rendered on top of the image.
 
+
 Available settings:
 
 .. list-table::
@@ -102,11 +103,16 @@ Available settings:
 
 prefix
 ''''''
-The **prefix** content element renders a short text inside the current module.
+The **prefix** content element renders a short text inside the current module and doesn't include a line feed at it's
+end.
 
 | All font settings apply for this content element.
-| Prefixes were designed to add short texts with a different formatting in front of paragraph elements. Texts rendered
-  as a prefix shouldn't exceed one line in length.
+| Prefixes were designed to add short texts with a different formatting in front of paragraph elements. They share a lot
+  of similarities with the **condition** elements described below, the only notable difference being the missing line
+  feed after a prefix element. Each content element succeeding a **prefix** element starts in the same line the prefix
+  ended in.
+| Texts rendered as a prefix shouldn't exceed one line in length.
+
 
 Available settings:
 
@@ -123,4 +129,33 @@ Available settings:
       - Contains the text fragment to be rendered
       - any text string
       - ``prefix = "Resources:"``
+      - no
+
+condition
+'''''''''
+The **condition** content element renders a short text inside the current module and includes a line feed at it's end.
+
+| All font settings apply for this content element.
+| Conditions were designed to add short texts with a different formatting in front of paragraph elements. The main
+  difference between a condition and a prefix is the line feed inserted after conditions. Each content element
+  succeeding a **condition** element starts in a new line.
+| Texts rendered as a condition shouldn't exceed one line in length (longer conditions don't pose a problem in most cases
+  though).
+
+
+Available settings:
+
+.. list-table::
+    :widths: 100 140 100 100 70
+    :header-rows: 1
+
+    * - setting
+      - usage / description
+      - possible values
+      - example
+      - optional
+    * - condition
+      - Contains the text fragment to be rendered
+      - any text string
+      - ``condition = "At the end of your turn:"``
       - no
