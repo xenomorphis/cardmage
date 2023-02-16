@@ -141,9 +141,8 @@ The **condition** content element renders a short text inside the current module
   succeeding a **condition** element starts in a new line.
 | Texts rendered as a condition shouldn't exceed one line in length (longer conditions don't pose a problem in most cases
   though).
-
-
-Available settings:
+|
+| Available settings:
 
 .. list-table::
     :widths: 100 140 100 100 70
@@ -158,4 +157,28 @@ Available settings:
       - Contains the text fragment to be rendered
       - any text string
       - ``condition = "At the end of your turn:"``
+      - no
+
+paragraph
+'''''''''
+The **paragraph** content element is the main element for adding any amount of text to a card. A small amount of
+whitespace and a line feed will be added after a paragraph.
+
+| All font settings apply for this content element.
+|
+| Available settings:
+
+.. list-table::
+    :widths: 100 140 100 100 70
+    :header-rows: 1
+
+    * - setting
+      - usage / description
+      - possible values
+      - example
+      - optional
+    * - paragraph
+      - Contains the text to be rendered
+      - any text string
+      - ``paragraph = "Enter as much text here as you like"``
       - no
