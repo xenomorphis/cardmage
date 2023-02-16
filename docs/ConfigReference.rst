@@ -82,9 +82,8 @@ The **image** content element renders an image inside the current module.
   irrelevant for this content element.
 | Important note: The image CE does **not** advance or update the rendering offset. Any text-based content element
   following right after an image element will cause the text to be rendered on top of the image.
-
-
-Available settings:
+|
+| Available settings:
 
 .. list-table::
     :widths: 100 140 100 100 70
@@ -112,9 +111,8 @@ end.
   feed after a prefix element. Each content element succeeding a **prefix** element starts in the same line the prefix
   ended in.
 | Texts rendered as a prefix shouldn't exceed one line in length.
-
-
-Available settings:
+|
+| Available settings:
 
 .. list-table::
     :widths: 100 140 100 100 70
