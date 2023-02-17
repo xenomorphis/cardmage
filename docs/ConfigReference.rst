@@ -105,7 +105,7 @@ prefix
 The **prefix** content element renders a short text inside the current module and doesn't include a line feed at it's
 end.
 
-| All font settings apply for this content element.
+| All font settings except ``bullet`` apply for this content element.
 | Prefixes were designed to add short texts with a different formatting in front of paragraph elements. They share a lot
   of similarities with the **condition** elements described below, the only notable difference being the missing line
   feed after a prefix element. Each content element succeeding a **prefix** element starts in the same line the prefix
@@ -133,7 +133,7 @@ condition
 '''''''''
 The **condition** content element renders a short text inside the current module and includes a line feed at it's end.
 
-| All font settings apply for this content element.
+| All font settings except ``bullet`` apply for this content element.
 | Conditions were designed to add short texts with a different formatting in front of paragraph elements. The main
   difference between a condition and a prefix is the line feed inserted after conditions. Each content element
   succeeding a **condition** element starts in a new line.
@@ -162,7 +162,7 @@ paragraph
 The **paragraph** content element is the main element for adding any amount of text to a card. A small amount of
 whitespace and a line feed will be added after a paragraph.
 
-| All font settings apply for this content element.
+| All font settings except ``bullet`` apply for this content element.
 |
 | Available settings:
 
@@ -179,4 +179,58 @@ whitespace and a line feed will be added after a paragraph.
       - Contains the text to be rendered
       - any text string
       - ``paragraph = "Enter as much text here as you like"``
+      - no
+
+list
+''''
+The **list** content element is quite obviously used for rendering unordered lists. Adding support for ordered lists is
+planned for a future release.
+
+| All font settings apply for this content element.
+| The ``bullet`` font setting determines, if either dashes or dots are used as bullets.
+|
+| Available settings:
+
+.. list-table::
+    :widths: 100 140 100 100 70
+    :header-rows: 1
+
+    * - setting
+      - usage / description
+      - possible values
+      - example
+      - optional
+    * - list
+      - Contains the list items to be rendered
+      - a list containing one or more text strings
+      - ``list = ["List point 1", "List point 2", "List point 3"]``
+      - no
+
+icons
+'''''
+The **icons** content element is used to render one or more icons inside a module. It is one of the two content elements,
+which supports modules with multiple rendering zones (the other one being the array element).
+
+| Font settings don't affect this content element.
+| In contrast to the image element the **icons** element allows more than one image file to be rendered. If the module
+  consists of more than one rendering zone, the CE will render one icon into each zone: The first given
+  icon inside the first given rendering zone, the second item inside the second given rendering zone and so on. This
+  loop stops when CARDmage runs out of rendering zones to fill or icons to render. In a best-case scenario you'd have
+  the same amount of icons and rendering zones.
+|
+| Available settings:
+
+.. list-table::
+    :widths: 100 140 100 100 70
+    :header-rows: 1
+
+    * - setting
+      - usage / description
+      - possible values
+      - example
+      - optional
+    * - icons
+      - Contains a list of icon names
+      - a list containing one or more text strings
+      - ``icons = ["fire_mana", "ice_mana", "lightning_mana"]``
       - no
