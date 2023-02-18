@@ -62,8 +62,8 @@ unless specified otherwise.
 
 Annotations
 '''''''''''
-| ¹: This setting has to be defined at least once inside the ``[default]`` section of each font set.
-| ²: This setting has no effect if not used in ``[tags.list]`` or inside a module containing a ``list`` content element.
+| ¹ This setting has to be defined at least once inside the ``[default]`` section of each font set.
+| ² This setting has no effect if not used in ``[tags.list]`` or inside a module containing a ``list`` content element.
 
 
 B.2 Content elements

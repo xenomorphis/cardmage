@@ -1,15 +1,16 @@
 CARDmage Changelog
 ==================
 
-Next
-''''
-*TBA*
+Version 1.2.0
+'''''''''''''
+*Feb 19, 2023*
 
 * **[BREAKING]** Removes support for multiple ``paragraph`` content elements inside the same module (was introduced in version 1.0.1)
 * **[BREAKING]** Removes support for ``paragraph`` aliases (was introduced in version 1.0.1)
 * Adds support for named content elements, a simpler but more powerful variant of the above features
 * Fixes CARDmage skipping whole cards in translation mode if the corresponding translation file is corrupted or missing
 * Simplifies some code fragments
+* Documentation: Adds detailed explanations for each available content element
 
 Version 1.1.1
 '''''''''''''
