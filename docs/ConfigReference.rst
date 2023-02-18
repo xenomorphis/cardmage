@@ -234,3 +234,43 @@ which supports modules with multiple rendering zones (the other one being the ar
       - a list containing one or more text strings
       - ``icons = ["fire_mana", "ice_mana", "lightning_mana"]``
       - no
+
+array
+'''''
+The **array** content element is basically a supercharged version of the icons element. Depending on it's configuration
+the array element can output a bunch of non-zero numbers alone or together with some text or an icon. You can use it for
+enumerations or displaying attribute values.
+
+| All font settings except ``bullet`` apply for this content element.
+| This content element behaves slightly different when used **in icon mode** inside a module with multiple rendering
+  zones: While the icons are rendered to the right of the corresponding number inside a single-zone module, the
+  icons inside multi-zone modules are rendered on the exact same spot as their number by default. You can override this
+  behaviour via setting the attribute ``<module>_zone_icon_offset`` inside the *modules* section of your layout to any
+  offset you like.
+|
+| Available settings:
+
+.. list-table::
+    :widths: 100 140 100 100 70
+    :header-rows: 1
+
+    * - setting
+      - usage / description
+      - possible values
+      - example
+      - optional
+    * - array
+      - Contains a list of numbers
+      - a list containing one or more numbers
+      - ``array = [0, 1, 0, 0]``
+      - no
+    * - keys
+      - Contains a list of text strings or icon names
+      - a list containing one or text strings
+      - ``keys = ["gold", "fire", "water", "wind"]``
+      - no
+    * - keys_as
+      - Defines how the values in *keys* should be evaluated
+      - either ``icons``, ``text`` or ``none`` (default)
+      - ``keys_as = "icons"``
+      - yes
