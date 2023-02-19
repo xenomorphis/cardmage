@@ -2,6 +2,7 @@ title = "Standard-Icons"
 
 [icons]
 attack = "attack.png"
+daedra = "DaedraSymbol.png"
 defense = "defense.png"
 dwemer = "DwemerMask.png"
 fire = "element_fire.png"

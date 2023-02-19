@@ -32,11 +32,15 @@ fontsize = 20
 fontstyle = "bold"
 textalign = "center"
 
+[modules.runes]
+textalign = "right"
+
 [modules.type]
 fontsize = 30
 fontstyle = "bold"
 
 [tags.condition]
+fontstyle = "bold"
 textdecoration = "underline"
 
 [tags.list]
