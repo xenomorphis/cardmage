@@ -508,6 +508,14 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                             print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
                                                   icons['icons'][el_data['keys'][iteration]] + " not found. Skipping...")
                                             continue
+                                        except IndexError:
+                                            print("  - NOTICE: No icon found for array '" + element + "', entry #" +
+                                                  str(iteration + 1) + ". Skipping...")
+                                            break
+                                        except KeyError:
+                                            print("  - NOTICE: Requested icon '" + el_data['keys'][iteration] +
+                                                  "' is not defined. Skipping...")
+                                            continue
                                         else:
                                             icon_layer = prepare_image(
                                                 icon_file.clone(), [layout['modules'][module + '_zone_dimensions'][0],
@@ -569,6 +577,14 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                         except FileNotFoundError:
                                             print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
                                                   icons['icons'][el_data['keys'][iteration]] + " not found. Skipping...")
+                                            continue
+                                        except IndexError:
+                                            print("  - NOTICE: No icon found for array '" + element + "', entry #" +
+                                                  str(iteration + 1) + ". Skipping...")
+                                            break
+                                        except KeyError:
+                                            print("  - NOTICE: Requested icon '" + el_data['keys'][iteration] +
+                                                  "' is not defined. Skipping...")
                                             continue
                                         else:
                                             icon_layer = prepare_image(
