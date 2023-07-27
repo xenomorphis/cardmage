@@ -20,7 +20,10 @@ def cl_main() -> None:
     arg_parser.add_argument("path", nargs="*", help="Path to one or more card's root TOML file. Leave empty to build "
                                                     "all root files found in the card directory")
     arg_parser.add_argument("-l", "--languages", help="Render card translations", default=False, action="store_true")
-    arg_parser.add_argument("-p", "--print", help="Render card in print quality", default=False, action="store_true")
+    arg_parser.add_argument("-p", "--print", help="Optimize card for print (CMYK + export as TIF format)",
+                            default=False, action="store_true")
+    arg_parser.add_argument("-f", "--format", help="Choose the outputs file format", default="png",
+                            choices=["png", "tif", "qoi"], action="store")
     arg_parser.add_argument("-t", "--test", help="Use test settings", default=False, action="store_true")
 
     args = arg_parser.parse_args()
@@ -162,13 +165,15 @@ def cl_main() -> None:
                     draw(current)
 
                     # 5. Save image in dist
+                    name_modifier = "."
+
                     if args.print:
+                        args.format = "tif"
+                        name_modifier = "-cmyk."
                         current.transform_colorspace('cmyk')
-                        current.save(filename=str(
-                            distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + "-cmyk.tif"))
-                    else:
-                        current.save(filename=str(
-                            distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + ".png"))
+
+                    current.save(filename=str(
+                        distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + name_modifier + args.format))
 
             print(f"  - Build '{resolve_meta_tags(blueprint['card']['code'])}' completed.")
             build_no += 1
