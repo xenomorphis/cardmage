@@ -72,8 +72,7 @@ def cl_main() -> None:
 
         try:
             blueprint = toml.load(dir_path(base_dir + settings['paths']['cards'] + card))
-            print("[" + str(build_no) + "/" + str(builds_total) + "] " + "Build '" +
-                  resolve_meta_tags(blueprint['card']['code']) + "' started.")
+            print(f"[{str(build_no)}/{str(builds_total)}] Build '{resolve_meta_tags(blueprint['card']['code'])}' started.")
 
             # 2. Load the necessary preset .toml files based on blueprint data (fonts, layouts)
             font = toml.load(dir_path(base_dir + settings['paths']['fonts'] + blueprint['card']['font'] + ".toml"))
@@ -84,7 +83,7 @@ def cl_main() -> None:
                 try:
                     translations = toml.load(base_dir + settings['paths']['translations'] + card)
                 except toml.TomlDecodeError:
-                    print("  - Translation for '" + card + "': Wrong file format. Skipping translations...")
+                    print(f"  - Translation for '{card}': Wrong file format. Skipping translations...")
                 else:
                     if len(blueprint["card"]["translations"]) > 0:
                         has_translations = True
@@ -100,12 +99,12 @@ def cl_main() -> None:
 
         except FileNotFoundError as error:
             print(error)
-            print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + ".png' failed.")
+            print(f"  - Build '{resolve_meta_tags(blueprint['card']['code'])}' failed.")
             build_no += 1
             continue
 
         except toml.TomlDecodeError:
-            print("  -" + card + ": Wrong file format...")
+            print(f"  -{card}: Wrong file format...")
             build_no += 1
             continue
 
@@ -156,8 +155,8 @@ def cl_main() -> None:
                             render_card_content(blueprint['modules'][module], module, draw, language=language)
 
                         else:
-                            print("  - NOTICE: Module '" + module + "' found, but the current layout specifies no"
-                                                                    " rendering zone for this module; skipping")
+                            print(f"  - NOTICE: Module '{module}' found, but the current layout specifies no"
+                                  " rendering zone for this module; skipping")
                         continue
 
                     draw(current)
@@ -171,7 +170,7 @@ def cl_main() -> None:
                         current.save(filename=str(
                             distpath + resolve_meta_tags(blueprint['card']['code'], language=language) + ".png"))
 
-            print("  - Build '" + resolve_meta_tags(blueprint['card']['code']) + "' completed.")
+            print(f"  - Build '{resolve_meta_tags(blueprint['card']['code'])}' completed.")
             build_no += 1
 
 
@@ -257,14 +256,14 @@ def get_card_content(language: str, path: str) -> str | dict:
         try:
             return str(reduce(operator.getitem, fields, blueprint))
         except KeyError:
-            print("  - Missing text string '" + path.replace(" ", ".") + "’")
+            print(f"  - Missing text string '{path.replace(' ', '.')}'")
             return ""
 
     else:
         try:
             return reduce(operator.getitem, fields, blueprint)
         except KeyError:
-            print("  - Missing text string '" + path.replace(" ", ".") + "’")
+            print(f"  - Missing text string '{path.replace(' ', '.')}'")
 
 
 def get_font_style(attribute: str, ctype: str, data: dict, module: str):
@@ -435,7 +434,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                 try:
                     ctype = data[element]['type']
                 except KeyError:
-                    print("  - Missing type declaration for content element '" + element + "’. Skipping...")
+                    print(f"  - Missing type declaration for content element '{element}’. Skipping...")
                     continue
                 else:
                     el_data = data[element]
@@ -497,16 +496,16 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                                 filename=dir_path(base_dir + settings['paths']['icons'] +
                                                                   icons['icons'][el_data['keys'][iteration]]))
                                         except FileNotFoundError:
-                                            print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                                  icons['icons'][el_data['keys'][iteration]] + " not found. Skipping...")
+                                            print(f"  - NOTICE: Required icon file {settings['paths']['icons']}"
+                                                  f"{icons['icons'][el_data['keys'][iteration]]} not found. Skipping...")
                                             continue
                                         except IndexError:
-                                            print("  - NOTICE: No icon found for array '" + element + "', entry #" +
-                                                  str(iteration + 1) + ". Skipping...")
+                                            print(f"  - NOTICE: No icon found for array '{element}', entry #"
+                                                  f"{str(iteration + 1)}. Skipping...")
                                             break
                                         except KeyError:
-                                            print("  - NOTICE: Requested icon '" + el_data['keys'][iteration] +
-                                                  "' is not defined. Skipping...")
+                                            print(f"  - NOTICE: Requested icon '{el_data['keys'][iteration]}'"
+                                                  " is not defined. Skipping...")
                                             continue
                                         else:
                                             icon_layer = prepare_image(
@@ -567,16 +566,16 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                                 filename=dir_path(base_dir + settings['paths']['icons'] +
                                                                   icons['icons'][el_data['keys'][iteration]]))
                                         except FileNotFoundError:
-                                            print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                                  icons['icons'][el_data['keys'][iteration]] + " not found. Skipping...")
+                                            print(f"  - NOTICE: Required icon file {settings['paths']['icons']}"
+                                                  f"{icons['icons'][el_data['keys'][iteration]]} not found. Skipping...")
                                             continue
                                         except IndexError:
-                                            print("  - NOTICE: No icon found for array '" + element + "', entry #" +
-                                                  str(iteration + 1) + ". Skipping...")
+                                            print(f"  - NOTICE: No icon found for array '{element}', entry #"
+                                                  f"{str(iteration + 1)}. Skipping...")
                                             break
                                         except KeyError:
-                                            print("  - NOTICE: Requested icon '" + el_data['keys'][iteration] +
-                                                  "' is not defined. Skipping...")
+                                            print(f"  - NOTICE: Requested icon '{el_data['keys'][iteration]}'"
+                                                  " is not defined. Skipping...")
                                             continue
                                         else:
                                             icon_layer = prepare_image(
@@ -615,8 +614,8 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                 icon_file = Image(
                                     filename=dir_path(base_dir + settings['paths']['icons'] + icons['icons'][icon]))
                             except FileNotFoundError:
-                                print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                      icons['icons'][icon] + " not found. Skipping...")
+                                print(f"  - NOTICE: Required icon file {settings['paths']['icons']}"
+                                      f"{icons['icons'][icon]} not found. Skipping...")
                                 continue
                             else:
                                 icon_layer = prepare_image(
@@ -643,8 +642,8 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                                     icon_file = Image(
                                         filename=dir_path(base_dir + settings['paths']['icons'] + icons['icons'][icon]))
                                 except FileNotFoundError:
-                                    print("  - NOTICE: Required icon file " + settings['paths']['icons'] +
-                                          icons['icons'][icon] + " not found. Skipping...")
+                                    print(f"  - NOTICE: Required icon file {settings['paths']['icons']}"
+                                          f"{icons['icons'][icon]} not found. Skipping...")
                                     iteration += 1
                                     continue
                                 else:
@@ -682,7 +681,7 @@ def render_card_content(data: dict, module: str, draw: Drawing, language="") -> 
                     try:
                         image = Image(filename=dir_path(base_dir + settings['paths']['images'] + el_data[ctype]))
                     except FileNotFoundError:
-                        print("  - NOTICE: Required image file " + settings['paths']['images'] + el_data[ctype] +
+                        print(f"  - NOTICE: Required image file {settings['paths']['images']}{el_data[ctype]}"
                               " not found. Skipping...")
                         continue
                     else:
