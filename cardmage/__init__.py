@@ -92,19 +92,11 @@ def cl_main() -> None:
             template = Image(filename=dir_path(base_dir + settings['paths']['layouts'] + layout['template']['file']))
 
             if layout['image']['use_vertical']:
-                if args.print:
-                    card_image = Image(
-                        filename=dir_path(base_dir + settings['paths']['images'] + blueprint['image']['source_vertical_hd']))
-                else:
-                    card_image = Image(
-                        filename=dir_path(base_dir + settings['paths']['images'] + blueprint['image']['source_vertical']))
+                card_image = Image(
+                    filename=dir_path(base_dir + settings['paths']['images'] + blueprint['image']['source_vertical']))
             else:
-                if args.print:
-                    card_image = Image(
-                        filename=dir_path(base_dir + settings['paths']['images'] + blueprint['image']['source_hd']))
-                else:
-                    card_image = Image(
-                        filename=dir_path(base_dir + settings['paths']['images'] + blueprint['image']['source']))
+                card_image = Image(
+                    filename=dir_path(base_dir + settings['paths']['images'] + blueprint['image']['source']))
 
         except FileNotFoundError as error:
             print(error)
