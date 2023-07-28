@@ -72,9 +72,10 @@ Inside the terminal you can now execute the script using the following syntax::
     [py|python] cardmage.py [-Options] [Card file(s)]
 
     Options:
-        -h  Displays more information about how to use the script
-        -p  Activates print quality mode
-        -l  Renders the cards in all available languages
+        -h           Displays more information about how to use the script
+        -p           Optimizes output for print (output in CMYK as TIFF image). Overrides -f if present
+        -f <format>  Specifies the output file format (default is 'png', but 'tif' and 'qoi' are possible too)
+        -l           Renders the cards in all available languages
 
     Examples:
         python cardmage.py
@@ -82,6 +83,9 @@ Inside the terminal you can now execute the script using the following syntax::
 
         python cardmage.py -p B_Aetheriumschmiede.toml
             renders only the card file named 'B_Aetheriumschmiede.toml' in print mode
+
+        python cardmage.py -l -f qoi
+            renders all cards with all available translations as .qoi images
 
     Note:
         Depending on your OS you'll need to call the script either with 'py' or 'python'
