@@ -115,7 +115,6 @@ inside the *testdata/layouts*, you'll find something like this::
 
     [config]
     image_zone = [0, 0]
-    image_credits_zone = []
     title_zone = [60, 89]
     title_zone_dimensions = [560, 40]
 
