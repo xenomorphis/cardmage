@@ -1,6 +1,17 @@
 CARDmage Changelog
 ==================
 
+Version 1.3.0
+'''''''''''''
+*Aug 08, 2023*
+
+* **[REMOVAL]** Removes card definition entries ``source_hd`` and ``source_vertical_hd``
+* **[REMOVAL]** Removes layout definition entry ``image_credits_zone`` (wasn't in use anyway)
+* Adds a command line option for specifying the desired output image format
+* Adds support for the `QOI image format <https://qoiformat.org/>`_
+* Code quality: Handles some possibly thrown exceptions related to the the ``array`` content element
+* Code cleanup: Replaces concatenated strings in print statements with f-strings
+
 Version 1.2.0
 '''''''''''''
 *Feb 19, 2023*
