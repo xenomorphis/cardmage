@@ -5,7 +5,6 @@ title = "Neutral layout"
 
 [config]
 image_zone = [0, 0]
-image_credits_zone = []
 title_zone = [60, 89]
 title_zone_dimensions = [570, 40]
 

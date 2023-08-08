@@ -8,9 +8,7 @@ translations = []
 
 [image]
 source = "DaedraMora.png"
-source_hd = "DaedraMora.png"
 source_vertical = "DaedraMora.png"
-source_vertical_hd = "DaedraMora.png"
 
 [layout]
 type = "neutralC"

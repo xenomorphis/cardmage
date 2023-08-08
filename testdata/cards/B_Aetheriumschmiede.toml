@@ -8,9 +8,7 @@ translations = ["EN"]
 
 [image]
 source = "AetherSchmiede.png"
-source_hd = "AetherSchmiede.png"
 source_vertical = "AetherSchmiede.png"
-source_vertical_hd = "AetherSchmiede.png"
 
 [layout]
 type = "neutral"

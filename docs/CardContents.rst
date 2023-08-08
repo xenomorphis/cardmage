@@ -14,9 +14,7 @@ content you want. Let's have a look at an example::
 
     [image]
     source = "AetherSchmiede.png"
-    source_hd = "AetherSchmiede.png"
     source_vertical = "AetherSchmiede.png"
-    source_vertical_hd = "AetherSchmiede.png"
 
     [layout]
     type = "bezirk"
@@ -83,11 +81,9 @@ card
 
 image
 '''''
-| This block contains the file names of the card's artwork. You can use different images
-  depending on the layout's support for vertical artworks. CARDmage will use the
-  standard image for the normal processing mode and the HD image for print quality mode (see
-  `chapter 5 <https://github.com/xenomorphis/cardmage/blob/main/docs/Usage.rst>`_ for more
-  information about the different processing modes available within CARDmage).
+| This block contains the file names of the card's artwork. You can define one horizontal and
+  one vertical artwork per card. CARDmage will use the image that corresponds to the
+  orientation defined in the layout.
 
 layout
 ''''''
